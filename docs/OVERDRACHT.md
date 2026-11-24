@@ -103,3 +103,32 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - Klinkende snaar laten oplichten in het diagram tijdens tokkelen.
 - Akkoorden in het raster sorteren of groeperen (bv. op moeilijkheid of grondtoon); nu de volgorde van `akkoorden.json`.
 - Een variant in `kopieerTekst` noemen (bv. "G (3 vingers)"), zodat `/nieuw-nummer` weet welke vorm je speelt.
+
+## Besluiten uit stap 3
+
+### Besluiten
+
+- **Metronoom** (`src/audio/metronoom.ts`): `maakMetronoom({ bpm, maatsoort, accent?, onderverdeling?, opTel?, opSlag? })` met `start()`, `stop()`, `zetBpm`, `zetMaatsoort`, `zetAccent`, `zetOnderverdeling` en `loopt`. Maken raakt de AudioContext niet; pas `start()` doet dat (roep het aan in een klik, voor iOS). Een timer van 25 ms plant 100 ms vooruit op `audioContext.currentTime` (1,5 s als het tabblad verborgen is, want dan komt de timer hooguit eens per seconde). Klik = korte driehoeksgolf met een envelope; de 1 hoger en harder.
+- **De planner is puur** (`planStappen` in `src/lib/metronoom.ts`, getest): elke volgende tijd komt uit de vorige geplande tijd, nooit uit de klok. Komt de timer na een bevriezing te laat, dan springt hij naar nu in plaats van alle gemiste klikken tegelijk te spelen.
+- **Slagen tussen de tellen volgen (voor stap 4):** geef `onderverdeling` = slagen per tel (`slagenPerTel(slagen.length, maatsoort)` uit `muziek.ts`, dus 2 bij 8 slagen in 4/4, 1 in 6/8). Dan komt `opSlag(slag, tijd)` per slag, met `slag` vanaf 0 binnen de maat, en dat is precies de index voor `SlagpatroonWeergave actief`. `opTel(tel, tijd)` blijft per tel. Beide worden aangeroepen op het moment dat de klik klinkt (audiotijd min `currentTime`, plus `outputLatency`), dus zet je er gewoon state mee. Klikken doet hij alleen op de tel.
+- **Wisselen tijdens het spelen:** een nieuw tempo geldt vanaf de volgende slag; een nieuwe maatsoort (`wisselMaatsoort`) en een nieuwe onderverdeling (`wisselOnderverdeling`) gaan in op de volgende hele tel, zodat de 1 nooit op een "&" valt. Elke geplande stap draagt zijn `onderverdeling` en `tellen`; `opSlag` slaat stappen over die nog in de oude geteld zijn, zodat er na een patroonwissel geen verkeerd pijltje oplicht. `stop()` koppelt de uitgang los, zodat wat al vooruit gepland was stil valt.
+- **`useMetronoom({ bpm, maatsoort, accent?, onderverdeling? })`** geeft `{ loopt, tel, slag, start, stop, wissel }`; `tel` en `slag` zijn `null` als hij stilstaat, en hij stopt bij het verlaten van het scherm. Stap 4 en 5 kunnen die hook direct gebruiken.
+- **`isAccent(tel, maatsoort)`**: alleen de 1 (ook met een doorlopende teller). In 6/8 dus geen tweede accent op 4.
+- **Tap tempo:** `tapTempo(tikken)` (tijden in ms) neemt de mediaan van de laatste 4 afstanden, zodat één gemiste tik het tempo niet verpest. Een tik binnen 150 ms na de vorige tik (ook een weggevallen tik) telt niet (stuiter, toetsherhaling); `voegTikToe` bewaart daarom de ruwe tikken (laatste 16); dat ligt ruim onder de kortste tel (220 bpm is 273 ms), zodat een wat vroege tik bij een hoog tempo blijft staan. Een langzamere dubbeltik vangt de mediaan op. Na een pauze van meer dan 2,5 s begint hij opnieuw (ruim boven de 2 s van 30 bpm). `voegTikToe` houdt de lijst kort. Het scherm gebruikt `performance.now()`.
+- **Geen opslag.** Tempo, maatsoort, accent en het patroon staan in het geheugen (`useMetronoomInstelling`), gedeeld door metronoom en trainer, tot je de app sluit. Geen veld in `Voortgang`.
+- **Slagpatroon-trainer:** vaste patronen per maatsoort (`VASTE_SLAGPATRONEN`, een test bewaakt dat de namen kloppen met de slagen) plus de patronen uit de liedjes; een liedje met hetzelfde patroon komt bij die keuze te staan. Zelf maken = slagen toevoegen met grote knoppen tot de maat vol is (`ontwerpStatus`); in x/4 past een slag per tel of twee, in 6/8 een per achtste (zelfde regel als `slagenPasInMaat`). Een nieuwe maatsoort waarin het patroon niet past, kiest het eerste vaste patroon van die maatsoort.
+- **`SlagpatroonWeergave`** heeft naast de afgesproken props een optionele `maatsoort`; dan staat eronder hoe je telt (`1 & 2 &`, via `telLabels`).
+- **De tel die je ziet** (`TelWeergave`): grote bolletjes, de 1 in de accentkleur; de klinkende tel vult zich en springt even op, met `prefers-reduced-motion` alleen de kleurwissel.
+- Beide schermen houden het scherm wakker zolang de metronoom loopt.
+
+### Valkuilen
+
+- **Namen uit de afspraken:** daar staan `parseSlagpatroon`/`parseMaatsoort`, maar stap 1 maakte `leesSlagpatroon`/`leesMaatsoort` (in `muziek.ts`). Gebruik die.
+- **iPhone:** de metronoom gebruikt `geefAudioContext()` van stap 2, dus hij klinkt ook met de stilteschakelaar aan (`audioSession.type = 'playback'`) en muziek op de achtergrond stopt. Na een onderbreking (`'interrupted'`, telefoontje) staat de audioklok stil; zodra hij weer loopt, springt de planner naar nu in plaats van gemiste klikken in te halen.
+- Headless Chrome in `kijk.sh` speelt de metronoom gewoon af: `/oefenen/metronoom!.metronoom-start` laat een oplichtende tel zien.
+
+### Geparkeerde ideeën
+
+- Een tweede, zachter accent op de 4 in 6/8.
+- Een zachte klik op de tussenslagen (`onderverdeling`) als optie.
+- Tempotrainer: na N maten automatisch een paar bpm sneller.

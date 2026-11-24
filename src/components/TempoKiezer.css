@@ -1,0 +1,58 @@
+.tempo-kiezer {
+  display: grid;
+  gap: var(--ruimte-3);
+}
+
+.tempo-kiezer-rij {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ruimte-3);
+}
+
+.tempo-kiezer-bpm {
+  font-size: var(--letter-groot);
+  font-weight: 650;
+}
+
+.tempo-kiezer-bpm span {
+  font-size: 2.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tempo-kiezer-uitleg {
+  font-size: var(--letter-klein);
+}
+
+.tempo-kiezer-schuif {
+  width: 100%;
+  min-height: var(--tikdoel);
+  accent-color: var(--accent);
+}
+
+.tempo-kiezer-knoppen {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--ruimte-2);
+}
+
+.tempo-kiezer-knoppen .knop {
+  padding-inline: var(--ruimte-2);
+}
+
+.tempo-kiezer-tap {
+  width: 100%;
+}
+
+.tempo-kiezer-maatsoort {
+  display: grid;
+  gap: var(--ruimte-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.tempo-kiezer-maatsoort legend {
+  margin-bottom: var(--ruimte-2);
+  padding: 0;
+  font-weight: 650;
+}

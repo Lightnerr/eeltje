@@ -79,7 +79,7 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 | Liedje: alleen schema, tempo en slagpatroon, nooit tekst | `Liedje`; `src/data/liedjes/<id>.json`, `zoekLiedje` |
 | Sectie (couplet, refrein …), maat, volgorde van de secties | `Sectie`, `Maat`, `Liedje.volgorde`, `speelVolgorde` → `SpeelMaat` |
 | Toonsoort, capo, bpm, maatsoort | `Liedje.toonsoort` (klinkend), `capo`, `bpm` (tellen van de noemer), `Maatsoort`, `leesMaatsoort` |
-| Slagpatroon (`D - D U - U D U`) en een slag | `Liedje.slagpatroon` (tekst), `Slag`, `leesSlagpatroon`, `slagenPasInMaat`, `slagenPerTel` |
+| Slagpatroon (`D - D U - U D U`) en een slag | `Liedje.slagpatroon` (tekst), `Slag`, `leesSlagpatroon`, `slagenPasInMaat`, `slagenPerTel`, `SlagpatroonWeergave`, `telLabels` (`1 & 2 &`) |
 | Klinkend akkoord (wat je hoort) tegenover de vorm (wat je met capo grijpt) | `klinkendAkkoord(vorm, capo)`, `vormBijCapo(klinkend, capo)`, `transponeer`, `zelfdeAkkoord` |
 | Speelbaarheid: welke akkoorden je mist, en het label daarvan | `ontbrekendeAkkoorden(liedje, bekend)`, `speelbaarheidsLabel(ontbrekend)` |
 | Vereenvoudiging: een makkelijker akkoord dat hetzelfde werk doet (Fmaj7 voor F) | `vereenvoudigingen(naam)`, `vereenvoudig(akkoorden, bekend)`, `Liedje.origineleAkkoorden` |
@@ -100,3 +100,8 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 | Route: welk scherm je ziet, als hash (`#/liedjes/wonderwall`) | `Route`, `leesRoute`, `naarHash`, `tabVan`, `useRoute`, `navigeer` |
 | Tabblad: Vandaag, Akkoorden, Liedjes, Oefenen, Voortgang | `Tab`, `Tabbalk` |
 | Schermvullend: meespelen en challenges over het hele scherm, scherm blijft wakker | `Schermvullend`, `useWakeLock` |
+| Metronoom: klikt op de audioklok, met accent op de 1 | `maakMetronoom` (`src/audio/metronoom.ts`), `useMetronoom`, `isAccent`, `TelWeergave` |
+| Tempo: 30 t/m 220 bpm | `begrensBpm`, `MIN_BPM`, `MAX_BPM`, `telDuur`, `TempoKiezer` |
+| Tap tempo: het tempo uit je eigen tikken | `tapTempo(tikken)`, `voegTikToe(tikken, tijd)` |
+| Onderverdeling: slagen per tel (2 bij achtsten in 4/4) | `MetronoomOpties.onderverdeling`, `opSlag`, `planStappen` → `GeplandeStap` |
+| Slagpatroon-trainer: een patroon kiezen of zelf maken | `VASTE_SLAGPATRONEN`, `slagpatroonKeuzes(maatsoort, liedjes)`, `ontwerpStatus(aantal, maatsoort)` |
