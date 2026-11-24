@@ -24,12 +24,12 @@ tools/kijk/kijk.sh . 5177 /vandaag,/liedjes/wonderwall   # screenshots, zie "De 
 
 ```
 docs/              VISIE.md, STAPPENPLAN.md, OVERDRACHT.md, PARALLEL-BOUWEN.md
-src/lib/           pure logica: muziek (transponeren, capo, speelbaarheid), storage, routine, statistiek, validatie, demo
+src/lib/           pure logica: types, muziek (transponeren, capo, speelbaarheid), voortgang, route, storage, validatie, demo, later routine en statistiek
 src/data/          inhoud als JSON: akkoorden.json, oefeningen.json, liedjes/<id>.json; index.ts laadt ze
-src/audio/         Web Audio: metronoom en Karplus-Strong-gitaar
-src/components/    herbruikbare UI, o.a. het SVG-akkoorddiagram
-src/hooks/         React-hooks (useRoute, useVoortgang)
-src/pages/         één component per scherm
+src/audio/         Web Audio: context.ts (gedeelde AudioContext), metronoom en Karplus-Strong-gitaar
+src/components/    herbruikbare UI met eigen css: Tabbalk, Schermvullend, Binnenkort, later het SVG-akkoorddiagram
+src/hooks/         React-hooks (useRoute, useVoortgang, useWakeLock)
+src/pages/         één component per route (default export), met een eigen css-bestand ernaast
 tests/             Vitest, één bestand per module in src/lib
 tools/kijk/        screenshots met headless Chrome, geen onderdeel van de app
 .claude/commands/  /nieuw-nummer, /nieuw-akkoord, /nieuwe-oefening (stap 7)

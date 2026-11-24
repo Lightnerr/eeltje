@@ -1,12 +1,14 @@
-import { href } from '../hooks/useRoute';
+import { naarHash } from '../lib/route'
+import './NietGevonden.css'
 
-export default function NietGevonden() {
+export default function NietGevondenPagina({ wat = 'Deze pagina' }: { wat?: string }) {
   return (
-    <>
-      <h1>Pagina niet gevonden</h1>
-      <p>
-        <a href={href('vandaag')}>Terug naar Vandaag</a>
-      </p>
-    </>
-  );
+    <section className="niet-gevonden">
+      <h1>Niet gevonden</h1>
+      <p>{wat} bestaat niet (meer).</p>
+      <a className="knop" href={naarHash({ pagina: 'vandaag' })}>
+        Naar vandaag
+      </a>
+    </section>
+  )
 }

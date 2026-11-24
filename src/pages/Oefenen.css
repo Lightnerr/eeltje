@@ -1,0 +1,41 @@
+.oefenen {
+  display: grid;
+  gap: var(--ruimte-5);
+}
+
+.oefenen-groep {
+  display: grid;
+  gap: var(--ruimte-3);
+}
+
+.oefenen-lijst {
+  display: grid;
+  gap: var(--ruimte-2);
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 600px) {
+  .oefenen-lijst {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+.oefenen-lijst a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ruimte-3);
+  min-height: var(--tikdoel);
+  padding: var(--ruimte-3) var(--ruimte-4);
+  color: var(--tekst);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.oefenen-lijst a::after {
+  content: '›';
+  color: var(--tekst-zacht);
+  font-size: 1.5rem;
+  line-height: 1;
+}

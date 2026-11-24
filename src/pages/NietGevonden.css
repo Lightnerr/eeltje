@@ -1,0 +1,5 @@
+.niet-gevonden {
+  display: grid;
+  gap: var(--ruimte-4);
+  justify-items: start;
+}

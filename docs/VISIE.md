@@ -67,29 +67,32 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 
 | Domeinterm | In de code |
 |---|---|
-| Akkoord: één vingerzetting, met frets per snaar (lage E naar hoge e, `x` = niet spelen, `0` = open), vingers (0 = geen, 1 t/m 4 = wijsvinger t/m pink) en moeilijkheid 1 t/m 5 | `Akkoord` (`naam`, `frets`, `vingers`, `basisfret`, `moeilijkheid`), `Fret` |
-| Variant: een andere zetting van hetzelfde akkoord; de standaard is wat je ziet tenzij je een andere kiest | `Akkoord.variantnaam`, `Akkoord.standaard`, `variantenVan`, `standaardVariant`, `Voortgang.voorkeurVariant` |
-| Barré: één vinger over meerdere snaren | `Barre` |
-| Akkoordstatus | `AkkoordStatus`: `'nieuw'`, `'oefenen'`, `'kan ik'`; `statusVan` |
-| Bekende akkoorden: op "oefenen" of "kan ik" | `speelbareAkkoorden`, `maakBekend` |
-| Liedje: alleen schema, tempo en slagpatroon, nooit tekst | `Liedje` |
-| Sectie (couplet, refrein …), maat, volgorde van de secties | `Sectie`, `Maat`, `Liedje.volgorde`, `speelVolgorde`, `GespeeldeMaat` |
-| Toonsoort, capo, bpm, maatsoort | `Liedje.toonsoort`, `.capo`, `.bpm`, `.maatsoort`, `Maatsoort`, `parseMaatsoort` |
-| Slagpatroon (`D - D U - U D U`) en een slag | `Liedje.slagpatroon`, `Slag`, `parseSlagpatroon` |
-| Klinkend akkoord (wat je hoort) tegenover de vorm (wat je met capo grijpt) | `klinkendAkkoord`, `vormMetCapo`, `transponeer` |
-| Speelbaarheid: welke akkoorden je mist, en het label daarvan | `ontbrekendeAkkoorden`, `speelbaarheidsLabel` |
-| Vereenvoudiging: een makkelijker akkoord dat hetzelfde werk doet (Fmaj7 voor F) | `vereenvoudigingen`, `speelbareVorm`, `Liedje.origineleAkkoorden` |
-| Capo-suggestie: een andere capo of vorm waarmee het wel lukt | `CapoOptie`, `besteCapoOptie`, `CapoSuggestie`, `capoSuggestie` |
-| Leeradvies: welk akkoord je nu moet leren | `LeerAdvies`, `leerAdvies` |
-| AI-versie, gecontroleerd: door Claude gemaakt, en of de eigenaar hem nakeek | `Liedje.bron` (`'ai-gegenereerd'`, `'handmatig'`), `Liedje.geverifieerd`, `Voortgang.gecontroleerd` |
-| Favoriet liedje | `Voortgang.favorieten` |
-| Oefening, met doel, stappen, tabje en standaardtempo | `Oefening` |
-| Challenge en zijn resultaat: wissels per minuut, hoogste bpm of volgehouden seconden | `ChallengeType` (`'one-minute-changes'`, `'spider-ladder'`, `'wisselreeks'`), `ChallengeResultaat` |
-| Akkoordpaar (A-D is hetzelfde als D-A) | `paarSleutel`, `ChallengeResultaat.sleutel` |
-| Record | `record` |
-| Oefensessie, streak, geoefende minuten | `Sessie`, `streak`, `totaalMinuten`, `minutenVandaag`, `minutenPerWeek` |
-| Dagroutine | `Routine`, `maakRoutine` |
-| Voortgang: alles wat persoonlijk is, met een versie | `Voortgang`, `normaliseerVoortgang`, `VoortgangOpslag`, `opslag`, `useVoortgang` |
-| Mijn akkoorden kopiëren | `kopieerTekst` |
-| Demo-voortgang: een verzonnen gitarist die een maand bezig is, voor previews en screenshots | `demoVoortgang` |
-| Preview: de build van een PR op GitHub Pages, met eigen opslag | `VITE_PREVIEW` |
+| Akkoord: één vingerzetting, met frets per snaar (lage E naar hoge e, `x` = niet spelen, `0` = open), vingers (0 = geen, 1 t/m 4 = wijsvinger t/m pink) en moeilijkheid 1 t/m 5 | `Akkoord` (`frets`, `vingers`, `moeilijkheid`, `basisfret`), `Fret`; `src/data/akkoorden.json` |
+| Variant: een andere zetting van hetzelfde akkoord; de standaard is wat je ziet tenzij je een andere kiest | `Akkoord.variant` (`eigen`, `barre`, `3-vingers`), `Akkoord.titel`, `Akkoord.standaard`; `variantenVan`, `standaardVariant`, `zoekAkkoord(naam, variantnaam?)` |
+| Barré: één vinger over meerdere snaren | `Barre` (`fret`, `vanSnaar`, `totSnaar`), `Akkoord.barre` |
+| Akkoordstatus | `AkkoordStatus` (`'nieuw' \| 'oefenen' \| 'kan ik'`), `statusVan`, `zetStatus` |
+| Bekende akkoorden: op "oefenen" of "kan ik" | `bekendeAkkoorden(voortgang)` |
+| Liedje: alleen schema, tempo en slagpatroon, nooit tekst | `Liedje`; `src/data/liedjes/<id>.json`, `zoekLiedje` |
+| Sectie (couplet, refrein …), maat, volgorde van de secties | `Sectie`, `Maat`, `Liedje.volgorde`, `speelVolgorde` → `SpeelMaat` |
+| Toonsoort, capo, bpm, maatsoort | `Liedje.toonsoort` (klinkend), `capo`, `bpm` (tellen van de noemer), `Maatsoort`, `leesMaatsoort` |
+| Slagpatroon (`D - D U - U D U`) en een slag | `Liedje.slagpatroon` (tekst), `Slag`, `leesSlagpatroon`, `slagenPasInMaat`, `slagenPerTel` |
+| Klinkend akkoord (wat je hoort) tegenover de vorm (wat je met capo grijpt) | `klinkendAkkoord(vorm, capo)`, `vormBijCapo(klinkend, capo)`, `transponeer`, `zelfdeAkkoord` |
+| Speelbaarheid: welke akkoorden je mist, en het label daarvan | `ontbrekendeAkkoorden(liedje, bekend)`, `speelbaarheidsLabel(ontbrekend)` |
+| Vereenvoudiging: een makkelijker akkoord dat hetzelfde werk doet (Fmaj7 voor F) | `vereenvoudigingen(naam)`, `vereenvoudig(akkoorden, bekend)`, `Liedje.origineleAkkoorden` |
+| Capo-suggestie: een andere capo of vorm waarmee het wel lukt | `capoSuggestie(liedje, bekend)` → `CapoSuggestie` |
+| Leeradvies: welk akkoord je nu moet leren | `leeradvies(liedjes, bekend)` → `Leeradvies` |
+| AI-versie, gecontroleerd: door Claude gemaakt, en of de eigenaar hem nakeek | `Liedje.bron`, `Liedje.geverifieerd` (in de data), `Voortgang.gecontroleerd`, `zetGecontroleerd` |
+| Favoriet liedje | `Voortgang.favorieten`, `wisselFavoriet` |
+| Oefening, met doel, stappen, tabje en standaardtempo | `Oefening` (`doel`, `stappen`, `tab`, `standaardtempo`); `src/data/oefeningen.json`, `zoekOefening` |
+| Challenge en zijn resultaat: wissels per minuut, hoogste bpm of volgehouden seconden | `ChallengeType`, `ChallengeResultaat` (`sleutel`, `waarde`, `bpm`) |
+| Akkoordpaar (A-D is hetzelfde als D-A) | `ChallengeResultaat.sleutel` (`A-D`); `paarSleutel` volgt in stap 5 |
+| Record |  |
+| Oefensessie, streak, geoefende minuten | `Sessie`, `voegSessieToe`; streak en minuten volgen in stap 6 |
+| Dagroutine |  |
+| Voortgang: alles wat persoonlijk is, met een versie | `Voortgang` (`versie: 1`), `nieuweVoortgang`, `normaliseerVoortgang`, `exporteerVoortgang`, `importeerVoortgang`; `opslag`, `useVoortgang` |
+| Mijn akkoorden kopiëren |  |
+| Demo-voortgang: een verzonnen gitarist die een maand bezig is, voor previews en screenshots | `demoVoortgang(nu)` in `src/lib/demo.ts` |
+| Preview: de build van een PR op GitHub Pages, met eigen opslag | `VITE_PREVIEW`, `opslagSleutel(naam, preview)` |
+| Route: welk scherm je ziet, als hash (`#/liedjes/wonderwall`) | `Route`, `leesRoute`, `naarHash`, `tabVan`, `useRoute`, `navigeer` |
+| Tabblad: Vandaag, Akkoorden, Liedjes, Oefenen, Voortgang | `Tab`, `Tabbalk` |
+| Schermvullend: meespelen en challenges over het hele scherm, scherm blijft wakker | `Schermvullend`, `useWakeLock` |

@@ -1,0 +1,26 @@
+{
+  "id": "let-it-be",
+  "titel": "Let It Be",
+  "artiest": "The Beatles",
+  "soort": "pop",
+  "toonsoort": "C",
+  "capo": 0,
+  "bpm": 72,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D - D U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["C"], ["G"], ["Am"], ["Fmaj7"], ["C"], ["G"], ["Fmaj7"], ["C"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Am"], ["G"], ["Fmaj7"], ["C"], ["C"], ["G"], ["Fmaj7"], ["C"]]
+    }
+  ],
+  "volgorde": ["couplet", "refrein", "couplet", "refrein"],
+  "origineleAkkoorden": ["C", "G", "Am", "F"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Fmaj7 in plaats van F, zodat je geen barré nodig hebt."
+}

@@ -1,93 +1,76 @@
 [
   {
     "id": "spider",
-    "naam": "Spider",
-    "doel": "Vingers losmaken, sterker en onafhankelijker maken. De perfecte opwarmer.",
+    "titel": "Spider",
+    "doel": "Elke vinger een eigen fret: sterker, losser en onafhankelijk van elkaar.",
     "stappen": [
-      "Zet je wijsvinger op fret 1 van de lage E-snaar, middelvinger op fret 2, ringvinger op 3, pink op 4.",
-      "Speel 1-2-3-4 op de lage E, schuif dan naar de A-snaar en speel weer 1-2-3-4.",
-      "Ga zo door tot de hoge e en kom terug: 4-3-2-1 per snaar.",
-      "Eén noot per tel van de metronoom. Langzaam en schoon is beter dan snel en rommelig.",
-      "Laat je vingers zo dicht mogelijk bij de snaren."
+      "Zet je wijsvinger op de 1e fret van de lage E-snaar en sla de snaar aan.",
+      "Speel daarna fret 2, 3 en 4 met je middelvinger, ringvinger en pink. Laat de vingers die je al neerzette liggen.",
+      "Schuif naar de A-snaar en speel weer 1-2-3-4. Zo ga je door tot de hoge e-snaar.",
+      "Kom op dezelfde manier terug: 4-3-2-1, van de hoge e naar de lage E.",
+      "Eén noot per tel. Gaat het schoon, zet de metronoom dan 5 bpm hoger."
     ],
-    "tab": "e|-------------------------1-2-3-4-|\nB|---------------------1-2-3-4-----|\nG|-----------------1-2-3-4---------|\nD|-------------1-2-3-4-------------|\nA|---------1-2-3-4-----------------|\nE|-1-2-3-4-------------------------|",
-    "standaardTempo": 60,
-    "challenge": "spider-ladder"
+    "tab": [
+      "e|------------------------1-2-3-4-|",
+      "B|--------------------1-2-3-4-----|",
+      "G|----------------1-2-3-4---------|",
+      "D|----------1-2-3-4---------------|",
+      "A|----1-2-3-4---------------------|",
+      "E|-1-2-3-4------------------------|"
+    ],
+    "standaardtempo": 60,
+    "maatsoort": "4/4"
   },
   {
-    "id": "chromatisch",
-    "naam": "Chromatisch loopje",
-    "doel": "Fretten zoeken zonder te kijken en je hand laten schuiven langs de hals.",
+    "id": "chromatisch-loopje",
+    "titel": "Chromatisch loopje",
+    "doel": "Je vingers leren schuiven over de hals, met één vinger per fret.",
     "stappen": [
-      "Begin met 1-2-3-4 op de lage E-snaar vanaf fret 1.",
-      "Schuif je hele hand één fret op en speel 2-3-4-5.",
-      "Ga zo door tot fret 5 (5-6-7-8) en kom terug naar beneden.",
-      "Doe hetzelfde op de A-snaar en daarna op de hoge e."
+      "Speel 1-2-3-4 op de lage E-snaar, zoals bij de spider.",
+      "Schuif je hand één fret op en speel 2-3-4-5 op dezelfde snaar.",
+      "Ga zo door tot de 5e positie (5-6-7-8) en schuif daarna terug.",
+      "Houd je duim achter de hals, ongeveer achter je middelvinger.",
+      "Kun je het zonder stoppen? Doe het dan ook op de A-snaar."
     ],
-    "tab": "E|-1-2-3-4-2-3-4-5-3-4-5-6-4-5-6-7-5-6-7-8-|",
-    "standaardTempo": 70
+    "tab": [
+      "e|---------------------------------|",
+      "B|---------------------------------|",
+      "G|---------------------------------|",
+      "D|---------------------------------|",
+      "A|---------------------------------|",
+      "E|-1-2-3-4-2-3-4-5-3-4-5-6-4-5-6-7-|"
+    ],
+    "standaardtempo": 60,
+    "maatsoort": "4/4"
   },
   {
     "id": "akkoordwissels",
-    "naam": "Akkoordwissels",
-    "doel": "Sneller en schoner tussen twee akkoorden wisselen.",
+    "titel": "Akkoordwissels",
+    "doel": "Sneller en zonder stilte van het ene akkoord naar het andere.",
     "stappen": [
-      "Kies twee akkoorden die je aan het oefenen bent.",
-      "Pak het eerste akkoord en sla één keer aan op tel 1.",
-      "Wissel tijdens tel 2-3-4 naar het andere akkoord en sla aan op de volgende 1.",
-      "Kijk welke vingers kunnen blijven staan of kunnen glijden: die heten 'ankervingers'.",
-      "Lukt het? Twee slagen per akkoord, daarna vier."
+      "Kies twee akkoorden die je aan het oefenen bent, bijvoorbeeld A en D.",
+      "Zet het eerste akkoord neer, sla één keer aan en kijk welke vinger het eerst moet bewegen.",
+      "Wissel zonder aan te slaan, tien keer heen en terug. Laat vingers die kunnen blijven liggen.",
+      "Sla nu op elke 1e tel aan: vier tellen het ene akkoord, vier tellen het andere.",
+      "Lukt dat, wissel dan elke twee tellen."
     ],
-    "standaardTempo": 60,
-    "challenge": "one-minute-changes"
+    "standaardtempo": 60,
+    "maatsoort": "4/4",
+    "slagpatroon": "D - - - D - - -"
   },
   {
-    "id": "wisselreeks",
-    "naam": "Wisselreeks",
-    "doel": "Een akkoordenrondje in vast tempo volhouden, zoals in een echt liedje.",
+    "id": "basisaanslag",
+    "titel": "Basisaanslag",
+    "doel": "Een rustig, gelijkmatig ritme met omlaag en omhoog.",
     "stappen": [
-      "Kies 3 of 4 akkoorden.",
-      "Speel elk akkoord een hele maat (4 tellen) en wissel zonder te stoppen.",
-      "Gaat het mis? Speel gewoon door en pak de volgende maat weer op.",
-      "Lukt het een minuut? Zet het tempo hoger."
+      "Houd een akkoord vast dat je kent, bijvoorbeeld Em.",
+      "Sla op elke tel omlaag: D D D D. Beweeg vanuit je pols, niet vanuit je elleboog.",
+      "Voeg tussen de tellen een slag omhoog toe: D U D U D U D U.",
+      "Laat je hand steeds op en neer gaan, ook als je een slag overslaat.",
+      "Speel nu het patroon D - D U - U D U, het slagpatroon van veel popliedjes."
     ],
-    "standaardTempo": 70,
-    "challenge": "wisselreeks"
-  },
-  {
-    "id": "neerslagen",
-    "naam": "Neerslagen op de tel",
-    "doel": "Een gelijkmatige, ontspannen aanslag met de pols.",
-    "stappen": [
-      "Pak een akkoord dat je kent, bijvoorbeeld D of A.",
-      "Sla op elke tel één keer naar beneden, vanuit je pols en niet vanuit je elleboog.",
-      "Let erop dat alle snaren die bij het akkoord horen even hard klinken.",
-      "Daarna: twee neerslagen per tel (achtsten)."
-    ],
-    "standaardTempo": 70
-  },
-  {
-    "id": "op-en-neer",
-    "naam": "Op en neer",
-    "doel": "Je slaghand blijft altijd bewegen: omlaag op de tel, omhoog ertussen.",
-    "stappen": [
-      "Beweeg je hand constant op en neer: omlaag op 1-2-3-4, omhoog op de 'en'.",
-      "Raak eerst alleen de neerslagen, de opslagen mis je met opzet (lucht).",
-      "Raak daarna alles: D U D U D U D U.",
-      "Probeer dan het klassieke patroon D - D U - U D U. Je hand blijft bewegen, ook bij de streepjes."
-    ],
-    "standaardTempo": 70
-  },
-  {
-    "id": "demp",
-    "naam": "Dempen en stilte",
-    "doel": "Stiltes laten horen door de snaren te dempen, zoals in rocknummers.",
-    "stappen": [
-      "Speel een akkoord op tel 1.",
-      "Laat op tel 2 je linkerhand iets losser, zodat de snaren stoppen met klinken, maar haal je vingers niet van de snaren.",
-      "Speel weer op tel 3, demp op tel 4.",
-      "Probeer het patroon D - D - van Highway to Hell."
-    ],
-    "standaardTempo": 80
+    "standaardtempo": 70,
+    "maatsoort": "4/4",
+    "slagpatroon": "D - D U - U D U"
   }
 ]

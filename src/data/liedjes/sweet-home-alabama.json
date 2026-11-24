@@ -1,0 +1,21 @@
+{
+  "id": "sweet-home-alabama",
+  "titel": "Sweet Home Alabama",
+  "artiest": "Lynyrd Skynyrd",
+  "soort": "pop",
+  "toonsoort": "D",
+  "capo": 0,
+  "bpm": 98,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["D"], ["C"], ["G"], ["G"], ["D"], ["C"], ["G"], ["G"]]
+    }
+  ],
+  "volgorde": ["couplet", "couplet", "couplet"],
+  "origineleAkkoorden": ["D", "Cadd9", "G"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

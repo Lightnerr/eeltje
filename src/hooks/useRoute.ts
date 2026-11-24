@@ -1,27 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useSyncExternalStore } from 'react'
+import { leesRoute, naarHash, type Route } from '../lib/route'
 
-function huidigPad(): string[] {
-  const hash = window.location.hash.replace(/^#\/?/, '');
-  return hash.split('/').filter(Boolean).map(decodeURIComponent);
+function abonneer(luisteraar: () => void) {
+  window.addEventListener('hashchange', luisteraar)
+  return () => window.removeEventListener('hashchange', luisteraar)
 }
 
-export function useRoute(): string[] {
-  const [pad, setPad] = useState(huidigPad);
-  useEffect(() => {
-    const opWijziging = () => {
-      setPad(huidigPad());
-      window.scrollTo(0, 0);
-    };
-    window.addEventListener('hashchange', opWijziging);
-    return () => window.removeEventListener('hashchange', opWijziging);
-  }, []);
-  return pad;
+const hash = () => window.location.hash
+
+export function useRoute(): Route {
+  const h = useSyncExternalStore(abonneer, hash)
+  return useMemo(() => leesRoute(h), [h])
 }
 
-export function href(...delen: string[]): string {
-  return '#/' + delen.map(encodeURIComponent).join('/');
-}
-
-export function navigeer(...delen: string[]): void {
-  window.location.hash = href(...delen).slice(1);
+export function navigeer(route: Route) {
+  window.location.hash = naarHash(route)
 }

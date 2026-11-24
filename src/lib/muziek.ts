@@ -1,315 +1,331 @@
-import type { Liedje } from './types';
+import type { Fret, Liedje, Maatsoort, Slag } from './types'
 
-const SPELLING = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+export type Spelling = 'kruis' | 'mol'
 
-const NOOT_NAAR_INDEX: Record<string, number> = {
-  C: 0, 'B#': 0,
-  'C#': 1, Db: 1,
-  D: 2,
-  'D#': 3, Eb: 3,
-  E: 4, Fb: 4,
-  F: 5, 'E#': 5,
-  'F#': 6, Gb: 6,
-  G: 7,
-  'G#': 8, Ab: 8,
-  A: 9,
-  'A#': 10, Bb: 10,
-  B: 11, Cb: 11,
-};
-
-export interface GeparsedAkkoord {
-  grondtoon: number;
-  suffix: string;
-  bas?: number;
+export interface Akkoordnaam {
+  /** Toonklasse 0 (C) t/m 11 (B). */
+  grondtoon: number
+  grondnaam: string
+  suffix: string
+  bas?: { toon: number; naam: string }
 }
 
-const NOOT_RE = /^([A-G](?:#|b)?)/;
+const NATUURLIJK: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }
+const KRUISEN = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+const MOLLEN = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
+// Zo schrijven gitaristen een toon als het origineel geen kruis of mol had: Bb en Eb, maar F#m en C#m.
+const GEWOON_GROOT = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
+const GEWOON_KLEIN = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B']
 
-export function parseAkkoord(naam: string): GeparsedAkkoord {
-  const [hoofd, basDeel] = naam.trim().split('/');
-  const m = NOOT_RE.exec(hoofd);
-  if (!m || NOOT_NAAR_INDEX[m[1]] === undefined) {
-    throw new Error(`Onbekend akkoord: "${naam}"`);
+/** Intervallen per suffix; `verplicht` moet klinken, de rest mag. */
+const SUFFIXEN: Record<string, { intervallen: number[]; verplicht: number[] }> = {
+  '': { intervallen: [0, 4, 7], verplicht: [0, 4] },
+  m: { intervallen: [0, 3, 7], verplicht: [0, 3] },
+  '5': { intervallen: [0, 7], verplicht: [0, 7] },
+  '7': { intervallen: [0, 4, 7, 10], verplicht: [0, 4, 10] },
+  m7: { intervallen: [0, 3, 7, 10], verplicht: [0, 3, 10] },
+  maj7: { intervallen: [0, 4, 7, 11], verplicht: [0, 4, 11] },
+  '6': { intervallen: [0, 4, 7, 9], verplicht: [0, 4, 9] },
+  m6: { intervallen: [0, 3, 7, 9], verplicht: [0, 3, 9] },
+  '9': { intervallen: [0, 4, 7, 10, 2], verplicht: [0, 4, 10, 2] },
+  add9: { intervallen: [0, 4, 7, 2], verplicht: [0, 4, 2] },
+  sus2: { intervallen: [0, 2, 7], verplicht: [0, 2] },
+  sus4: { intervallen: [0, 5, 7], verplicht: [0, 5] },
+  '7sus4': { intervallen: [0, 5, 7, 10], verplicht: [0, 5, 10] },
+  dim: { intervallen: [0, 3, 6], verplicht: [0, 3, 6] },
+  dim7: { intervallen: [0, 3, 6, 9], verplicht: [0, 3, 6, 9] },
+  m7b5: { intervallen: [0, 3, 6, 10], verplicht: [0, 3, 6, 10] },
+  aug: { intervallen: [0, 4, 8], verplicht: [0, 4, 8] },
+}
+
+/** Wat je in plaats van een akkoord kunt spelen, van extensie naar het kale akkoord. */
+const ZONDER_EXTENSIE: Record<string, string[]> = {
+  '7': [''],
+  maj7: [''],
+  '6': [''],
+  '9': ['7', ''],
+  add9: [''],
+  sus2: [''],
+  sus4: [''],
+  '7sus4': ['sus4', '7', ''],
+  m7: ['m'],
+  m6: ['m'],
+}
+
+/** Vaste vervangers die makkelijker grijpen: geen barré. Per grondtoon en suffix. */
+const VASTE_VERVANGERS: { grondtoon: number; suffix: string; vervanger: string }[] = [
+  { grondtoon: 5, suffix: '', vervanger: 'maj7' },
+  { grondtoon: 11, suffix: 'm', vervanger: 'm7' },
+  { grondtoon: 11, suffix: '', vervanger: '7' },
+]
+
+const TOON = /^([A-G])([#b]?)$/
+
+function leesToon(tekst: string): number | null {
+  const m = TOON.exec(tekst)
+  if (!m) return null
+  const wijziging = m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0
+  return (NATUURLIJK[m[1]] + wijziging + 12) % 12
+}
+
+export function ontleedAkkoord(naam: string): Akkoordnaam | null {
+  const m = /^([A-G][#b]?)(.*?)(?:\/([A-G][#b]?))?$/.exec(naam)
+  if (!m) return null
+  const grondtoon = leesToon(m[1])
+  if (grondtoon === null || !(m[2] in SUFFIXEN)) return null
+  const resultaat: Akkoordnaam = { grondtoon, grondnaam: m[1], suffix: m[2] }
+  if (m[3]) {
+    const bas = leesToon(m[3])
+    if (bas === null) return null
+    resultaat.bas = { toon: bas, naam: m[3] }
   }
-  const resultaat: GeparsedAkkoord = {
-    grondtoon: NOOT_NAAR_INDEX[m[1]],
-    suffix: hoofd.slice(m[1].length),
-  };
-  if (basDeel) {
-    const b = NOOT_RE.exec(basDeel);
-    if (!b || NOOT_NAAR_INDEX[b[1]] === undefined) throw new Error(`Onbekende basnoot: "${naam}"`);
-    resultaat.bas = NOOT_NAAR_INDEX[b[1]];
-  }
-  return resultaat;
+  return resultaat
 }
 
-const mod12 = (n: number) => ((n % 12) + 12) % 12;
-
-function schrijf(a: GeparsedAkkoord): string {
-  const basis = SPELLING[a.grondtoon] + a.suffix;
-  return a.bas === undefined ? basis : `${basis}/${SPELLING[a.bas]}`;
+function moetOntleden(naam: string): Akkoordnaam {
+  const a = ontleedAkkoord(naam)
+  if (!a) throw new Error(`Onbekend akkoord: ${naam}`)
+  return a
 }
 
-/** Zet een akkoordnaam in de vaste spelling van de app (A# wordt Bb, Gb wordt F#). */
-export function normaliseer(naam: string): string {
-  return schrijf(parseAkkoord(naam));
+/** Klinken twee namen hetzelfde (A#m en Bbm)? */
+export function zelfdeAkkoord(a: string, b: string): boolean {
+  if (a === b) return true
+  const x = ontleedAkkoord(a)
+  const y = ontleedAkkoord(b)
+  if (!x || !y) return false
+  return x.grondtoon === y.grondtoon && x.suffix === y.suffix && x.bas?.toon === y.bas?.toon
 }
 
-export function transponeer(naam: string, halveTonen: number): string {
-  const a = parseAkkoord(naam);
-  return schrijf({
-    grondtoon: mod12(a.grondtoon + halveTonen),
-    suffix: a.suffix,
-    bas: a.bas === undefined ? undefined : mod12(a.bas + halveTonen),
-  });
+function spellingVan(a: Akkoordnaam): Spelling | null {
+  if (a.grondnaam.endsWith('#')) return 'kruis'
+  if (a.grondnaam.length === 2) return 'mol'
+  return null
 }
 
-/** Wat je hoort als je de vorm `vorm` speelt met capo op fret `capo`. */
+/** De gewone naam van een toonklasse: 1 is C#, 10 is Bb. */
+export function toonnaam(toon: number): string {
+  return noemToon(toon, null, false)
+}
+
+function noemToon(toon: number, spelling: Spelling | null, klein: boolean): string {
+  const tabel = spelling === 'kruis' ? KRUISEN : spelling === 'mol' ? MOLLEN : klein ? GEWOON_KLEIN : GEWOON_GROOT
+  return tabel[((toon % 12) + 12) % 12]
+}
+
+/** Schuift een akkoord `halveTonen` op. Zonder `spelling` volgt hij het origineel (kruis of mol), of de gewone spelling. */
+export function transponeer(naam: string, halveTonen: number, spelling?: Spelling): string {
+  const a = moetOntleden(naam)
+  const kies = spelling ?? spellingVan(a)
+  const klein = a.suffix.startsWith('m') && !a.suffix.startsWith('maj')
+  let resultaat = noemToon(a.grondtoon + halveTonen, kies, klein) + a.suffix
+  if (a.bas) resultaat += '/' + noemToon(a.bas.toon + halveTonen, kies, false)
+  return resultaat
+}
+
+/** Wat je hoort als je deze vorm grijpt met de capo op `capo`. */
 export function klinkendAkkoord(vorm: string, capo: number): string {
-  return transponeer(vorm, capo);
+  return transponeer(vorm, capo)
 }
 
-/** Welke vorm je moet pakken om `klinkend` te laten horen met capo op `capo`. */
-export function vormMetCapo(klinkend: string, capo: number): string {
-  return transponeer(klinkend, -capo);
+/** Welke vorm je grijpt om met de capo op `capo` dit akkoord te laten klinken. */
+export function vormBijCapo(klinkend: string, capo: number): string {
+  return transponeer(klinkend, -capo)
 }
 
-export function gebruikteAkkoorden(liedje: Pick<Liedje, 'secties'>): string[] {
-  const gezien = new Set<string>();
-  for (const sectie of liedje.secties) {
-    for (const maat of sectie.maten) {
-      for (const a of maat.akkoorden) gezien.add(a);
-    }
+const STEMMING = [4, 9, 2, 7, 11, 4]
+
+/** De toonklassen die klinken bij deze frets (standaardstemming), zonder dubbelen. */
+export function klinkendeTonen(frets: Fret[]): number[] {
+  const tonen = new Set<number>()
+  frets.forEach((fret, snaar) => {
+    if (fret !== 'x') tonen.add((STEMMING[snaar] + fret) % 12)
+  })
+  return [...tonen]
+}
+
+/** De tonen die in dit akkoord horen (`toegestaan`) en die moeten klinken (`verplicht`). */
+export function tonenVan(naam: string): { verplicht: number[]; toegestaan: number[] } | null {
+  const a = ontleedAkkoord(naam)
+  if (!a) return null
+  const { intervallen, verplicht } = SUFFIXEN[a.suffix]
+  const toon = (i: number) => (a.grondtoon + i) % 12
+  const resultaat = { verplicht: verplicht.map(toon), toegestaan: intervallen.map(toon) }
+  if (a.bas) {
+    if (!resultaat.toegestaan.includes(a.bas.toon)) resultaat.toegestaan.push(a.bas.toon)
+    if (!resultaat.verplicht.includes(a.bas.toon)) resultaat.verplicht.push(a.bas.toon)
   }
-  return [...gezien];
+  return resultaat
 }
 
-/** Bekende akkoorden genormaliseerd zodat A# en Bb als hetzelfde tellen. */
-export function maakBekend(namen: Iterable<string>): Set<string> {
-  return new Set([...namen].map(normaliseer));
+/** Alle akkoorden (vormen) van een liedje, elk één keer, in volgorde van voorkomen. */
+export function akkoordenVan(liedje: Liedje): string[] {
+  const gezien = new Set<string>()
+  for (const sectie of liedje.secties) for (const maat of sectie.maten) for (const a of maat) gezien.add(a)
+  return [...gezien]
 }
 
-export function ontbrekendeAkkoorden(akkoorden: string[], bekend: Set<string>): string[] {
-  return akkoorden.filter((a) => !bekend.has(normaliseer(a)));
+export interface SpeelMaat {
+  sectie: string
+  /** Positie in `liedje.volgorde`, zodat een herhaalde sectie te onderscheiden is. */
+  volgordeIndex: number
+  maatIndex: number
+  akkoorden: string[]
 }
 
-export function speelbaarheidsLabel(ontbrekend: string[]): string {
-  if (ontbrekend.length === 0) return 'Kan je spelen';
-  if (ontbrekend.length === 1) return `Mist 1 akkoord: ${ontbrekend[0]}`;
-  return `Mist er ${ontbrekend.length}`;
+/** De secties in `liedje.volgorde` uitgerold tot maten. */
+export function speelVolgorde(liedje: Liedje): SpeelMaat[] {
+  return liedje.volgorde.flatMap((naam, volgordeIndex) => {
+    const sectie = liedje.secties.find((s) => s.naam === naam)
+    return (sectie?.maten ?? []).map((akkoorden, maatIndex) => ({ sectie: naam, volgordeIndex, maatIndex, akkoorden }))
+  })
 }
 
-const EXPLICIETE_VEREENVOUDIGING: Record<string, string[]> = {
-  F: ['Fmaj7'],
-  C: ['Cadd9'],
-  B: ['B7'],
-  Bm: ['Bm7'],
-  'F#m': ['F#m7'],
-};
+function vindBekend(naam: string, bekend: readonly string[]): string | undefined {
+  return bekend.find((b) => zelfdeAkkoord(b, naam))
+}
 
-/**
- * Makkelijkere akkoorden die in een beginnersversie hetzelfde werk doen.
- * Volgorde = voorkeur. Het akkoord zelf zit er niet in.
- */
+function ontbrekendIn(akkoorden: readonly string[], bekend: readonly string[]): string[] {
+  return akkoorden.filter((a) => !vindBekend(a, bekend))
+}
+
+/** De akkoorden van het liedje die niet bij `bekend` horen. */
+export function ontbrekendeAkkoorden(liedje: Liedje, bekend: Iterable<string>): string[] {
+  return ontbrekendIn(akkoordenVan(liedje), [...bekend])
+}
+
+export function speelbaarheidsLabel(ontbrekend: readonly string[]): string {
+  if (ontbrekend.length === 0) return 'Kan je spelen'
+  if (ontbrekend.length === 1) return `Mist 1 akkoord: ${ontbrekend[0]}`
+  return `Mist er ${ontbrekend.length}`
+}
+
+/** Akkoorden die je in plaats van `naam` kunt spelen, de beste eerst. */
 export function vereenvoudigingen(naam: string): string[] {
-  const a = parseAkkoord(naam);
-  const root = SPELLING[a.grondtoon];
-  const opties: string[] = [];
-  const voeg = (n: string) => {
-    if (n !== naam && !opties.includes(n)) opties.push(n);
-  };
+  const a = ontleedAkkoord(naam)
+  if (!a) return []
+  const resultaat: string[] = []
+  const zonderBas = a.grondnaam + a.suffix
+  if (a.bas) resultaat.push(zonderBas)
+  for (const v of VASTE_VERVANGERS) if (v.grondtoon === a.grondtoon && v.suffix === a.suffix) resultaat.push(a.grondnaam + v.vervanger)
+  for (const suffix of ZONDER_EXTENSIE[a.suffix] ?? []) resultaat.push(a.grondnaam + suffix)
+  if (a.bas) for (const v of vereenvoudigingen(zonderBas)) resultaat.push(v)
+  return [...new Set(resultaat)]
+}
 
-  const zonderBas = SPELLING[a.grondtoon] + a.suffix;
-  if (a.bas !== undefined) voeg(zonderBas);
-
-  for (const alt of EXPLICIETE_VEREENVOUDIGING[zonderBas] ?? []) voeg(alt);
-
-  const s = a.suffix;
-  const mineur = /^m(?!aj)/.test(s);
-  if (s === '5') {
-    voeg(root);
-    voeg(root + 'm');
-  } else if (mineur && s !== 'm') {
-    voeg(root + 'm');
-  } else if (!mineur && s !== '') {
-    voeg(root);
+/** Per ontbrekend akkoord een bekende vereenvoudiging, als die er is. */
+export function vereenvoudig(akkoorden: readonly string[], bekend: Iterable<string>): Record<string, string> {
+  const lijst = [...bekend]
+  const resultaat: Record<string, string> = {}
+  for (const a of ontbrekendIn(akkoorden, lijst)) {
+    for (const v of vereenvoudigingen(a)) {
+      const gevonden = vindBekend(v, lijst)
+      if (gevonden) {
+        resultaat[a] = gevonden
+        break
+      }
+    }
   }
-  return opties;
+  return resultaat
 }
 
-/** Het akkoord dat je daadwerkelijk speelt: zelf, of een vereenvoudiging die je kent. */
-export function speelbareVorm(naam: string, bekend: Set<string>): string | null {
-  if (bekend.has(normaliseer(naam))) return naam;
-  for (const alt of vereenvoudigingen(naam)) {
-    if (bekend.has(normaliseer(alt))) return alt;
+export interface CapoSuggestie {
+  capo: number
+  /** Oude vorm -> de vorm die je bij deze capo grijpt, gespeld zoals in `bekend`. */
+  vormen: Record<string, string>
+  /** De oude vormen waarvoor je een vereenvoudiging speelt. */
+  vereenvoudigd: string[]
+}
+
+const HOOGSTE_CAPO = 7
+
+/** Hoe het liedje bij `capo` uitpakt: per oude vorm de bekende vorm, of `null` als er een akkoord ontbreekt. */
+function opCapo(oud: readonly string[], oudeCapo: number, capo: number, bekend: readonly string[]): CapoSuggestie | null {
+  const vormen: Record<string, string> = {}
+  const vereenvoudigd: string[] = []
+  for (const vorm of oud) {
+    const nieuw = transponeer(vorm, oudeCapo - capo)
+    const direct = vindBekend(nieuw, bekend)
+    const vervanger = direct ?? vereenvoudig([nieuw], bekend)[nieuw]
+    if (!vervanger) return null
+    vormen[vorm] = vervanger
+    if (!direct) vereenvoudigd.push(vorm)
   }
-  return null;
-}
-
-export interface CapoOptie {
-  capo: number;
-  /** origineel akkoord in het liedje (vorm bij de capo van het liedje) → wat je speelt */
-  vormen: { origineel: string; speel: string | null }[];
-  ontbrekend: string[];
-  vervangingen: number;
-}
-
-function beoordeelCapo(liedje: Liedje, capo: number, bekend: Set<string>): CapoOptie {
-  const vormen = gebruikteAkkoorden(liedje).map((origineel) => {
-    const nodig = vormMetCapo(klinkendAkkoord(origineel, liedje.capo), capo);
-    const speel = speelbareVorm(nodig, bekend);
-    return { origineel, nodig, speel };
-  });
-  const ontbrekend = [...new Set(vormen.filter((v) => !v.speel).map((v) => v.nodig))];
-  const vervangingen = vormen.filter((v) => v.speel && normaliseer(v.speel) !== normaliseer(v.nodig)).length;
-  return {
-    capo,
-    vormen: vormen.map((v) => ({ origineel: v.origineel, speel: v.speel ?? v.nodig })),
-    ontbrekend,
-    vervangingen,
-  };
-}
-
-function isBeter(a: CapoOptie, b: CapoOptie, origineleCapo: number): boolean {
-  if (a.ontbrekend.length !== b.ontbrekend.length) return a.ontbrekend.length < b.ontbrekend.length;
-  if (a.vervangingen !== b.vervangingen) return a.vervangingen < b.vervangingen;
-  const afstandA = Math.abs(a.capo - origineleCapo);
-  const afstandB = Math.abs(b.capo - origineleCapo);
-  if (afstandA !== afstandB) return afstandA < afstandB;
-  return a.capo < b.capo;
-}
-
-/** Beste manier om dit liedje te spelen met wat je kent: capo 0 t/m maxCapo, met vereenvoudigingen. */
-export function besteCapoOptie(liedje: Liedje, bekend: Set<string>, maxCapo = 7): CapoOptie {
-  let beste = beoordeelCapo(liedje, liedje.capo, bekend);
-  for (let capo = 0; capo <= maxCapo; capo++) {
-    const optie = beoordeelCapo(liedje, capo, bekend);
-    if (isBeter(optie, beste, liedje.capo)) beste = optie;
-  }
-  return beste;
-}
-
-export interface CapoSuggestie extends CapoOptie {
-  /** true als de suggestie iets anders is dan het liedje zoals het in het schema staat */
-  anders: boolean;
+  return { capo, vormen, vereenvoudigd }
 }
 
 /**
- * Alleen een suggestie als het schema zoals het er staat niet speelbaar is
- * en een andere capo/vereenvoudiging minder ontbrekende akkoorden oplevert.
+ * Een andere capo waarmee een liedje dat je nog niet kunt wel lukt met de akkoorden die je kent. De huidige capo
+ * doet mee als kandidaat: lukt het daar met vereenvoudigingen net zo goed, dan is er geen suggestie.
  */
-export function capoSuggestie(liedje: Liedje, bekend: Set<string>, maxCapo = 7): CapoSuggestie | null {
-  const zoalsHetStaat = ontbrekendeAkkoorden(gebruikteAkkoorden(liedje), bekend);
-  if (zoalsHetStaat.length === 0) return null;
-  const beste = besteCapoOptie(liedje, bekend, maxCapo);
-  if (beste.ontbrekend.length >= zoalsHetStaat.length) return null;
-  return { ...beste, anders: true };
+export function capoSuggestie(liedje: Liedje, bekend: Iterable<string>): CapoSuggestie | null {
+  const lijst = [...bekend]
+  const oud = akkoordenVan(liedje)
+  if (ontbrekendIn(oud, lijst).length === 0) return null
+  let beste: CapoSuggestie | null = null
+  const capos = new Set([liedje.capo, ...Array.from({ length: HOOGSTE_CAPO + 1 }, (_, c) => c)])
+  for (const capo of capos) {
+    const kandidaat = opCapo(oud, liedje.capo, capo, lijst)
+    if (kandidaat && (!beste || isBeter(kandidaat, beste, liedje.capo))) beste = kandidaat
+  }
+  return beste && beste.capo !== liedje.capo ? beste : null
 }
 
-export interface LeerAdvies {
-  akkoord: string;
-  /** liedjes die met dit akkoord erbij speelbaar worden */
-  nieuweLiedjes: string[];
-  /** liedjes waarbij je dan minder akkoorden mist */
-  dichterbij: string[];
+function isBeter(a: CapoSuggestie, b: CapoSuggestie, oudeCapo: number): boolean {
+  if (a.vereenvoudigd.length !== b.vereenvoudigd.length) return a.vereenvoudigd.length < b.vereenvoudigd.length
+  return Math.abs(a.capo - oudeCapo) < Math.abs(b.capo - oudeCapo)
 }
 
-function aantalOntbrekend(liedje: Liedje, bekend: Set<string>): number {
-  return besteCapoOptie(liedje, bekend).ontbrekend.length;
+export interface Leeradvies {
+  akkoord: string
+  /** Id's van liedjes die je met dit akkoord erbij helemaal kunt spelen. */
+  nieuwSpeelbaar: string[]
+  /** In hoeveel liedjes die je nog niet kunt dit akkoord ontbreekt. */
+  inLiedjes: number
 }
 
-/** Welk akkoord moet ik nu leren? Het akkoord dat de meeste liedjes speelbaar maakt. */
-export function leerAdvies(
-  liedjes: Liedje[],
-  bekend: Set<string>,
-  kandidaten: { naam: string; moeilijkheid: number }[],
-): LeerAdvies[] {
-  const nu = new Map(liedjes.map((l) => [l.id, aantalOntbrekend(l, bekend)]));
-  const advies: (LeerAdvies & { moeilijkheid: number })[] = [];
-  const gehad = new Set<string>();
-  for (const k of kandidaten) {
-    const naam = normaliseer(k.naam);
-    if (bekend.has(naam) || gehad.has(naam)) continue;
-    gehad.add(naam);
-    const metK = new Set(bekend).add(naam);
-    const nieuweLiedjes: string[] = [];
-    const dichterbij: string[] = [];
-    for (const l of liedjes) {
-      const voor = nu.get(l.id)!;
-      if (voor === 0) continue;
-      const na = aantalOntbrekend(l, metK);
-      if (na === 0) nieuweLiedjes.push(l.id);
-      else if (na < voor) dichterbij.push(l.id);
-    }
-    if (nieuweLiedjes.length || dichterbij.length) {
-      advies.push({ akkoord: k.naam, nieuweLiedjes, dichterbij, moeilijkheid: k.moeilijkheid });
+/** Het akkoord dat de meeste nieuwe liedjes speelbaar maakt; bij gelijkspel het akkoord dat het vaakst ontbreekt. */
+export function leeradvies(liedjes: readonly Liedje[], bekend: Iterable<string>): Leeradvies | null {
+  const lijst = [...bekend]
+  const kandidaten = new Map<string, Leeradvies>()
+  for (const liedje of liedjes) {
+    const ontbrekend = ontbrekendeAkkoorden(liedje, lijst)
+    for (const naam of ontbrekend) {
+      const k = kandidaten.get(naam) ?? { akkoord: naam, nieuwSpeelbaar: [], inLiedjes: 0 }
+      k.inLiedjes++
+      if (ontbrekend.length === 1) k.nieuwSpeelbaar.push(liedje.id)
+      kandidaten.set(naam, k)
     }
   }
-  advies.sort(
-    (a, b) =>
-      b.nieuweLiedjes.length - a.nieuweLiedjes.length ||
-      b.dichterbij.length - a.dichterbij.length ||
-      a.moeilijkheid - b.moeilijkheid ||
-      a.akkoord.localeCompare(b.akkoord),
-  );
-  return advies.map(({ moeilijkheid: _m, ...rest }) => rest);
+  const gesorteerd = [...kandidaten.values()].sort(
+    (a, b) => b.nieuwSpeelbaar.length - a.nieuwSpeelbaar.length || b.inLiedjes - a.inLiedjes || a.akkoord.localeCompare(b.akkoord),
+  )
+  return gesorteerd[0] ?? null
 }
 
-export type Slag = 'D' | 'U' | '-';
-
-export function parseSlagpatroon(patroon: string): Slag[] {
-  const tokens = patroon.trim().split(/\s+/).filter(Boolean);
-  return tokens.map((t) => {
-    const u = t.toUpperCase();
-    if (u === 'D' || u === 'U' || u === '-') return u;
-    throw new Error(`Onbekende slag "${t}" in patroon "${patroon}"`);
-  });
+/** Leest `D - D U - U D U`; `null` als er iets anders dan D, U of - in staat. */
+export function leesSlagpatroon(tekst: string): Slag[] | null {
+  const delen = tekst.trim().split(/\s+/)
+  if (delen.length === 0 || delen[0] === '') return null
+  return delen.every((d): d is Slag => d === 'D' || d === 'U' || d === '-') ? delen : null
 }
 
-export interface Maatsoort {
-  tellen: number;
-  eenheid: number;
+export function leesMaatsoort(maatsoort: Maatsoort): { tellen: number; noemer: number } {
+  const [tellen, noemer] = maatsoort.split('/').map(Number)
+  return { tellen, noemer }
 }
 
-export function parseMaatsoort(maatsoort: string): Maatsoort {
-  const m = /^(\d+)\/(\d+)$/.exec(maatsoort.trim());
-  if (!m) throw new Error(`Onbekende maatsoort "${maatsoort}"`);
-  const tellen = Number(m[1]);
-  const eenheid = Number(m[2]);
-  if (tellen < 1 || tellen > 16 || ![2, 4, 8, 16].includes(eenheid)) {
-    throw new Error(`Onbekende maatsoort "${maatsoort}"`);
-  }
-  return { tellen, eenheid };
+/** In x/4 een slag per tel of per achtste; in x/8 een slag per tel (achtste). */
+export function slagenPasInMaat(aantal: number, maatsoort: Maatsoort): boolean {
+  const { tellen, noemer } = leesMaatsoort(maatsoort)
+  return noemer === 4 ? aantal === tellen || aantal === tellen * 2 : aantal === tellen
 }
 
-/** 0 = geen, 1 = licht accent, 2 = hoofdaccent. In 6/8, 9/8 en 12/8 krijgt elke groep van 3 een licht accent. */
-export function accentOpTel(tel: number, maatsoort: Maatsoort): 0 | 1 | 2 {
-  if (tel === 0) return 2;
-  if (maatsoort.eenheid === 8 && maatsoort.tellen % 3 === 0 && maatsoort.tellen > 3 && tel % 3 === 0) return 1;
-  return 0;
+export function slagenPerTel(aantal: number, maatsoort: Maatsoort): number {
+  return aantal / leesMaatsoort(maatsoort).tellen
 }
 
-export interface GespeeldeMaat {
-  sectieNaam: string;
-  sectieIndex: number;
-  herhaling: number;
-  maatIndex: number;
-  akkoorden: string[];
-}
-
-/** Het hele liedje uitgerold in de volgorde waarin je het speelt. */
-export function speelVolgorde(liedje: Liedje, alleenSectie?: string): GespeeldeMaat[] {
-  const volgorde = alleenSectie ? [alleenSectie] : liedje.volgorde;
-  const uit: GespeeldeMaat[] = [];
-  volgorde.forEach((naam, sectieIndex) => {
-    const sectie = liedje.secties.find((s) => s.naam === naam);
-    if (!sectie) throw new Error(`Sectie "${naam}" bestaat niet in ${liedje.id}`);
-    const herhalingen = alleenSectie ? 1 : sectie.herhalingen;
-    for (let h = 0; h < herhalingen; h++) {
-      sectie.maten.forEach((maat, maatIndex) => {
-        uit.push({ sectieNaam: naam, sectieIndex, herhaling: h, maatIndex, akkoorden: maat.akkoorden });
-      });
-    }
-  });
-  return uit;
+/** 1 t/m 4 akkoorden per maat, die de tellen gelijk verdelen. */
+export function akkoordenPassenInMaat(aantal: number, maatsoort: Maatsoort): boolean {
+  return aantal >= 1 && aantal <= 4 && leesMaatsoort(maatsoort).tellen % aantal === 0
 }

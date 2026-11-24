@@ -2,109 +2,24 @@
   "id": "zombie",
   "titel": "Zombie",
   "artiest": "The Cranberries",
-  "genre": "rock",
+  "soort": "pop",
   "toonsoort": "Em",
   "capo": 0,
   "bpm": 84,
   "maatsoort": "4/4",
-  "slagpatroon": "D - D U - U D U",
+  "slagpatroon": "D - D - D U D U",
   "secties": [
     {
-      "naam": "Intro",
-      "maten": [
-        {
-          "akkoorden": [
-            "Em"
-          ]
-        },
-        {
-          "akkoorden": [
-            "C"
-          ]
-        },
-        {
-          "akkoorden": [
-            "G"
-          ]
-        },
-        {
-          "akkoorden": [
-            "D"
-          ]
-        }
-      ],
-      "herhalingen": 2
+      "naam": "couplet",
+      "maten": [["Em"], ["C"], ["G"], ["D"], ["Em"], ["C"], ["G"], ["D"]]
     },
     {
-      "naam": "Couplet",
-      "maten": [
-        {
-          "akkoorden": [
-            "Em"
-          ]
-        },
-        {
-          "akkoorden": [
-            "C"
-          ]
-        },
-        {
-          "akkoorden": [
-            "G"
-          ]
-        },
-        {
-          "akkoorden": [
-            "D"
-          ]
-        }
-      ],
-      "herhalingen": 4
-    },
-    {
-      "naam": "Refrein",
-      "maten": [
-        {
-          "akkoorden": [
-            "Em"
-          ]
-        },
-        {
-          "akkoorden": [
-            "C"
-          ]
-        },
-        {
-          "akkoorden": [
-            "G"
-          ]
-        },
-        {
-          "akkoorden": [
-            "D"
-          ]
-        }
-      ],
-      "herhalingen": 4
+      "naam": "refrein",
+      "maten": [["Em"], ["C"], ["G"], ["D"], ["Em"], ["C"], ["G"], ["D"]]
     }
   ],
-  "volgorde": [
-    "Intro",
-    "Couplet",
-    "Refrein",
-    "Couplet",
-    "Refrein"
-  ],
-  "notities": [
-    "Het hele nummer is één rondje van vier akkoorden.",
-    "Origineel gespeeld met Em7, Cmaj7, G6 en D/F#; de gewone vormen klinken prima."
-  ],
+  "volgorde": ["couplet", "refrein", "couplet", "refrein"],
+  "origineleAkkoorden": ["Em", "C", "G", "D/F#"],
   "bron": "ai-gegenereerd",
-  "geverifieerd": false,
-  "origineleAkkoorden": [
-    "Em7",
-    "Cmaj7",
-    "G6",
-    "D/F#"
-  ]
+  "geverifieerd": false
 }

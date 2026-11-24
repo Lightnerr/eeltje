@@ -1,37 +1,35 @@
-import type { Akkoord, Liedje, Oefening } from '../lib/types';
-import akkoordenJson from './akkoorden.json';
-import oefeningenJson from './oefeningen.json';
+import akkoordenJson from './akkoorden.json'
+import oefeningenJson from './oefeningen.json'
+import type { Akkoord, Liedje, Oefening } from '../lib/types'
 
-const liedjeModules = import.meta.glob<{ default: Liedje }>('./liedjes/*.json', { eager: true });
+// De enige plek die de inhoud inleest. tests/data.test.ts bewaakt dat de JSON aan het schema voldoet.
 
-export const akkoorden = akkoordenJson as Akkoord[];
-export const oefeningen = oefeningenJson as Oefening[];
-export const liedjes: Liedje[] = Object.values(liedjeModules)
-  .map((m) => m.default)
-  .sort((a, b) => a.titel.localeCompare(b.titel, 'nl'));
+export const akkoorden = akkoordenJson as unknown as readonly Akkoord[]
 
-/** Unieke akkoordnamen in de volgorde van akkoorden.json. */
-export const akkoordNamen: string[] = [...new Set(akkoorden.map((a) => a.naam))];
+const liedjeBestanden = import.meta.glob<Liedje>('./liedjes/*.json', { eager: true, import: 'default' })
 
+export const liedjes: readonly Liedje[] = Object.values(liedjeBestanden).sort((a, b) => a.titel.localeCompare(b.titel, 'nl'))
+
+export const oefeningen = oefeningenJson as unknown as readonly Oefening[]
+
+/** De standaardvariant eerst, daarna de rest in de volgorde van akkoorden.json. */
 export function variantenVan(naam: string): Akkoord[] {
-  return akkoorden.filter((a) => a.naam === naam);
+  return akkoorden.filter((a) => a.naam === naam).sort((a, b) => Number(b.standaard) - Number(a.standaard))
 }
 
-export function standaardVariant(naam: string, voorkeurId?: string): Akkoord | undefined {
-  const varianten = variantenVan(naam);
-  return (
-    varianten.find((a) => a.id === voorkeurId) ?? varianten.find((a) => a.standaard) ?? varianten[0]
-  );
+export function standaardVariant(naam: string): Akkoord | undefined {
+  return akkoorden.find((a) => a.naam === naam && a.standaard)
 }
 
-export function moeilijkheidVan(naam: string): number {
-  return Math.min(...variantenVan(naam).map((a) => a.moeilijkheid), 5);
+/** Zonder variantnaam de standaardvariant. */
+export function zoekAkkoord(naam: string, variantnaam?: string): Akkoord | undefined {
+  return variantnaam === undefined ? standaardVariant(naam) : akkoorden.find((a) => a.naam === naam && a.variant === variantnaam)
 }
 
-export function vindLiedje(id: string): Liedje | undefined {
-  return liedjes.find((l) => l.id === id);
+export function zoekLiedje(id: string): Liedje | undefined {
+  return liedjes.find((l) => l.id === id)
 }
 
-export function vindOefening(id: string): Oefening | undefined {
-  return oefeningen.find((o) => o.id === id);
+export function zoekOefening(id: string): Oefening | undefined {
+  return oefeningen.find((o) => o.id === id)
 }

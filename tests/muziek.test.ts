@@ -1,212 +1,270 @@
-import { describe, expect, it } from 'vitest';
-import type { Liedje } from '../src/lib/types';
+import { describe, expect, it } from 'vitest'
 import {
-  accentOpTel, besteCapoOptie, capoSuggestie, gebruikteAkkoorden, klinkendAkkoord, leerAdvies, maakBekend,
-  normaliseer, ontbrekendeAkkoorden, parseAkkoord, parseMaatsoort, parseSlagpatroon, speelVolgorde,
-  speelbareVorm, speelbaarheidsLabel, transponeer, vereenvoudigingen, vormMetCapo,
-} from '../src/lib/muziek';
+  akkoordenPassenInMaat,
+  akkoordenVan,
+  capoSuggestie,
+  klinkendAkkoord,
+  klinkendeTonen,
+  leeradvies,
+  leesMaatsoort,
+  leesSlagpatroon,
+  ontbrekendeAkkoorden,
+  ontleedAkkoord,
+  slagenPasInMaat,
+  slagenPerTel,
+  speelVolgorde,
+  speelbaarheidsLabel,
+  tonenVan,
+  transponeer,
+  vereenvoudig,
+  vereenvoudigingen,
+  vormBijCapo,
+  zelfdeAkkoord,
+} from '../src/lib/muziek'
+import type { Liedje } from '../src/lib/types'
 
-function liedje(akkoorden: string[][], extra: Partial<Liedje> = {}): Liedje {
+function liedje(id: string, akkoorden: string[], extra: Partial<Liedje> = {}): Liedje {
   return {
-    id: 'test', titel: 'Test', artiest: 'X', toonsoort: 'C', capo: 0, bpm: 100, maatsoort: '4/4',
-    slagpatroon: 'D D D D',
-    secties: [{ naam: 'A', maten: akkoorden.map((a) => ({ akkoorden: a })), herhalingen: 1 }],
-    volgorde: ['A'], notities: [], bron: 'handmatig', geverifieerd: true, ...extra,
-  };
+    id,
+    titel: id,
+    artiest: 'Iemand',
+    soort: 'pop',
+    toonsoort: 'C',
+    capo: 0,
+    bpm: 90,
+    maatsoort: '4/4',
+    slagpatroon: 'D - D U - U D U',
+    secties: [{ naam: 'couplet', maten: akkoorden.map((a) => [a]) }],
+    volgorde: ['couplet'],
+    bron: 'ai-gegenereerd',
+    geverifieerd: false,
+    ...extra,
+  }
 }
 
-describe('parseAkkoord', () => {
+describe('ontleedAkkoord', () => {
   it('leest grondtoon, suffix en bas', () => {
-    expect(parseAkkoord('F#m7')).toEqual({ grondtoon: 6, suffix: 'm7' });
-    expect(parseAkkoord('D/F#')).toEqual({ grondtoon: 2, suffix: '', bas: 6 });
-    expect(parseAkkoord('Bb')).toEqual({ grondtoon: 10, suffix: '' });
-  });
-  it('gooit bij onzin', () => {
-    expect(() => parseAkkoord('H')).toThrow();
-    expect(() => parseAkkoord('')).toThrow();
-    expect(() => parseAkkoord('C/X')).toThrow();
-  });
-});
+    expect(ontleedAkkoord('F#m')).toMatchObject({ grondtoon: 6, grondnaam: 'F#', suffix: 'm' })
+    expect(ontleedAkkoord('Bbmaj7')).toMatchObject({ grondtoon: 10, grondnaam: 'Bb', suffix: 'maj7' })
+    expect(ontleedAkkoord('Cadd9/G')).toMatchObject({ grondtoon: 0, suffix: 'add9', bas: { toon: 7, naam: 'G' } })
+    expect(ontleedAkkoord('B')).toMatchObject({ grondtoon: 11, suffix: '' })
+  })
+
+  it('weigert onzin', () => {
+    expect(ontleedAkkoord('H')).toBeNull()
+    expect(ontleedAkkoord('Cmajor')).toBeNull()
+    expect(ontleedAkkoord('C/X')).toBeNull()
+    expect(ontleedAkkoord('')).toBeNull()
+  })
+})
+
+describe('zelfdeAkkoord', () => {
+  it('ziet enharmonische namen als hetzelfde', () => {
+    expect(zelfdeAkkoord('A#m', 'Bbm')).toBe(true)
+    expect(zelfdeAkkoord('Gb/Db', 'F#/C#')).toBe(true)
+    expect(zelfdeAkkoord('A', 'Am')).toBe(false)
+    expect(zelfdeAkkoord('C', 'C/G')).toBe(false)
+  })
+})
 
 describe('transponeren', () => {
-  it('schuift omhoog en omlaag', () => {
-    expect(transponeer('C', 2)).toBe('D');
-    expect(transponeer('Am', 3)).toBe('Cm');
-    expect(transponeer('G', 5)).toBe('C');
-    expect(transponeer('C', -1)).toBe('B');
-    expect(transponeer('E', 12)).toBe('E');
-    expect(transponeer('E', -13)).toBe('Eb');
-  });
-  it('houdt suffix en bas', () => {
-    expect(transponeer('Cadd9', 2)).toBe('Dadd9');
-    expect(transponeer('D/F#', 2)).toBe('E/Ab');
-    expect(transponeer('Fmaj7', 1)).toBe('F#maj7');
-  });
-  it('gebruikt een vaste spelling', () => {
-    expect(transponeer('A', 1)).toBe('Bb');
-    expect(transponeer('E', 2)).toBe('F#');
-    expect(normaliseer('A#m')).toBe('Bbm');
-    expect(normaliseer('Gb')).toBe('F#');
-  });
-  it('is omkeerbaar', () => {
-    for (const a of ['C', 'F#m', 'Bb7', 'Dsus2', 'G/B']) {
-      for (let n = -11; n <= 11; n++) expect(transponeer(transponeer(a, n), -n)).toBe(normaliseer(a));
-    }
-  });
-});
+  it('schuift grondtoon en bas en houdt de suffix', () => {
+    expect(transponeer('C', 2)).toBe('D')
+    expect(transponeer('Am', 3)).toBe('Cm')
+    expect(transponeer('Cadd9/G', 2)).toBe('Dadd9/A')
+    expect(transponeer('E7', -5)).toBe('B7')
+    expect(transponeer('G', 12)).toBe('G')
+  })
+
+  it('kiest de gebruikelijke spelling bij een natuurlijke toon', () => {
+    expect(transponeer('A', 1)).toBe('Bb')
+    expect(transponeer('Am', 1)).toBe('Bbm')
+    expect(transponeer('E', -1)).toBe('Eb')
+    expect(transponeer('Em', -1)).toBe('Ebm')
+    expect(transponeer('E', 2)).toBe('F#')
+    expect(transponeer('Em', 2)).toBe('F#m')
+    expect(transponeer('C', 1)).toBe('C#')
+  })
+
+  it('houdt kruisen of mollen aan zoals het origineel', () => {
+    expect(transponeer('F#', 2)).toBe('G#')
+    expect(transponeer('Gb', 2)).toBe('Ab')
+    expect(transponeer('C#m', -1)).toBe('Cm')
+    expect(transponeer('A', 1, 'kruis')).toBe('A#')
+  })
+
+  it('gooit bij een onbekende naam', () => {
+    expect(() => transponeer('X', 1)).toThrow()
+  })
+})
 
 describe('capo', () => {
-  it('rekent klinkend akkoord uit', () => {
-    expect(klinkendAkkoord('G', 2)).toBe('A');
-    expect(klinkendAkkoord('Em', 2)).toBe('F#m');
-    expect(klinkendAkkoord('C', 0)).toBe('C');
-  });
-  it('rekent de vorm uit bij een capo', () => {
-    expect(vormMetCapo('A', 2)).toBe('G');
-    expect(vormMetCapo('F#m', 2)).toBe('Em');
-    expect(vormMetCapo('Bb', 3)).toBe('G');
-  });
-});
+  it('een vorm met capo klinkt hoger', () => {
+    expect(klinkendAkkoord('Em', 2)).toBe('F#m')
+    expect(klinkendAkkoord('G', 0)).toBe('G')
+    expect(vormBijCapo('F#m', 2)).toBe('Em')
+    expect(vormBijCapo('Bb', 3)).toBe('G')
+  })
+})
+
+describe('tonen', () => {
+  it('klinkendeTonen leest de toonklassen van de snaren', () => {
+    expect(klinkendeTonen(['x', 0, 2, 2, 2, 0]).sort((a, b) => a - b)).toEqual([1, 4, 9])
+    expect(klinkendeTonen(['x', 'x', 'x', 'x', 'x', 'x'])).toEqual([])
+  })
+
+  it('tonenVan geeft verplichte en toegestane tonen', () => {
+    expect(tonenVan('A')).toEqual({ verplicht: [9, 1], toegestaan: [9, 1, 4] })
+    expect(tonenVan('Cadd9/G')?.verplicht).toEqual(expect.arrayContaining([0, 2, 4, 7]))
+    expect(tonenVan('Q')).toBeNull()
+  })
+})
+
+describe('akkoordenVan en speelVolgorde', () => {
+  const l = liedje('x', [], {
+    secties: [
+      { naam: 'couplet', maten: [['G'], ['C', 'D']] },
+      { naam: 'refrein', maten: [['Em'], ['G']] },
+    ],
+    volgorde: ['couplet', 'refrein', 'couplet'],
+  })
+
+  it('akkoordenVan geeft elk akkoord één keer, in volgorde van voorkomen', () => {
+    expect(akkoordenVan(l)).toEqual(['G', 'C', 'D', 'Em'])
+  })
+
+  it('speelVolgorde rolt de volgorde uit tot maten', () => {
+    const maten = speelVolgorde(l)
+    expect(maten.map((m) => m.akkoorden.join('+'))).toEqual(['G', 'C+D', 'Em', 'G', 'G', 'C+D'])
+    expect(maten[4]).toEqual({ sectie: 'couplet', volgordeIndex: 2, maatIndex: 0, akkoorden: ['G'] })
+  })
+})
 
 describe('speelbaarheid', () => {
-  const bekend = maakBekend(['A', 'D', 'E']);
-  it('vindt unieke akkoorden in volgorde', () => {
-    expect(gebruikteAkkoorden(liedje([['A'], ['D', 'E'], ['A']]))).toEqual(['A', 'D', 'E']);
-  });
-  it('vindt ontbrekende akkoorden', () => {
-    expect(ontbrekendeAkkoorden(['A', 'D', 'G'], bekend)).toEqual(['G']);
-    expect(ontbrekendeAkkoorden(['A#', 'D'], maakBekend(['Bb', 'D']))).toEqual([]);
-  });
-  it('maakt labels', () => {
-    expect(speelbaarheidsLabel([])).toBe('Kan je spelen');
-    expect(speelbaarheidsLabel(['G'])).toBe('Mist 1 akkoord: G');
-    expect(speelbaarheidsLabel(['G', 'C', 'Em'])).toBe('Mist er 3');
-  });
-});
+  it('ontbrekendeAkkoorden telt alleen wat je niet kent', () => {
+    expect(ontbrekendeAkkoorden(liedje('x', ['G', 'C', 'D', 'G']), ['G', 'D'])).toEqual(['C'])
+    expect(ontbrekendeAkkoorden(liedje('x', ['A#m']), ['Bbm'])).toEqual([])
+  })
+
+  it('label', () => {
+    expect(speelbaarheidsLabel([])).toBe('Kan je spelen')
+    expect(speelbaarheidsLabel(['G'])).toBe('Mist 1 akkoord: G')
+    expect(speelbaarheidsLabel(['G', 'C', 'F'])).toBe('Mist er 3')
+  })
+})
 
 describe('vereenvoudigingen', () => {
-  it('stelt makkelijkere vormen voor', () => {
-    expect(vereenvoudigingen('F')).toEqual(['Fmaj7']);
-    expect(vereenvoudigingen('C')).toEqual(['Cadd9']);
-    expect(vereenvoudigingen('Em7')).toEqual(['Em']);
-    expect(vereenvoudigingen('A7sus4')).toEqual(['A']);
-    expect(vereenvoudigingen('D/F#')).toEqual(['D']);
-    expect(vereenvoudigingen('Bm')).toEqual(['Bm7']);
-    expect(vereenvoudigingen('Cmaj7')).toEqual(['C']);
-    expect(vereenvoudigingen('E5')).toEqual(['E', 'Em']);
-    expect(vereenvoudigingen('Em')).toEqual([]);
-  });
-  it('kiest wat je kent', () => {
-    const bekend = maakBekend(['Fmaj7', 'Em', 'D']);
-    expect(speelbareVorm('F', bekend)).toBe('Fmaj7');
-    expect(speelbareVorm('Em7', bekend)).toBe('Em');
-    expect(speelbareVorm('D', bekend)).toBe('D');
-    expect(speelbareVorm('G', bekend)).toBeNull();
-  });
-});
+  it('kent de vaste vervangers en laat extensies weg', () => {
+    expect(vereenvoudigingen('F')).toEqual(['Fmaj7'])
+    expect(vereenvoudigingen('E7')).toEqual(['E'])
+    expect(vereenvoudigingen('Am7')).toEqual(['Am'])
+    expect(vereenvoudigingen('Cadd9/G')).toEqual(['Cadd9', 'C'])
+    expect(vereenvoudigingen('Asus2')).toEqual(['A'])
+    expect(vereenvoudigingen('E#')).toEqual(['E#maj7'])
+    expect(vereenvoudigingen('G')).toEqual([])
+  })
 
-describe('capo-suggestie', () => {
-  it('vindt een capo waarmee het liedje speelbaar wordt', () => {
-    // Klinkt als A - D - E, je kent alleen G, C, D
-    const l = liedje([['A'], ['D'], ['E']]);
-    const s = capoSuggestie(l, maakBekend(['G', 'C', 'D']))!;
-    expect(s).not.toBeNull();
-    expect(s.capo).toBe(2);
-    expect(s.ontbrekend).toEqual([]);
-    expect(s.vormen.map((v) => v.speel)).toEqual(['G', 'C', 'D']);
-  });
-  it('houdt rekening met de capo die al in het liedje staat', () => {
-    // Vormen G C D met capo 2 klinken als A D E. Je kent A, D, E: zonder capo!
-    const l = liedje([['G'], ['C'], ['D']], { capo: 2 });
-    const s = capoSuggestie(l, maakBekend(['A', 'D', 'E']))!;
-    expect(s.capo).toBe(0);
-    expect(s.vormen.map((v) => v.speel)).toEqual(['A', 'D', 'E']);
-  });
-  it('gebruikt vereenvoudigingen', () => {
-    const l = liedje([['C'], ['F'], ['G']]);
-    const s = capoSuggestie(l, maakBekend(['C', 'Fmaj7', 'G']))!;
-    expect(s.capo).toBe(0);
-    expect(s.ontbrekend).toEqual([]);
-    expect(s.vormen.find((v) => v.origineel === 'F')!.speel).toBe('Fmaj7');
-  });
-  it('geeft niets als het liedje al speelbaar is', () => {
-    expect(capoSuggestie(liedje([['A'], ['D']]), maakBekend(['A', 'D']))).toBeNull();
-  });
-  it('geeft niets als niks beter wordt', () => {
-    expect(capoSuggestie(liedje([['Bb'], ['Eb']]), maakBekend(['Am']))).toBeNull();
-  });
-  it('geeft een gedeeltelijke verbetering', () => {
-    const l = liedje([['A'], ['D'], ['E'], ['F#m']]);
-    const s = capoSuggestie(l, maakBekend(['G', 'C', 'D']))!;
-    expect(s.capo).toBe(2);
-    expect(s.ontbrekend).toEqual(['Em']);
-  });
-  it('kiest bij gelijke stand de capo het dichtst bij het origineel', () => {
-    const l = liedje([['C']]);
-    expect(besteCapoOptie(l, maakBekend(['C'])).capo).toBe(0);
-  });
-});
+  it('vereenvoudig kiest per ontbrekend akkoord een bekend alternatief', () => {
+    expect(vereenvoudig(['C', 'F', 'G7', 'Bb'], ['C', 'Fmaj7', 'G'])).toEqual({ F: 'Fmaj7', G7: 'G' })
+  })
+})
 
-describe('leerAdvies', () => {
+describe('capoSuggestie', () => {
+  it('vindt een capo waarbij alle vormen bekend zijn', () => {
+    const kumbaya = liedje('k', ['C', 'F', 'G'])
+    expect(capoSuggestie(kumbaya, ['G', 'C', 'D'])).toEqual({ capo: 5, vormen: { C: 'G', F: 'C', G: 'D' }, vereenvoudigd: [] })
+  })
+
+  it('rekent vanaf de capo van het liedje', () => {
+    const l = liedje('x', ['Em', 'G', 'D', 'A'], { capo: 2 })
+    expect(capoSuggestie(l, ['F#m', 'A', 'E', 'B'])).toMatchObject({ capo: 0, vormen: { Em: 'F#m', G: 'A', D: 'E', A: 'B' } })
+  })
+
+  it('gebruikt een vereenvoudiging als het niet anders kan', () => {
+    const l = liedje('x', ['Dm', 'C', 'A7'])
+    expect(capoSuggestie(l, ['Am', 'G', 'E'])).toEqual({ capo: 5, vormen: { Dm: 'Am', C: 'G', A7: 'E' }, vereenvoudigd: ['A7'] })
+  })
+
+  it('geeft de bekende spelling terug', () => {
+    const l = liedje('x', ['Ab'], { capo: 0 })
+    expect(capoSuggestie(l, ['G#'])).toBeNull()
+    expect(capoSuggestie(liedje('x', ['Bb']), ['A#'])).toBeNull()
+    expect(capoSuggestie(liedje('x', ['C']), ['A#'])?.vormen).toEqual({ C: 'A#' })
+  })
+
+  it('geeft niets als het al lukt of als geen capo helpt', () => {
+    expect(capoSuggestie(liedje('x', ['G', 'C']), ['G', 'C'])).toBeNull()
+    expect(capoSuggestie(liedje('x', ['G', 'C']), ['B7'])).toBeNull()
+  })
+
+  it('geeft niets als de huidige capo met een vereenvoudiging net zo goed lukt', () => {
+    const susanna = liedje('s', ['D', 'G', 'A7'])
+    expect(capoSuggestie(susanna, ['A', 'D', 'E', 'Em', 'G', 'C', 'Am'])).toBeNull()
+  })
+
+  it('stelt wel een capo voor die minder vereenvoudigingen nodig heeft dan de huidige', () => {
+    const l = liedje('x', ['D', 'G', 'A7'])
+    expect(capoSuggestie(l, ['A', 'D', 'G', 'C', 'F', 'G7'])).toEqual({ capo: 2, vormen: { D: 'C', G: 'F', A7: 'G7' }, vereenvoudigd: [] })
+  })
+
+  it('kiest liever zonder vereenvoudiging, dan dicht bij de oude capo', () => {
+    const l = liedje('x', ['C', 'G'])
+    expect(capoSuggestie(l, ['A', 'E', 'G', 'D', 'Bb', 'Fmaj7'])?.capo).toBe(3)
+  })
+})
+
+describe('leeradvies', () => {
   const liedjes = [
-    liedje([['A'], ['D'], ['G']], { id: 'een' }),
-    liedje([['D'], ['G']], { id: 'twee' }),
-    liedje([['A'], ['C'], ['G'], ['Em']], { id: 'drie' }),
-  ];
-  const kandidaten = ['A', 'C', 'D', 'G', 'Em', 'Bm'].map((naam) => ({ naam, moeilijkheid: naam === 'Bm' ? 3 : 1 }));
+    liedje('a', ['G', 'C', 'D']),
+    liedje('b', ['G', 'C', 'Em']),
+    liedje('c', ['G', 'D', 'Em']),
+    liedje('d', ['F', 'Bb']),
+  ]
+
   it('kiest het akkoord dat de meeste liedjes speelbaar maakt', () => {
-    const advies = leerAdvies(liedjes, maakBekend(['A', 'D']), kandidaten);
-    expect(advies[0].akkoord).toBe('G');
-    expect(advies[0].nieuweLiedjes).toContain('een');
-    // 'twee' (D-G) is al speelbaar met capo 5 als A-D
-    expect(advies[0].nieuweLiedjes).not.toContain('twee');
-  });
-  it('slaat akkoorden over die je al kent', () => {
-    const advies = leerAdvies(liedjes, maakBekend(['A', 'D']), kandidaten);
-    expect(advies.map((a) => a.akkoord)).not.toContain('A');
-  });
-  it('geeft lege lijst als alles speelbaar is', () => {
-    expect(leerAdvies(liedjes, maakBekend(['A', 'C', 'D', 'G', 'Em']), kandidaten)).toEqual([]);
-  });
-});
+    expect(leeradvies(liedjes, ['G', 'D', 'Em'])).toEqual({ akkoord: 'C', nieuwSpeelbaar: ['a', 'b'], inLiedjes: 2 })
+  })
+
+  it('valt terug op het akkoord dat in de meeste liedjes zit', () => {
+    expect(leeradvies(liedjes, [])).toMatchObject({ akkoord: 'G', nieuwSpeelbaar: [], inLiedjes: 3 })
+  })
+
+  it('geeft niets als je alles kunt', () => {
+    expect(leeradvies(liedjes.slice(0, 1), ['G', 'C', 'D'])).toBeNull()
+  })
+})
 
 describe('slagpatroon en maatsoort', () => {
-  it('leest patronen', () => {
-    expect(parseSlagpatroon('D - D U - U D U')).toEqual(['D', '-', 'D', 'U', '-', 'U', 'D', 'U']);
-    expect(parseSlagpatroon(' d u ')).toEqual(['D', 'U']);
-    expect(() => parseSlagpatroon('D X')).toThrow();
-  });
-  it('leest maatsoorten', () => {
-    expect(parseMaatsoort('4/4')).toEqual({ tellen: 4, eenheid: 4 });
-    expect(parseMaatsoort('6/8')).toEqual({ tellen: 6, eenheid: 8 });
-    expect(() => parseMaatsoort('4/3')).toThrow();
-    expect(() => parseMaatsoort('vier')).toThrow();
-  });
-  it('legt accenten', () => {
-    const z = parseMaatsoort('6/8');
-    expect([0, 1, 2, 3, 4, 5].map((t) => accentOpTel(t, z))).toEqual([2, 0, 0, 1, 0, 0]);
-    expect([0, 1, 2, 3].map((t) => accentOpTel(t, parseMaatsoort('4/4')))).toEqual([2, 0, 0, 0]);
-  });
-});
+  it('leest een slagpatroon', () => {
+    expect(leesSlagpatroon('D - D U - U D U')).toEqual(['D', '-', 'D', 'U', '-', 'U', 'D', 'U'])
+    expect(leesSlagpatroon('  D  U ')).toEqual(['D', 'U'])
+    expect(leesSlagpatroon('D x U')).toBeNull()
+    expect(leesSlagpatroon('DU')).toBeNull()
+    expect(leesSlagpatroon('')).toBeNull()
+  })
 
-describe('speelVolgorde', () => {
-  const l: Liedje = {
-    ...liedje([]),
-    secties: [
-      { naam: 'Couplet', maten: [{ akkoorden: ['G'] }, { akkoorden: ['D'] }], herhalingen: 2 },
-      { naam: 'Refrein', maten: [{ akkoorden: ['C', 'D'] }], herhalingen: 1 },
-    ],
-    volgorde: ['Couplet', 'Refrein', 'Couplet'],
-  };
-  it('rolt het liedje uit', () => {
-    const v = speelVolgorde(l);
-    expect(v.map((m) => m.akkoorden.join('|'))).toEqual(['G', 'D', 'G', 'D', 'C|D', 'G', 'D', 'G', 'D']);
-    expect(v[2]).toMatchObject({ sectieNaam: 'Couplet', herhaling: 1, maatIndex: 0 });
-  });
-  it('kan één sectie loopen', () => {
-    expect(speelVolgorde(l, 'Refrein').map((m) => m.akkoorden)).toEqual([['C', 'D']]);
-  });
-  it('gooit bij een onbekende sectie', () => {
-    expect(() => speelVolgorde({ ...l, volgorde: ['Brug'] })).toThrow();
-  });
-});
+  it('leest een maatsoort', () => {
+    expect(leesMaatsoort('6/8')).toEqual({ tellen: 6, noemer: 8 })
+    expect(leesMaatsoort('3/4')).toEqual({ tellen: 3, noemer: 4 })
+  })
+
+  it('aantal slagen past bij de maatsoort', () => {
+    expect(slagenPasInMaat(8, '4/4')).toBe(true)
+    expect(slagenPasInMaat(4, '4/4')).toBe(true)
+    expect(slagenPasInMaat(6, '4/4')).toBe(false)
+    expect(slagenPasInMaat(6, '3/4')).toBe(true)
+    expect(slagenPasInMaat(6, '6/8')).toBe(true)
+    expect(slagenPasInMaat(12, '6/8')).toBe(false)
+    expect(slagenPerTel(8, '4/4')).toBe(2)
+    expect(slagenPerTel(6, '6/8')).toBe(1)
+  })
+
+  it('akkoorden in een maat verdelen de tellen gelijk', () => {
+    expect(akkoordenPassenInMaat(2, '4/4')).toBe(true)
+    expect(akkoordenPassenInMaat(3, '4/4')).toBe(false)
+    expect(akkoordenPassenInMaat(3, '3/4')).toBe(true)
+    expect(akkoordenPassenInMaat(2, '6/8')).toBe(true)
+    expect(akkoordenPassenInMaat(0, '4/4')).toBe(false)
+    expect(akkoordenPassenInMaat(6, '6/8')).toBe(false)
+  })
+})
