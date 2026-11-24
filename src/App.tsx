@@ -59,13 +59,14 @@ export default function App() {
   const eerste = useRef(true)
 
   // Na navigatie bovenaan beginnen, en de focus naar de inhoud voor wie met toetsenbord of schermlezer werkt.
+  // Een open Schermvullend houdt zelf de focus; dit effect draait na dat van het kind.
   useEffect(() => {
     if (eerste.current) {
       eerste.current = false
       return
     }
     window.scrollTo(0, 0)
-    inhoud.current?.focus({ preventScroll: true })
+    if (!document.querySelector('[aria-modal="true"]')) inhoud.current?.focus({ preventScroll: true })
   }, [route])
 
   return (
