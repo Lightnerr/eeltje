@@ -142,7 +142,7 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - **Sectie herhalen** onthoudt de `volgordeIndex` (niet de naam), dus het tweede couplet herhaalt zichzelf en niet het eerste. Na de laatste maat van die sectie gaat hij terug naar zijn eerste maat, tot je het uitzet; dan loopt hij gewoon door. "Naar sectie" neemt herhalen mee naar de nieuwe sectie.
 - **Volgend akkoord** = het volgende akkoordvak: het tweede akkoord in de maat, anders het eerste van de volgende maat (met herhalen meegerekend). Ook als dat hetzelfde akkoord is.
 - **Pauze** houdt de maat vast; opnieuw starten telt af en begint aan het begin van die maat. Na de laatste maat staat hij op "einde" en stopt de metronoom; "Opnieuw" begint vooraan.
-- **Tempo** in stappen van 10%, 40 t/m 120%; `meespeelBpm` begrenst daarna op 30-220 van de metronoom (Amazing Grace op 40% wordt dus 34 bpm, niet lager).
+- **Tempo** in stappen van 10%, 40 t/m 120%; `meespeelBpm` begrenst daarna op 30-220 van de metronoom (Knockin' on Heaven's Door op 40% wordt dus 30 bpm in plaats van 27).
 - **Akkoordgeluid** (standaard uit): `slaAan` met je voorkeursvariant op elke 1 en bij elke akkoordwissel binnen een maat. Direct in de `opTel`-callback, niet in een effect.
 - **`useMetronoom` kreeg een optionele `opTel(tel)`** naast de state `tel` (uitbreiding, bestaand gebruik blijft gelijk). Nodig omdat React state-updates samenvoegt: in een verborgen tabblad komen meerdere tellen tegelijk binnen en zou de state er één missen.
 - **Spatiebalk** start/pauzeert altijd, ook als een knop focus heeft (in de capture-fase, keydown én keyup tegengehouden); knoppen druk je dan met Enter. Anders sluit de spatie het scherm via de sluitknop die bij openen de focus krijgt.
