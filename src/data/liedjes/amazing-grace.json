@@ -1,0 +1,20 @@
+{
+  "id": "amazing-grace",
+  "titel": "Amazing Grace",
+  "artiest": "Traditioneel",
+  "soort": "traditioneel",
+  "toonsoort": "G",
+  "capo": 0,
+  "bpm": 84,
+  "maatsoort": "3/4",
+  "slagpatroon": "D - D U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["G"], ["G"], ["C"], ["G"], ["G"], ["G"], ["D"], ["D"], ["G"], ["G"], ["C"], ["G"], ["Em"], ["D"], ["G"], ["G"]]
+    }
+  ],
+  "volgorde": ["couplet", "couplet", "couplet"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

@@ -1,0 +1,30 @@
+{
+  "id": "wonderwall",
+  "titel": "Wonderwall",
+  "artiest": "Oasis",
+  "soort": "pop",
+  "toonsoort": "F#m",
+  "capo": 2,
+  "bpm": 87,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["Em"], ["G"], ["D"], ["A"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["Em"], ["G"], ["D"], ["A"], ["Em"], ["G"], ["D"], ["A"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["D"], ["Em"], ["G"], ["Em"], ["D"], ["Em"], ["G"], ["A"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "couplet", "refrein"],
+  "origineleAkkoorden": ["Em7", "G", "Dsus4", "A7sus4"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Vereenvoudigd tot Em, G, D en A. Laat je ringvinger en pink op de 3e fret van de B- en e-snaar staan, dan klink je al als het origineel."
+}

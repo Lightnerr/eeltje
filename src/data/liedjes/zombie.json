@@ -1,0 +1,25 @@
+{
+  "id": "zombie",
+  "titel": "Zombie",
+  "artiest": "The Cranberries",
+  "soort": "pop",
+  "toonsoort": "Em",
+  "capo": 0,
+  "bpm": 84,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D - D U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["Em"], ["C"], ["G"], ["D"], ["Em"], ["C"], ["G"], ["D"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Em"], ["C"], ["G"], ["D"], ["Em"], ["C"], ["G"], ["D"]]
+    }
+  ],
+  "volgorde": ["couplet", "refrein", "couplet", "refrein"],
+  "origineleAkkoorden": ["Em", "C", "G", "D/F#"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

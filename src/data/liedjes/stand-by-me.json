@@ -1,0 +1,28 @@
+{
+  "id": "stand-by-me",
+  "titel": "Stand by Me",
+  "artiest": "Ben E. King",
+  "soort": "pop",
+  "toonsoort": "A",
+  "capo": 2,
+  "bpm": 118,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["G"], ["G"], ["Em"], ["Em"], ["C"], ["D"], ["G"], ["G"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["G"], ["G"], ["Em"], ["Em"], ["C"], ["D"], ["G"], ["G"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["G"], ["G"], ["Em"], ["Em"], ["C"], ["D"], ["G"], ["G"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "couplet", "refrein"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

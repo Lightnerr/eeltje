@@ -1,0 +1,26 @@
+{
+  "id": "losing-my-religion",
+  "titel": "Losing My Religion",
+  "artiest": "R.E.M.",
+  "soort": "pop",
+  "toonsoort": "Am",
+  "capo": 0,
+  "bpm": 125,
+  "maatsoort": "4/4",
+  "slagpatroon": "D U D U D U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["Am"], ["Em"], ["Am"], ["Em"], ["Am"], ["Em"], ["Dm"], ["G"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Dm"], ["G"], ["Am"], ["Am"], ["Dm"], ["G"], ["Am"], ["Am"]]
+    }
+  ],
+  "volgorde": ["couplet", "refrein", "couplet", "refrein"],
+  "origineleAkkoorden": ["F", "Am", "Em", "Dm", "G", "C"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Vereenvoudigd tot vier akkoorden; het origineel heeft ook F en C."
+}

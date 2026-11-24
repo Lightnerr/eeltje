@@ -1,0 +1,76 @@
+[
+  {
+    "id": "spider",
+    "titel": "Spider",
+    "doel": "Elke vinger een eigen fret: sterker, losser en onafhankelijk van elkaar.",
+    "stappen": [
+      "Zet je wijsvinger op de 1e fret van de lage E-snaar en sla de snaar aan.",
+      "Speel daarna fret 2, 3 en 4 met je middelvinger, ringvinger en pink. Laat de vingers die je al neerzette liggen.",
+      "Schuif naar de A-snaar en speel weer 1-2-3-4. Zo ga je door tot de hoge e-snaar.",
+      "Kom op dezelfde manier terug: 4-3-2-1, van de hoge e naar de lage E.",
+      "Eén noot per tel. Gaat het schoon, zet de metronoom dan 5 bpm hoger."
+    ],
+    "tab": [
+      "e|------------------------1-2-3-4-|",
+      "B|--------------------1-2-3-4-----|",
+      "G|----------------1-2-3-4---------|",
+      "D|----------1-2-3-4---------------|",
+      "A|----1-2-3-4---------------------|",
+      "E|-1-2-3-4------------------------|"
+    ],
+    "standaardtempo": 60,
+    "maatsoort": "4/4"
+  },
+  {
+    "id": "chromatisch-loopje",
+    "titel": "Chromatisch loopje",
+    "doel": "Je vingers leren schuiven over de hals, met één vinger per fret.",
+    "stappen": [
+      "Speel 1-2-3-4 op de lage E-snaar, zoals bij de spider.",
+      "Schuif je hand één fret op en speel 2-3-4-5 op dezelfde snaar.",
+      "Ga zo door tot de 5e positie (5-6-7-8) en schuif daarna terug.",
+      "Houd je duim achter de hals, ongeveer achter je middelvinger.",
+      "Kun je het zonder stoppen? Doe het dan ook op de A-snaar."
+    ],
+    "tab": [
+      "e|---------------------------------|",
+      "B|---------------------------------|",
+      "G|---------------------------------|",
+      "D|---------------------------------|",
+      "A|---------------------------------|",
+      "E|-1-2-3-4-2-3-4-5-3-4-5-6-4-5-6-7-|"
+    ],
+    "standaardtempo": 60,
+    "maatsoort": "4/4"
+  },
+  {
+    "id": "akkoordwissels",
+    "titel": "Akkoordwissels",
+    "doel": "Sneller en zonder stilte van het ene akkoord naar het andere.",
+    "stappen": [
+      "Kies twee akkoorden die je aan het oefenen bent, bijvoorbeeld A en D.",
+      "Zet het eerste akkoord neer, sla één keer aan en kijk welke vinger het eerst moet bewegen.",
+      "Wissel zonder aan te slaan, tien keer heen en terug. Laat vingers die kunnen blijven liggen.",
+      "Sla nu op elke 1e tel aan: vier tellen het ene akkoord, vier tellen het andere.",
+      "Lukt dat, wissel dan elke twee tellen."
+    ],
+    "standaardtempo": 60,
+    "maatsoort": "4/4",
+    "slagpatroon": "D - - - D - - -"
+  },
+  {
+    "id": "basisaanslag",
+    "titel": "Basisaanslag",
+    "doel": "Een rustig, gelijkmatig ritme met omlaag en omhoog.",
+    "stappen": [
+      "Houd een akkoord vast dat je kent, bijvoorbeeld Em.",
+      "Sla op elke tel omlaag: D D D D. Beweeg vanuit je pols, niet vanuit je elleboog.",
+      "Voeg tussen de tellen een slag omhoog toe: D U D U D U D U.",
+      "Laat je hand steeds op en neer gaan, ook als je een slag overslaat.",
+      "Speel nu het patroon D - D U - U D U, het slagpatroon van veel popliedjes."
+    ],
+    "standaardtempo": 70,
+    "maatsoort": "4/4",
+    "slagpatroon": "D - D U - U D U"
+  }
+]

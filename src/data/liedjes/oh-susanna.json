@@ -1,0 +1,24 @@
+{
+  "id": "oh-susanna",
+  "titel": "Oh! Susanna",
+  "artiest": "Traditioneel",
+  "soort": "traditioneel",
+  "toonsoort": "D",
+  "capo": 0,
+  "bpm": 110,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["D"], ["D"], ["D"], ["A7"], ["D"], ["D"], ["D", "A7"], ["D"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["G"], ["G"], ["D"], ["D"], ["D"], ["D"], ["D", "A7"], ["D"]]
+    }
+  ],
+  "volgorde": ["couplet", "refrein", "couplet", "refrein"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

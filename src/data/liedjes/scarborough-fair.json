@@ -1,0 +1,22 @@
+{
+  "id": "scarborough-fair",
+  "titel": "Scarborough Fair",
+  "artiest": "Traditioneel",
+  "soort": "traditioneel",
+  "toonsoort": "Dm",
+  "capo": 0,
+  "bpm": 100,
+  "maatsoort": "3/4",
+  "slagpatroon": "D - D U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["Dm"], ["Dm"], ["C"], ["Dm"], ["Fmaj7"], ["Fmaj7"], ["Am"], ["Dm"], ["Dm"], ["Fmaj7"], ["C"], ["Dm"], ["Dm"], ["C"], ["Am"], ["Dm"]]
+    }
+  ],
+  "volgorde": ["couplet", "couplet", "couplet"],
+  "origineleAkkoorden": ["Dm", "C", "F", "Am"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Fmaj7 in plaats van F, zodat je geen barré nodig hebt."
+}

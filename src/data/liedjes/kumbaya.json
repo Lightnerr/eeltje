@@ -1,0 +1,20 @@
+{
+  "id": "kumbaya",
+  "titel": "Kumbaya",
+  "artiest": "Traditioneel",
+  "soort": "traditioneel",
+  "toonsoort": "D",
+  "capo": 0,
+  "bpm": 76,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D - D - D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["D"], ["G"], ["D"], ["D"], ["D"], ["G"], ["A"], ["A"], ["D"], ["G"], ["D"], ["G"], ["D"], ["A"], ["D"], ["D"]]
+    }
+  ],
+  "volgorde": ["couplet", "couplet", "couplet"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}
