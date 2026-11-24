@@ -1,0 +1,35 @@
+version: 2
+
+# Elke week een PR per soort, met kleine updates gebundeld; grote versies komen los.
+# Nieuwe versies pas na 5 dagen: een gekaapt pakket is dan meestal al ontdekt en teruggetrokken.
+# Beveiligingsupdates komen direct, die vallen niet onder de wachttijd.
+updates:
+  - package-ecosystem: bun
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 5
+    groups:
+      web:
+        update-types: [minor, patch]
+
+  - package-ecosystem: bun
+    directory: /tools/kijk
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 5
+    groups:
+      kijk:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 5
+    groups:
+      actions:
+        update-types: [minor, patch]

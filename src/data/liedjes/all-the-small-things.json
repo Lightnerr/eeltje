@@ -1,0 +1,83 @@
+{
+  "id": "all-the-small-things",
+  "titel": "All the Small Things",
+  "artiest": "blink-182",
+  "genre": "pop-punk",
+  "toonsoort": "C",
+  "capo": 0,
+  "bpm": 148,
+  "maatsoort": "4/4",
+  "slagpatroon": "D D D D D D D D",
+  "secties": [
+    {
+      "naam": "Couplet",
+      "maten": [
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "Fmaj7"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        }
+      ],
+      "herhalingen": 4
+    },
+    {
+      "naam": "Refrein",
+      "maten": [
+        {
+          "akkoorden": [
+            "Fmaj7"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        }
+      ],
+      "herhalingen": 2
+    }
+  ],
+  "volgorde": [
+    "Couplet",
+    "Refrein",
+    "Couplet",
+    "Refrein",
+    "Refrein"
+  ],
+  "notities": [
+    "Origineel met powerchords. Fmaj7 is een makkelijke vervanger voor F.",
+    "Alleen neerslagen, begin op 60% tempo."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "origineleAkkoorden": [
+    "C5",
+    "G5",
+    "F5"
+  ]
+}

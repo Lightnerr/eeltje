@@ -1,0 +1,86 @@
+name: Pages
+
+# main staat in de root van de gh-pages-branch, elke PR in pr-<nummer>/. Een gesloten PR verdwijnt weer.
+# Pages serveert de branch gh-pages (Settings > Pages > Deploy from a branch).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Per ref, zodat een PR-preview nooit een wachtende deploy van main wegdrukt. Botsende pushes vangt de retry op.
+concurrency:
+  group: pages-${{ github.ref }}
+
+jobs:
+  publiceer:
+    # Dependabot krijgt een token zonder schrijfrechten en heeft geen preview nodig.
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    env:
+      MAP: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || '.' }}
+      GESLOTEN: ${{ github.event.action == 'closed' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: env.GESLOTEN != 'true'
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        if: env.GESLOTEN != 'true'
+      - if: env.GESLOTEN != 'true'
+        run: |
+          bun install --frozen-lockfile
+          bun run test
+          bun run build
+        env:
+          # Een preview krijgt een eigen opslag met demo-voortgang (src/lib/demo.ts).
+          VITE_PREVIEW: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || '' }}
+
+      - name: Naar gh-pages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          URL="https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          if git ls-remote --exit-code --heads "$URL" gh-pages >/dev/null; then
+            git clone --quiet --depth 1 --branch gh-pages "$URL" site
+          else
+            git init --quiet -b gh-pages site && git -C site remote add origin "$URL"
+          fi
+          if [ "$GESLOTEN" = true ]; then
+            rm -rf "site/$MAP"
+          elif [ "$MAP" = . ]; then
+            rsync -a --delete --exclude '.git' --exclude 'pr-*/' dist/ site/
+          else
+            mkdir -p "site/$MAP" && rsync -a --delete dist/ "site/$MAP/"
+          fi
+          touch site/.nojekyll
+          cd site
+          git add -A
+          git diff --cached --quiet && exit 0
+          if [ "$GESLOTEN" = true ]; then BERICHT="$MAP weg"; else BERICHT="${MAP/#./main} op $SHA"; fi
+          git commit --quiet -m "$BERICHT"
+          for _ in 1 2 3 4 5; do
+            git push --quiet origin gh-pages && exit 0
+            git pull --quiet --rebase origin gh-pages || exit 1
+          done
+          exit 1
+
+      - name: Link in de PR
+        if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          EIGENAAR: ${{ github.repository_owner }}
+          NAAM: ${{ github.event.repository.name }}
+        run: |
+          gh pr comment "$PR_URL" --body "Preview: https://${EIGENAAR,,}.github.io/${NAAM}/${MAP}/ (eigen voortgang met demodata; je echte voortgang blijft heel)"
