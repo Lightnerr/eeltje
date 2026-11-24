@@ -247,3 +247,25 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - De lopende oefentimer ook buiten Vandaag laten zien (een klein bolletje in de tabbalk).
 - Na een import de routine van vandaag opnieuw maken.
 - Op Voortgang standaard het paar met de meeste resultaten tonen in plaats van het laatst geoefende.
+
+## Besluiten uit stap 7
+
+Nog niet af: de commands staan er, de PWA en de README volgen.
+
+### Besluiten
+
+- **Commands** in `.claude/commands/`: `/nieuw-nummer <titel> van <artiest>`, `/nieuw-akkoord <naam> [variant]`, `/nieuwe-oefening <omschrijving>`. Elk met `description`, `argument-hint` en `allowed-tools` (lezen, schrijven, `bun run valideer`, `bun run test`; `/nieuw-nummer` mag ook zijn eigen liedjesbestand weghalen). Ze schrijven de regels uit het schema uit (`types.ts`, `validatie.ts`, `tests/inhoud.test.ts`) in plaats van naar die bestanden te verwijzen, zodat Claude niet eerst de code hoeft te lezen.
+- **`/nieuw-nummer`** leest `mijn-akkoorden.txt` (beide groepen tellen als bekend) of vraagt erom, meldt een bestaand id in plaats van te overschrijven, gebruikt het internet niet, en kiest de capo met de minste onbekende vormen (bij gelijkspel de laagste). Een **traditioneel** liedje mag in een andere toonsoort, zodat hij zonder capo past; een popliedje blijft klinken als de opname. De G-familie (Cadd9, Dsus4, Em7) alleen als de gebruiker die vormen kent of de gewone C, D en Em ook niet; anders de gewone. 3 of 4 akkoorden per liedje, zoals de test eist.
+- **Inhoudstest versoepeld** (`tests/inhoud.test.ts`): de bovengrens van 15 liedjes en de eis `ai-gegenereerd` / `geverifieerd: false` voor elk liedje zijn weg. Anders maakte het tweede liedje via `/nieuw-nummer` de tests rood, net als een liedje dat de eigenaar goedkeurt. De grens van 3 of 4 akkoorden (met de G-familie-uitzondering) blijft.
+
+### Proefrun
+
+- `/nieuw-nummer Twinkle Twinkle Little Star` letterlijk gevolgd met de demo-akkoorden (A, D, E, Em kan ik; Am, C, G oefenen): G zonder capo met G, C en D, in plaats van C met F. `bun run valideer` en `bun run test` groen. Liedje en `mijn-akkoorden.txt` daarna weggehaald.
+
+### Valkuilen
+
+- `node_modules` in de worktree was weer leeg; `bun install --frozen-lockfile` eerst.
+
+### Open
+
+- `mijn-akkoorden.txt` staat niet in `.gitignore`. Persoonlijk en vaak anders; de eigenaar beslist of hij hem incheckt.
