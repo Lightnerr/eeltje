@@ -28,3 +28,44 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 
 - Een balkje "Preview PR 12" bovenin een preview, zodat je ziet dat je niet in de echte app zit.
 - De React Compiler, net als in derde-helft. Dan vervallen `useMemo`, `useCallback` en `React.memo`.
+
+## Besluiten uit stap 1
+
+### Besluiten
+
+- **Akkoorden** staan plat in `akkoorden.json`, één object per variant. `variant` is een korte url-naam (`eigen`, `klassiek`, `barre`, `3-vingers`, `klein`, `standaard`), `titel` is wat de app toont. `basisfret` ontbreekt = 1; `frets` zijn absoluut (A barré: `[5,7,7,6,5,5]` met `basisfret: 5`). Hogere posities: A barré op 5 en C barré op 3.
+- **G is standaard de 4-vingerversie** (320033, familie met Cadd9, Dsus4 en Em7); `3-vingers` is de variant. Bm en F zijn standaard `klein`, met `barre` als variant.
+- **De validatie luistert naar de tonen.** `validatie.ts` rekent uit welke tonen de frets laten klinken en vergelijkt dat met de naam: een verkeerde fret of een verkeerde naam valt meteen op. Ook vingers tegen frets, barré, basisfret, en onbekende velden (zo kan er geen `tekst`-veld in een liedje sluipen).
+- **Liedjes:** de akkoorden zijn vormen bij `capo`; `toonsoort` is klinkend. `origineleAkkoorden` alleen bij een vereenvoudigde versie: de vormen van het origineel bij dezelfde capo. `soort` is `traditioneel` of `pop`. Maatsoorten: `2/4`, `3/4`, `4/4`, `6/8`. In x/4 is een slagpatroon 1 of 2 slagen per tel, in 6/8 één per achtste. Akkoorden in een maat moeten de tellen gelijk verdelen (dus geen 3 in 4/4).
+- **Muzieklogica** (`muziek.ts`): `transponeer` houdt kruis of mol van het origineel aan, en kiest bij een natuurlijke toon de gewone spelling (Bb, Eb, Ab; maar F#m, C#m, G#m). `zelfdeAkkoord` ziet A#m = Bbm, en alle vergelijkingen met bekende akkoorden gaan daarlangs. Een capo-suggestie geeft de bekende spelling terug.
+- **Vereenvoudigingen** zijn regels, geen lijst: extensies weg (E7 → E, Am7 → Am, Cadd9/G → Cadd9 → C) plus vaste vervangers zonder barré (F → Fmaj7, Bm → Bm7, B → B7). `capoSuggestie` gebruikt ze alleen als het zonder niet lukt (`vereenvoudigd` zegt welke), en kiest daarna de capo die het dichtst bij de oude ligt. Capo 0 t/m 7.
+- **Speelbaarheid is streng:** `ontbrekendeAkkoorden` telt een vereenvoudiging niet als bekend. Stap 4 kan `vereenvoudig` gebruiken om "speel Fmaj7 voor F" te tonen.
+- **Leeradvies**: het akkoord dat de meeste liedjes helemaal speelbaar maakt; bij gelijkspel het akkoord dat het vaakst ontbreekt, dan alfabetisch. Telt geen capo-suggesties mee.
+- **Opslag:** `opslagSleutel(naam, preview)` geeft `eeltje.voortgang.<naam>[.<preview>]`; de voortgang is `opslagSleutel('v1')`. Een extra sleutel van een latere stap maakt hij met dezelfde helper. Wat niet te lezen is (kapotte JSON, hogere versie) gaat naar `eeltje.voortgang.kapot` en de app begint met een nieuwe voortgang; de oude sleutel blijft staan tot de eerste wijziging. `bewaar` geeft `false` als de browser weigert.
+- **`useVoortgang().wis()`** wist de sleutel en zet een nieuwe voortgang (D en A op oefenen), ook in een preview. Een ander tabblad dat de opslag wijzigt, wordt meteen ingelezen.
+- **Routes:** pagina's zijn default exports in `src/pages/` en krijgen hun routegegevens als props (`RouteGegevens<'akkoord'>` = `{ naam, variant? }`). `navigeer(route)` uit `useRoute.ts` voor knoppen; links gebruiken `href={naarHash(route)}`. Na elke navigatie scrollt de app naar boven en krijgt `<main>` de focus.
+- **Placeholders:** `Binnenkort` (titel, stap, zinnetje). Meespelen en de drie challenges staan al in `Schermvullend`, zodat je Escape, de sluitknop en Wake Lock nu al kunt proberen. Oefenen is al een lijst met links naar alle subpagina's, zodat stap 3 en 5 dat scherm niet hoeven te raken.
+- **Tabbalk** onderaan op mobiel (vast, met `safe-area-inset-bottom`), bovenaan vanaf 768px.
+
+### CSS-variabelen in `src/styles.css`
+
+- Kleuren (licht en donker): `--achtergrond`, `--vlak`, `--vlak-zacht`, `--rand`, `--tekst`, `--tekst-zacht`, `--accent`, `--accent-zacht`, `--op-accent` (tekst op accent), `--focus`, `--gevaar`.
+- Status: `--status-nieuw`, `--status-oefenen`, `--status-kan-ik`, elk ook met `-vlak` voor een achtergrond.
+- Ruimte: `--ruimte-1` t/m `--ruimte-7` (4, 8, 12, 16, 24, 32, 48px). `--radius`, `--radius-klein`, `--schaduw`.
+- Maat: `--tikdoel` (48px), `--tabbalk-hoogte`, `--inhoud-breedte`.
+- Letters: `--font`, `--letter-klein`, `--letter`, `--letter-groot`, `--letter-titel`, `--letter-reus` (meespelen en challenges).
+- Klassen: `.knop`, `.knop-rustig`, `.kaart`, `.zacht`, `.verborgen`. Focus is overal een blauwe rand via `:focus-visible`; `prefers-reduced-motion` zet alle animaties uit.
+
+### Valkuilen
+
+- **CRLF in de worktree.** Met `core.autocrlf=true` (Windows-checkout) krijgt `tools/kijk/kijk.sh` CRLF en weigert bash hem. Werkt: `tr -d '\r' < tools/kijk/kijk.sh > /tmp/kijk.sh` (en `kijk.mjs` ernaast, met een symlink naar `node_modules`). Een `.gitattributes` met `*.sh text eol=lf` zou het oplossen.
+- **`tools/kijk/node_modules`** kan een lege map zijn; `kijk.sh` slaat `bun install` dan over. Draai `bun install` in `tools/kijk` met de hand.
+- **Headless Chrome heeft geen systeemfont**, dus screenshots tonen een monospace-letter. Op een echt apparaat is het `system-ui`.
+- **TypeScript 7** (`tsc` in Go) draait met `moduleResolution: bundler`; `tsconfig.json` heeft `vite/client` en `node` als types, voor `import.meta.glob` en de tests.
+- `import.meta.glob` werkt ook in Vitest; `src/data/index.ts` en `tests/data.test.ts` lezen de liedjes zo in.
+
+### Geparkeerde ideeën
+
+- `isGecontroleerd(liedje, voortgang)` (geverifieerd of gecontroleerd) als één functie, voor stap 4.
+- Leeradvies dat ook capo-suggesties meetelt.
+- Akkoorden die het schema niet nodig heeft maar wel handig zijn: Cadd9/G, F#m, Bm7.
