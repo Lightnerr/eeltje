@@ -74,3 +74,29 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - `isGecontroleerd(liedje, voortgang)` (geverifieerd of gecontroleerd) als één functie, voor stap 4.
 - Leeradvies dat ook capo-suggesties meetelt.
 - Akkoorden die het schema niet nodig heeft maar wel handig zijn: Cadd9/G, F#m, Bm7.
+
+## Besluiten uit stap 2
+
+### Besluiten
+
+- **Het raster toont elk akkoord één keer** (24 namen, niet 29 zettingen), met de gekozen variant (`gekozenVariant`: voorkeur, anders standaard). De andere varianten zie je op de detailpagina. Het filter (Alle, Nieuw, Oefenen, Kan ik, met aantallen) is gewone component-state, niet in de route.
+- **Detailpagina:** zonder `?variant=` toont hij je gekozen variant; met `?variant=` die variant. De variantkaarten linken met `?variant=` (bekijken) en hebben een knop "Kies deze" (voorkeur zetten). Ook de standaard kiezen wordt als voorkeur opgeslagen.
+- **De geometrie zit in `src/lib/diagram.ts`** (`diagramVan`, getest tegen elke zetting in `akkoorden.json`). Een barré komt uit `Akkoord.barre`, en daarnaast ziet hij een vinger die plat over meerdere snaren op dezelfde fret ligt (de ringvinger in C barré op 3). Snaren onder een barré met dezelfde vinger krijgen geen los bolletje. Minstens 4 vakken; meer als een akkoord verder reikt. Fretnummer naast het bovenste vak bij `basisfret > 1`, anders de topkam.
+- **`AkkoordDiagram`** heeft precies de afgesproken props. `klein` (max 112px) heeft geen snaarnamen en grotere stippen en cijfers; `middel` 150px, `groot` 300px. Het schaalt mee met zijn kolom (`width: 100%`). Het SVG heeft `role="img"`, `aria-label` en `<title>` uit `beschrijfAkkoord` ("A, eigen: lage E niet spelen, A open, D 2e fret middelvinger, …"). Kleuren via klassen op de css-variabelen, dus licht en donker gaan vanzelf.
+- **Geluid:** `src/lib/gitaar.ts` rekent MIDI-noten per snaar, frequenties, de timing (aanslaan 25 ms tussen snaren, tokkelen 400 ms) en de Karplus-Strong-samples zelf (`karplusStrong`, met een allpass voor de toonhoogte achter de komma; de test meet de periode op een fractie van een sample). `src/audio/gitaar.ts` maakt daar AudioBuffers van (gecachet per frequentie) en speelt ze af. Opnieuw tikken laat het vorige geluid in 50 ms uitsterven (`stopGitaar`, ook bij het verlaten van de pagina).
+- **`kopieerTekst`** volgt de volgorde van `akkoorden.json`, laat een lege groep weg, en zegt "Ik ken nog geen akkoorden." als er niets is. Statussen van akkoorden die niet (meer) bestaan tellen niet mee. Lukt het klembord niet (geen https, bv. de devserver op je telefoon), dan verschijnt de tekst in een tekstvak om zelf te kopiëren.
+- **`StatusLabel`** (`src/components`) is het gekleurde label met stip en tekst; stap 4 en 6 kunnen het hergebruiken. `STATUSSEN` komt nu uit `voortgang.ts`, `STATUSLABEL` uit `akkoorden.ts`.
+
+### Valkuilen
+
+- **css-volgorde.** `main.tsx` laadde `styles.css` ná `App`, waardoor `.knop` en `.kaart` uit de basis wonnen van de css van een component met dezelfde specificiteit. Nu eerst `styles.css`. Wie dat in een parallelle stap ook tegenkwam: dezelfde regel, makkelijk te mergen.
+- **Klassenamen botsen globaal.** `StatusLabel.css` definieert `.status-nieuw`, `.status-oefenen`, `.status-kan-ik`; gebruik die namen niet voor iets anders (de statusknoppen heten `akkoord-status-…`).
+- **Een SVG met `width: 100%` in een grid met `justify-items: center`** krijgt de breedte van het breedste andere kind (hier het statuslabel). Geef het grid een kolom `minmax(0, 1fr)`.
+- **iOS:** `slaAan`/`tokkel` moeten direct in de tik-handler staan (niet na een `await`), anders start de AudioContext niet. Web Audio volgt op een iPhone de stille-modusschakelaar: staat die aan, dan hoor je niets.
+- **kijk.sh** noemt twee tik-routes op dezelfde pagina hetzelfde bestand (`_akkoorden-tik-…`); de tweede overschrijft de eerste. Draai ze apart.
+
+### Geparkeerde ideeën
+
+- Klinkende snaar laten oplichten in het diagram tijdens tokkelen.
+- Akkoorden in het raster sorteren of groeperen (bv. op moeilijkheid of grondtoon); nu de volgorde van `akkoorden.json`.
+- Een variant in `kopieerTekst` noemen (bv. "G (3 vingers)"), zodat `/nieuw-nummer` weet welke vorm je speelt.

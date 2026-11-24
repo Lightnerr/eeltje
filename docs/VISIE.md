@@ -69,8 +69,12 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 |---|---|
 | Akkoord: één vingerzetting, met frets per snaar (lage E naar hoge e, `x` = niet spelen, `0` = open), vingers (0 = geen, 1 t/m 4 = wijsvinger t/m pink) en moeilijkheid 1 t/m 5 | `Akkoord` (`frets`, `vingers`, `moeilijkheid`, `basisfret`), `Fret`; `src/data/akkoorden.json` |
 | Variant: een andere zetting van hetzelfde akkoord; de standaard is wat je ziet tenzij je een andere kiest | `Akkoord.variant` (`eigen`, `barre`, `3-vingers`), `Akkoord.titel`, `Akkoord.standaard`; `variantenVan`, `standaardVariant`, `zoekAkkoord(naam, variantnaam?)` |
+| Voorkeursvariant (gekozen variant): de variant die je zelf koos, anders de standaard | `Voortgang.voorkeurVariant`, `zetVoorkeurVariant`, `gekozenVariant(akkoorden, voortgang, naam)` |
+| Akkoorddiagram: vakken, bolletjes met vingernummer, x en o, fretnummer, topkam, barré | `AkkoordDiagram` (`grootte`: `klein`, `middel`, `groot`); `diagramVan` → `Diagram` (`Bolletje`, `DiagramBarre`), `beschrijfAkkoord` |
+| Akkoordenraster: elk akkoord één keer, met zijn status | `rasterVan(akkoorden, voortgang, filter?)` → `RasterItem`, `akkoordnamen` |
+| Aanslaan (alle snaren snel van laag naar hoog) en tokkelen (per snaar met een pauze) | `slaAan`, `tokkel`, `stopGitaar` (`src/audio/gitaar.ts`); `Speelwijze`, `aanslagen`, `toonhoogtes`, `frequentie`, `karplusStrong` (`src/lib/gitaar.ts`) |
 | Barré: één vinger over meerdere snaren | `Barre` (`fret`, `vanSnaar`, `totSnaar`), `Akkoord.barre` |
-| Akkoordstatus | `AkkoordStatus` (`'nieuw' \| 'oefenen' \| 'kan ik'`), `statusVan`, `zetStatus` |
+| Akkoordstatus | `AkkoordStatus` (`'nieuw' \| 'oefenen' \| 'kan ik'`), `STATUSSEN`, `statusVan`, `zetStatus`; `STATUSLABEL`, `StatusLabel` |
 | Bekende akkoorden: op "oefenen" of "kan ik" | `bekendeAkkoorden(voortgang)` |
 | Liedje: alleen schema, tempo en slagpatroon, nooit tekst | `Liedje`; `src/data/liedjes/<id>.json`, `zoekLiedje` |
 | Sectie (couplet, refrein …), maat, volgorde van de secties | `Sectie`, `Maat`, `Liedje.volgorde`, `speelVolgorde` → `SpeelMaat` |
@@ -90,7 +94,7 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 | Oefensessie, streak, geoefende minuten | `Sessie`, `voegSessieToe`; streak en minuten volgen in stap 6 |
 | Dagroutine |  |
 | Voortgang: alles wat persoonlijk is, met een versie | `Voortgang` (`versie: 1`), `nieuweVoortgang`, `normaliseerVoortgang`, `exporteerVoortgang`, `importeerVoortgang`; `opslag`, `useVoortgang` |
-| Mijn akkoorden kopiëren |  |
+| Mijn akkoorden kopiëren | `kopieerTekst(voortgang, akkoorden)`, knop "Kopieer mijn akkoorden" op Akkoorden |
 | Demo-voortgang: een verzonnen gitarist die een maand bezig is, voor previews en screenshots | `demoVoortgang(nu)` in `src/lib/demo.ts` |
 | Preview: de build van een PR op GitHub Pages, met eigen opslag | `VITE_PREVIEW`, `opslagSleutel(naam, preview)` |
 | Route: welk scherm je ziet, als hash (`#/liedjes/wonderwall`) | `Route`, `leesRoute`, `naarHash`, `tabVan`, `useRoute`, `navigeer` |
