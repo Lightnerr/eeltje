@@ -7,6 +7,7 @@ import {
   geschiedenis,
   paarSleutel,
   record,
+  recordTekst,
   reeksSleutel,
   resultaatTekst,
   SPIDER_SLEUTEL,
@@ -181,5 +182,19 @@ describe('akkoorden kiezen', () => {
     expect(geldigeReeks(['G', 'G', 'D'], namen)).toBeNull()
     expect(geldigeReeks(['G', 'C', 'G'], namen)).toBeNull()
     expect(geldigeReeks(['G', 'C', 'G', 'D'], namen)).toEqual(['G', 'C', 'G', 'D'])
+  })
+})
+
+describe('recordTekst', () => {
+  const demo = demoVoortgang(new Date('2026-11-24T12:00:00'))
+
+  it('je beste ooit, met het paar of de reeks erbij', () => {
+    expect(recordTekst(demo, 'one-minute-changes')).toBe('Record 31 wissels · A-D')
+    expect(recordTekst(demo, 'spider-ladder')).toBe('Record 70 bpm')
+    expect(recordTekst(demo, 'wisselreeks')).toBe('Record 1 min 30 s op 80 bpm · A-D-E')
+  })
+
+  it('niets als er nog geen record is', () => {
+    expect(recordTekst(nieuweVoortgang(), 'spider-ladder')).toBeUndefined()
   })
 })

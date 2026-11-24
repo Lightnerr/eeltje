@@ -85,3 +85,10 @@ export function geldigeReeks(akkoorden: readonly string[] | undefined, namen: re
   if (akkoorden.some((a, i) => a === akkoorden[(i + 1) % akkoorden.length])) return null
   return [...akkoorden]
 }
+
+/** "Record 31 wissels · A-D": je beste ooit, met het paar of de reeks erbij. Zonder record `undefined`. */
+export function recordTekst(v: Voortgang, type: ChallengeType): string | undefined {
+  const r = record(v, type)
+  if (!r) return undefined
+  return type === 'spider-ladder' ? `Record ${resultaatTekst(r)}` : `Record ${resultaatTekst(r)} · ${r.sleutel}`
+}
