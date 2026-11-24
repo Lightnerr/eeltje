@@ -23,6 +23,8 @@ export interface Diagram {
   /** De dikke lijn bovenaan: alleen als het diagram bij de eerste fret begint. */
   topkam: boolean
   vakken: number
+  /** Ruimte links van de lage E in viewBox-eenheden, genoeg voor het fretnummer. */
+  ruimteLinks: number
   /** Boven elke snaar: `x` = niet spelen, `o` = open, `null` = gegrepen. */
   boven: ('x' | 'o' | null)[]
   barres: DiagramBarre[]
@@ -30,6 +32,11 @@ export interface Diagram {
 }
 
 const MINSTE_VAKKEN = 4
+/** Van de rechterkant van het fretnummer tot de lage E, in viewBox-eenheden. */
+export const FRETNUMMER_AFSTAND = 12
+/** Breedte van één cijfer van het fretnummer (13px vet), ruim genomen. */
+export const CIJFERBREEDTE = 9
+const MINSTE_RUIMTE_LINKS = 26
 
 type BarreOpFret = { fret: number; vanSnaar: number; totSnaar: number; vinger: number }
 
@@ -67,11 +74,13 @@ export function diagramVan(akkoord: Akkoord): Diagram {
   const vak = (fret: number) => fret - basisfret + 1
   const barres = barresVan(akkoord)
   const gegrepen = akkoord.frets.filter((f): f is number => typeof f === 'number' && f > 0)
+  const cijfers = basisfret > 1 ? String(basisfret).length : 0
   return {
     basisfret,
     fretnummer: basisfret > 1 ? basisfret : null,
     topkam: basisfret === 1,
     vakken: Math.max(MINSTE_VAKKEN, ...gegrepen.map(vak)),
+    ruimteLinks: Math.max(MINSTE_RUIMTE_LINKS, FRETNUMMER_AFSTAND + cijfers * CIJFERBREEDTE),
     boven: akkoord.frets.map((f) => (f === 'x' ? 'x' : f === 0 ? 'o' : null)),
     barres: barres.map(({ fret, ...rest }) => ({ vak: vak(fret), ...rest })),
     bolletjes: akkoord.frets.flatMap((fret, snaar) =>

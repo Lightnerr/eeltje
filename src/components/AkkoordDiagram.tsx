@@ -1,20 +1,19 @@
-import { beschrijfAkkoord, diagramVan, SNAARNAMEN } from '../lib/diagram'
+import { beschrijfAkkoord, diagramVan, FRETNUMMER_AFSTAND, SNAARNAMEN } from '../lib/diagram'
 import type { Akkoord } from '../lib/types'
 import './AkkoordDiagram.css'
 
 // Maten in viewBox-eenheden; de grootte zet alleen de breedte in css, zo blijven de verhoudingen gelijk.
 const SNAAR = 20
 const VAK = 24
-const LINKS = 26
 const RECHTS = 12
 const BOVEN = 26
-const BREEDTE = LINKS + 5 * SNAAR + RECHTS
 
-const x = (snaar: number) => LINKS + snaar * SNAAR
 const y = (vak: number) => BOVEN + (vak - 0.5) * VAK
 
 export function AkkoordDiagram({ akkoord, grootte = 'middel' }: { akkoord: Akkoord; grootte?: 'klein' | 'middel' | 'groot' }) {
   const d = diagramVan(akkoord)
+  const x = (snaar: number) => d.ruimteLinks + snaar * SNAAR
+  const breedte = d.ruimteLinks + 5 * SNAAR + RECHTS
   const beschrijving = beschrijfAkkoord(akkoord)
   // Klein (bij een liedje) zonder snaarnamen: die zijn altijd hetzelfde, en zo blijft er ruimte voor de rest.
   const snaarnamen = grootte !== 'klein'
@@ -24,7 +23,7 @@ export function AkkoordDiagram({ akkoord, grootte = 'middel' }: { akkoord: Akkoo
   const hoogte = onder + (snaarnamen ? 22 : 6)
 
   return (
-    <svg className={`akkoord-diagram akkoord-diagram-${grootte}`} viewBox={`0 0 ${BREEDTE} ${hoogte}`} role="img" aria-label={beschrijving}>
+    <svg className={`akkoord-diagram akkoord-diagram-${grootte}`} viewBox={`0 0 ${breedte} ${hoogte}`} role="img" aria-label={beschrijving}>
       <title>{beschrijving}</title>
 
       {Array.from({ length: d.vakken + 1 }, (_, i) => (
@@ -36,7 +35,7 @@ export function AkkoordDiagram({ akkoord, grootte = 'middel' }: { akkoord: Akkoo
       ))}
 
       {d.fretnummer !== null && (
-        <text className="fretnummer" x={LINKS - 12} y={y(1)} textAnchor="end" dominantBaseline="central">
+        <text className="fretnummer" x={d.ruimteLinks - FRETNUMMER_AFSTAND} y={y(1)} textAnchor="end" dominantBaseline="central">
           {d.fretnummer}
         </text>
       )}

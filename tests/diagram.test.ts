@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { akkoorden } from '../src/data'
-import { beschrijfAkkoord, diagramVan } from '../src/lib/diagram'
+import { beschrijfAkkoord, CIJFERBREEDTE, diagramVan, FRETNUMMER_AFSTAND } from '../src/lib/diagram'
 import type { Akkoord } from '../src/lib/types'
 
 function akkoord(naam: string, variant?: string): Akkoord {
@@ -65,6 +65,15 @@ describe('diagramVan', () => {
       { vak: 3, vanSnaar: 2, totSnaar: 4, vinger: 3 },
     ])
     expect(d.bolletjes).toEqual([])
+  })
+
+  it('maakt links ruimte voor een fretnummer van twee cijfers', () => {
+    const op = (basisfret: number): Akkoord => ({ ...akkoord('A', 'barre'), frets: [basisfret, 'x', 'x', 'x', 'x', 'x'], vingers: [1, 0, 0, 0, 0, 0], barre: undefined, basisfret })
+    for (const basisfret of [5, 10, 12, 20]) {
+      const d = diagramVan(op(basisfret))
+      expect(d.ruimteLinks - FRETNUMMER_AFSTAND, `basisfret ${basisfret}`).toBeGreaterThanOrEqual(String(basisfret).length * CIJFERBREEDTE)
+    }
+    expect(diagramVan(op(12)).ruimteLinks).toBeGreaterThan(diagramVan(op(5)).ruimteLinks)
   })
 
   it('toont minstens vier vakken, en meer als het akkoord ver reikt', () => {
