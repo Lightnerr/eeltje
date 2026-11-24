@@ -1,0 +1,117 @@
+/* Gedeeld door de drie challenges (one minute changes, spider-ladder, wisselreeks). */
+
+.challenge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ruimte-4);
+  max-width: 720px;
+  min-height: 100%;
+  margin: 0 auto;
+}
+
+.challenge-instellen {
+  display: grid;
+  gap: var(--ruimte-4);
+}
+
+.challenge-kiezers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--ruimte-3);
+}
+
+.challenge-fout {
+  color: var(--gevaar);
+  font-weight: 600;
+}
+
+.challenge-akkoorden {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ruimte-4);
+}
+
+.challenge-akkoord {
+  display: grid;
+  justify-items: center;
+  gap: var(--ruimte-2);
+  min-width: 0;
+}
+
+.challenge-akkoord .akkoord-diagram {
+  width: clamp(72px, 24vw, 112px);
+}
+
+.challenge-akkoordnaam {
+  font-size: var(--letter-reus);
+  font-weight: 750;
+  line-height: 1;
+}
+
+.challenge-pijl {
+  color: var(--tekst-zacht);
+  font-size: var(--letter-titel);
+}
+
+.challenge-klok {
+  text-align: center;
+  font-size: clamp(2rem, 10vw, 3.5rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+/* De grote tikknop: groot genoeg om blind te raken met een gitaar op schoot. */
+.challenge-tik {
+  flex-direction: column;
+  width: 100%;
+  min-height: clamp(140px, 32vh, 320px);
+  margin-top: auto;
+  font-size: var(--letter-titel);
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.challenge-teller {
+  font-size: var(--letter-reus);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.challenge-knoppen {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ruimte-3);
+}
+
+.challenge-stand {
+  text-align: center;
+  color: var(--tekst-zacht);
+  font-size: var(--letter-groot);
+}
+
+.challenge .tel-weergave {
+  justify-content: center;
+}
+
+.challenge-keuze {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ruimte-2);
+}
+
+.challenge-volgende {
+  color: var(--tekst-zacht);
+  font-size: var(--letter-titel);
+  font-weight: 700;
+}
+
+.challenge-volgende .zacht {
+  font-size: var(--letter-klein);
+  font-weight: 600;
+}
+
+.challenge-tik-start {
+  min-height: clamp(96px, 20vh, 200px);
+}

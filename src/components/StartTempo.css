@@ -1,0 +1,27 @@
+.start-tempo {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--ruimte-3);
+  text-align: center;
+  font-size: var(--letter-groot);
+}
+
+.start-tempo output {
+  display: grid;
+  line-height: 1.2;
+}
+
+.start-tempo output .zacht {
+  font-size: var(--letter-klein);
+  font-weight: 600;
+}
+
+.start-tempo-bpm {
+  white-space: nowrap;
+}
+
+.start-tempo strong {
+  font-size: var(--letter-titel);
+  font-variant-numeric: tabular-nums;
+}

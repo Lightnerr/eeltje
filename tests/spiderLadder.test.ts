@@ -34,10 +34,6 @@ describe('spider-ladder', () => {
     expect(speel([start, gelukt, gelukt, { soort: 'mislukt' }])).toEqual({ fase: 'klaar', startBpm: 50, bpm: 60, hoogste: 55, rondes: 3 })
   })
 
-  it('stoppen na een geslaagde ronde maakt hem ook af', () => {
-    expect(speel([start, gelukt, { soort: 'stoppen' }])).toMatchObject({ fase: 'klaar', hoogste: 50, rondes: 1 })
-  })
-
   it('bovenaan de metronoom is hij af', () => {
     const stand = speel([start, gelukt], spiderBegin(MAX_BPM - SPIDER_STAP))
     expect(stand).toMatchObject({ fase: 'lopen', bpm: MAX_BPM, hoogste: MAX_BPM - SPIDER_STAP })

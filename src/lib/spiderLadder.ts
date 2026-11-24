@@ -15,8 +15,8 @@ export type SpiderActie =
   | { soort: 'zetBpm'; bpm: number }
   | { soort: 'start' }
   | { soort: 'gelukt' }
+  /** Lukte niet: dan stop je, en het hoogste tempo dat lukte telt. */
   | { soort: 'mislukt' }
-  | { soort: 'stoppen' }
   | { soort: 'opnieuw' }
 
 export function spiderBegin(bpm = SPIDER_START_BPM): SpiderStand {
@@ -40,8 +40,6 @@ export function spiderVerloop(stand: SpiderStand, actie: SpiderActie): SpiderSta
     }
     case 'mislukt':
       return { ...stand, fase: 'klaar', rondes: stand.rondes + 1 }
-    case 'stoppen':
-      return { ...stand, fase: 'klaar' }
   }
 }
 

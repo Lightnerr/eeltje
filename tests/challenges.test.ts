@@ -146,8 +146,8 @@ describe('teksten', () => {
   it('resultaatTekst per challenge', () => {
     expect(resultaatTekst(omc('A-D', 1, 'x'))).toBe('1 wissel')
     expect(resultaatTekst(omc('A-D', 31, 'x'))).toBe('31 wissels')
-    expect(resultaatTekst({ type: 'spider-ladder', sleutel: 'spider', waarde: 70, datum: 'x' })).toBe('70 bpm')
-    expect(resultaatTekst({ type: 'wisselreeks', sleutel: 'G-C-D', waarde: 90, bpm: 80, datum: 'x' })).toBe('1 min 30 s op 80 bpm')
+    expect(resultaatTekst({ type: 'spider-ladder', sleutel: 'spider', waarde: 70 })).toBe('70 bpm')
+    expect(resultaatTekst({ type: 'wisselreeks', sleutel: 'G-C-D', waarde: 90, bpm: 80 })).toBe('1 min 30 s op 80 bpm')
   })
 })
 

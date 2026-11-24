@@ -55,7 +55,7 @@ export function duurTekst(seconden: number): string {
   return s === 0 ? `${min} min` : `${min} min ${s} s`
 }
 
-export function resultaatTekst(r: ChallengeResultaat): string {
+export function resultaatTekst(r: Omit<ChallengeResultaat, 'datum'>): string {
   switch (r.type) {
     case 'one-minute-changes':
       return r.waarde === 1 ? '1 wissel' : `${r.waarde} wissels`
