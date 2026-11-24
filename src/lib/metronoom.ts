@@ -7,8 +7,12 @@ export const MAX_BPM = 220
 /** Langer dan dit tussen twee tikken (ms) en tap tempo begint opnieuw. Ruim boven 2000 ms, zodat 30 bpm nog lukt. */
 const TAP_PAUZE = 2500
 const TAP_AFSTANDEN = 4
-/** Sneller dan dit (ms) kan geen tik in het tempo zijn (220 bpm = 273 ms): een dubbele tik of toetsherhaling. */
-const TAP_MIN_AFSTAND = 250
+/**
+ * Een tik zo kort na de vorige (ms) is een stuiter of toetsherhaling. Ruim onder de kortste tel (220 bpm = 273 ms), zodat
+ * een wat vroege tik bij een hoog tempo blijft staan; een langzamere dubbeltik vangt de mediaan op.
+ */
+const TAP_MIN_AFSTAND = 150
+const TAP_BEWAARD = 16
 
 export function begrensBpm(bpm: number): number {
   if (!Number.isFinite(bpm)) return MIN_BPM
@@ -36,20 +40,21 @@ export function tapTempo(tikken: number[]): number | null {
   return begrensBpm(60000 / mediaan)
 }
 
-/** Voegt een tik toe en houdt alleen wat `tapTempo` nodig heeft. */
+/** Voegt een tik toe en houdt de lijst kort. Ook weggevallen tikken blijven staan: `tapTempo` vergelijkt met de vorige tik. */
 export function voegTikToe(tikken: number[], tijd: number): number[] {
-  return bruikbareTikken([...tikken, tijd])
+  return sindsPauze([...tikken, tijd]).slice(-TAP_BEWAARD)
 }
 
+function sindsPauze(tikken: number[]): number[] {
+  let begin = 0
+  for (let i = 1; i < tikken.length; i++) if (tikken[i] - tikken[i - 1] > TAP_PAUZE) begin = i
+  return tikken.slice(begin)
+}
+
+/** Zonder stuiters en toetsherhaling: elke tik vergeleken met de tik ervoor, ook als die zelf wegviel. */
 function bruikbareTikken(tikken: number[]): number[] {
-  const reeks: number[] = []
-  for (const tik of tikken) {
-    const vorige = reeks[reeks.length - 1]
-    if (vorige === undefined) reeks.push(tik)
-    else if (tik - vorige > TAP_PAUZE) reeks.splice(0, reeks.length, tik)
-    else if (tik - vorige >= TAP_MIN_AFSTAND) reeks.push(tik)
-  }
-  return reeks.slice(-(TAP_AFSTANDEN + 1))
+  const reeks = sindsPauze(tikken)
+  return reeks.filter((tik, i) => i === 0 || tik - reeks[i - 1] >= TAP_MIN_AFSTAND).slice(-(TAP_AFSTANDEN + 1))
 }
 
 /** Duur van één tel in seconden. In 6/8 is een tel een achtste. */

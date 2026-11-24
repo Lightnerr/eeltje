@@ -68,7 +68,18 @@ describe('tapTempo', () => {
   it('negeert een tik die te snel op de vorige volgt', () => {
     expect(tapTempo([0, 500, 1000, 1500, 1510])).toBe(120)
     expect(tapTempo([0, 30, 60, 90, 120, 150])).toBeNull()
-    expect(voegTikToe([0, 500, 1000], 1030)).toEqual([0, 500, 1000])
+    let herhaald: number[] = []
+    for (let t = 0; t < 2000; t += 30) herhaald = voegTikToe(herhaald, t)
+    expect(tapTempo(herhaald)).toBeNull()
+    expect(tapTempo(voegTikToe([0, 500, 1000], 1030))).toBe(120)
+  })
+
+  it('houdt een tik die wat te vroeg komt bij een hoog tempo', () => {
+    expect(tapTempo([0, 286, 530, 858, 1100, 1430])).toBe(210)
+  })
+
+  it('vangt een dubbeltik die niet heel kort is op met de mediaan', () => {
+    expect(tapTempo([0, 500, 1000, 1500, 1680])).toBe(120)
   })
 
   it('laat een gemiste tik niet het hele tempo bepalen', () => {
@@ -87,10 +98,12 @@ describe('tapTempo', () => {
 })
 
 describe('voegTikToe', () => {
-  it('bewaart alleen wat tapTempo nodig heeft', () => {
+  it('houdt de lijst kort', () => {
     let tikken: number[] = []
-    for (let i = 0; i < 10; i++) tikken = voegTikToe(tikken, i * 500)
-    expect(tikken).toEqual([2500, 3000, 3500, 4000, 4500])
+    for (let i = 0; i < 40; i++) tikken = voegTikToe(tikken, i * 500)
+    expect(tikken).toHaveLength(16)
+    expect(tikken.at(-1)).toBe(19500)
+    expect(tapTempo(tikken)).toBe(120)
   })
 
   it('vergeet alles na een lange pauze', () => {
