@@ -1,0 +1,157 @@
+.liedje {
+  display: grid;
+  gap: var(--ruimte-4);
+}
+
+.liedje-terug {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tikdoel);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.liedje-kop h1 {
+  font-size: 2.25rem;
+}
+
+.liedje-feiten {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ruimte-2);
+  padding: 0;
+  list-style: none;
+}
+
+.liedje-feiten li {
+  padding: var(--ruimte-1) var(--ruimte-3);
+  border: 1px solid var(--rand);
+  border-radius: 999px;
+  background: var(--vlak);
+  font-weight: 600;
+}
+
+.liedje-feiten .liedje-capo {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--op-accent);
+}
+
+.liedje-ai {
+  display: grid;
+  justify-items: start;
+  gap: var(--ruimte-3);
+  border-color: var(--status-oefenen);
+  background: var(--status-oefenen-vlak);
+}
+
+.liedje-gecontroleerd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ruimte-1) var(--ruimte-3);
+  color: var(--status-kan-ik);
+  font-weight: 600;
+}
+
+.liedje-terugdraaien {
+  min-height: var(--tikdoel);
+  padding: 0 var(--ruimte-2);
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.liedje-acties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ruimte-3);
+}
+
+.liedje-meespelen {
+  flex: 1 1 200px;
+  font-size: var(--letter-groot);
+}
+
+.liedje-acties button[aria-pressed='true'] {
+  background: var(--accent-zacht);
+}
+
+.liedje-speelbaar {
+  display: grid;
+  justify-items: start;
+  gap: var(--ruimte-2);
+}
+
+.liedje-blok {
+  display: grid;
+  gap: var(--ruimte-3);
+}
+
+.liedje-akkoorden {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: var(--ruimte-2);
+  padding: 0;
+  list-style: none;
+}
+
+.liedje-akkoord {
+  display: grid;
+  /* Eén kolom zo breed als de kaart; anders krimpt het diagram mee met het statuslabel. */
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: var(--ruimte-2);
+  height: 100%;
+  padding: var(--ruimte-2) var(--ruimte-2) var(--ruimte-3);
+  color: var(--tekst);
+  text-decoration: none;
+}
+
+.liedje-akkoord-naam {
+  font-size: var(--letter-groot);
+  font-weight: 700;
+}
+
+.liedje-slagpatroon .slagpatroon {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.liedje-sectie {
+  display: grid;
+  gap: var(--ruimte-3);
+}
+
+.liedje-sectie h3 {
+  font-size: var(--letter);
+}
+
+.liedje-sectie h3::first-letter,
+.liedje-sectie-naam::first-letter {
+  text-transform: uppercase;
+}
+
+.liedje-maten {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--ruimte-1);
+  padding: 0;
+  list-style: none;
+}
+
+.liedje-maat {
+  display: flex;
+  justify-content: space-around;
+  gap: var(--ruimte-1);
+  min-height: var(--tikdoel);
+  align-items: center;
+  padding: var(--ruimte-1);
+  border-left: 3px solid var(--rand);
+  font-size: var(--letter-groot);
+  font-weight: 700;
+}

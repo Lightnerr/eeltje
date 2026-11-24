@@ -7,20 +7,31 @@ interface Instelling {
   maatsoort: Maatsoort
   accent?: boolean
   onderverdeling?: number
+  /** Per tel, naast de state `tel`: elke tel komt door, ook als React renders samenvoegt (verborgen tabblad). */
+  opTel?: (tel: number) => void
+  /** Per tel als hij gepland wordt, met de audiotijd; zie `MetronoomOpties.opPlan`. */
+  opPlan?: (tel: number, tijd: number) => void
 }
 
 /**
  * Een metronoom voor een scherm: `tel` en `slag` lichten op als ze klinken, en zijn `null` als hij stilstaat.
  * Wijzigingen in de instelling gaan direct door; bij het verlaten van het scherm stopt hij.
  */
-export function useMetronoom({ bpm, maatsoort, accent = true, onderverdeling = 1 }: Instelling) {
+export function useMetronoom({ bpm, maatsoort, accent = true, onderverdeling = 1, opTel, opPlan }: Instelling) {
   const [loopt, zetLoopt] = useState(false)
   const [tel, zetTel] = useState<number | null>(null)
   const [slag, zetSlag] = useState<number | null>(null)
   const ref = useRef<Metronoom | null>(null)
+  const opTelRef = useRef(opTel)
+  const opPlanRef = useRef(opPlan)
+
+  useEffect(() => {
+    opTelRef.current = opTel
+    opPlanRef.current = opPlan
+  }, [opTel, opPlan])
 
   function metronoom(): Metronoom {
-    ref.current ??= maakMetronoom({ bpm, maatsoort, accent, onderverdeling, opTel: zetTel, opSlag: zetSlag })
+    ref.current ??= maakMetronoom({ bpm, maatsoort, accent, onderverdeling, opTel: (t) => (zetTel(t), opTelRef.current?.(t)), opPlan: (t, tijd) => opPlanRef.current?.(t, tijd), opSlag: zetSlag })
     return ref.current
   }
 

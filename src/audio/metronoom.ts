@@ -17,6 +17,8 @@ export interface MetronoomOpties {
    * nog in een oude onderverdeling of maatsoort geteld zijn (na een wissel, tot de volgende tel) komen niet door.
    */
   opSlag?: (slag: number, tijd: number) => void
+  /** Per tel op het moment dat hij gepland wordt (ruim vóór hij klinkt), met de audiotijd: om er geluid op te plannen. */
+  opPlan?: (tel: number, tijd: number) => void
 }
 
 export interface Metronoom {
@@ -73,6 +75,7 @@ export function maakMetronoom(opties: MetronoomOpties): Metronoom {
     const vertraging = context.outputLatency || context.baseLatency || 0
     for (const stap of r.stappen) {
       if (stap.opTel) klik(context, uitgang, stap.tijd, accent && isAccent(stap.tel, maatsoort))
+      if (stap.opTel) opties.opPlan?.(stap.tel, stap.tijd)
       if (!opties.opTel && !opties.opSlag) continue
       const wacht = Math.max(0, (stap.tijd + vertraging - context.currentTime) * 1000)
       const melding = setTimeout(() => {

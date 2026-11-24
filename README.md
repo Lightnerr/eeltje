@@ -43,4 +43,6 @@ Nieuwe liedjes, akkoorden en oefeningen voeg je toe met Claude Code: `/nieuw-num
 - **Kapotte voortgang wordt niet weggegooid** maar apart bewaard, zodat er niets verloren gaat.
 - **Geluid ook met de stilteschakelaar aan** (iPhone): zodra je zelf geluid start, zet de app de afspeelsessie op "playback". Muziek die op de achtergrond speelt, stopt dan.
 - **Het akkoordenraster toont elk akkoord één keer**, in de variant die je koos (anders de standaard). De andere varianten staan op de detailpagina.
+- **Spatie in meespelen** is start/pauze. Alleen een knop die je met het toetsenbord (Tab) hebt gekozen, bedien je met de spatie; zo sluit de spatie nooit per ongeluk het scherm.
+- **Het akkoordgeluid bij meespelen wordt op de audioklok ingepland**, tegelijk met de klik, ook met een Bluetooth-koptelefoon.
 - Meer besluiten staan in `docs/OVERDRACHT.md`.

@@ -69,3 +69,8 @@ export function karplusStrong(frequentie: number, sampleRate: number, duur: numb
   }
   return uit
 }
+
+/** Moet een aanslag die (al dan niet) vanaf `stilVanaf` uitsterft, vanaf `vanaf` stil? Niet als hij al eerder stil gaat. */
+export function moetUitsterven(stilVanaf: number | null, vanaf: number): boolean {
+  return stilVanaf === null || stilVanaf > vanaf
+}

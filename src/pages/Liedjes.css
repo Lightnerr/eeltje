@@ -1,0 +1,103 @@
+.liedjes {
+  display: grid;
+  gap: var(--ruimte-5);
+}
+
+.liedjes-advies {
+  display: grid;
+  gap: var(--ruimte-3);
+  border-color: var(--accent);
+}
+
+.liedjes-advies-akkoord {
+  display: flex;
+  align-items: center;
+  gap: var(--ruimte-4);
+  min-height: var(--tikdoel);
+  color: var(--tekst);
+  text-decoration: none;
+}
+
+.liedjes-advies-diagram {
+  flex: 0 0 88px;
+}
+
+.liedjes-advies-naam {
+  display: block;
+  color: var(--accent);
+  font-size: var(--letter-titel);
+  font-weight: 800;
+  line-height: 1.1;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.liedjes-advies-tekst {
+  display: block;
+}
+
+.liedjes-groep {
+  display: grid;
+  gap: var(--ruimte-3);
+}
+
+.liedjes-lijst {
+  display: grid;
+  gap: var(--ruimte-2);
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .liedjes-lijst {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ruimte-3);
+  }
+}
+
+.liedjes-kaart {
+  display: grid;
+  justify-items: start;
+  gap: var(--ruimte-1);
+  height: 100%;
+  min-height: var(--tikdoel);
+  color: var(--tekst);
+  text-decoration: none;
+}
+
+.liedjes-titel {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ruimte-2);
+  font-size: var(--letter-groot);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.liedjes-ster {
+  color: var(--accent);
+}
+
+.liedjes-artiest {
+  font-size: var(--letter-klein);
+  margin-bottom: var(--ruimte-1);
+}
+
+.liedjes-capo {
+  font-size: var(--letter-klein);
+}
+
+.liedjes-labels {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ruimte-2);
+}
+
+.liedjes-ai {
+  padding: 1px var(--ruimte-2);
+  border: 1px solid var(--rand);
+  border-radius: 999px;
+  color: var(--tekst-zacht);
+  font-size: var(--letter-klein);
+}
