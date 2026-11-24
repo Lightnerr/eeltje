@@ -1,0 +1,123 @@
+{
+  "id": "boulevard-of-broken-dreams",
+  "titel": "Boulevard of Broken Dreams",
+  "artiest": "Green Day",
+  "genre": "emo/punk",
+  "toonsoort": "Fm",
+  "capo": 1,
+  "bpm": 84,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "Couplet",
+      "maten": [
+        {
+          "akkoorden": [
+            "Em"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        },
+        {
+          "akkoorden": [
+            "A"
+          ]
+        },
+        {
+          "akkoorden": [
+            "Em"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        },
+        {
+          "akkoorden": [
+            "A"
+          ]
+        }
+      ],
+      "herhalingen": 2
+    },
+    {
+      "naam": "Refrein",
+      "maten": [
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        },
+        {
+          "akkoorden": [
+            "Em"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        },
+        {
+          "akkoorden": [
+            "Em"
+          ]
+        }
+      ],
+      "herhalingen": 1
+    }
+  ],
+  "volgorde": [
+    "Couplet",
+    "Refrein",
+    "Couplet",
+    "Refrein"
+  ],
+  "notities": [
+    "Origineel in Fm met powerchords. Capo 1 met Em, G, D, A en C geeft dezelfde klank.",
+    "Je oefent hier meteen je A en D."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "origineleAkkoorden": [
+    "Fm",
+    "Ab",
+    "Eb",
+    "Bb"
+  ]
+}

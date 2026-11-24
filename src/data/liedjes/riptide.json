@@ -1,0 +1,111 @@
+{
+  "id": "riptide",
+  "titel": "Riptide",
+  "artiest": "Vance Joy",
+  "genre": "pop",
+  "toonsoort": "C#m",
+  "capo": 1,
+  "bpm": 102,
+  "maatsoort": "4/4",
+  "slagpatroon": "D D U - U D U -",
+  "secties": [
+    {
+      "naam": "Couplet",
+      "maten": [
+        {
+          "akkoorden": [
+            "Am"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        }
+      ],
+      "herhalingen": 4
+    },
+    {
+      "naam": "Refrein",
+      "maten": [
+        {
+          "akkoorden": [
+            "Am"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        }
+      ],
+      "herhalingen": 4
+    },
+    {
+      "naam": "Brug",
+      "maten": [
+        {
+          "akkoorden": [
+            "Am"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "Fmaj7"
+          ]
+        }
+      ],
+      "herhalingen": 2
+    }
+  ],
+  "volgorde": [
+    "Couplet",
+    "Refrein",
+    "Couplet",
+    "Refrein",
+    "Brug",
+    "Refrein"
+  ],
+  "notities": [
+    "Origineel op ukulele; op gitaar met capo 1.",
+    "De wissels Am-G-C gaan snel. Oefen eerst alleen Am naar G."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "origineleAkkoorden": [
+    "Am",
+    "G",
+    "C",
+    "F"
+  ]
+}

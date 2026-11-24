@@ -1,0 +1,122 @@
+{
+  "id": "stand-by-me",
+  "titel": "Stand by Me",
+  "artiest": "Ben E. King",
+  "genre": "pop",
+  "toonsoort": "A",
+  "capo": 2,
+  "bpm": 118,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "Couplet",
+      "maten": [
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "Em"
+          ]
+        },
+        {
+          "akkoorden": [
+            "Em"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        }
+      ],
+      "herhalingen": 2
+    },
+    {
+      "naam": "Refrein",
+      "maten": [
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "Em"
+          ]
+        },
+        {
+          "akkoorden": [
+            "Em"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        }
+      ],
+      "herhalingen": 1
+    }
+  ],
+  "volgorde": [
+    "Couplet",
+    "Refrein",
+    "Couplet",
+    "Refrein"
+  ],
+  "notities": [
+    "Origineel in A met F#m (barré). Met capo 2 speel je G, Em, C en D."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "origineleAkkoorden": [
+    "A",
+    "F#m",
+    "D",
+    "E"
+  ]
+}

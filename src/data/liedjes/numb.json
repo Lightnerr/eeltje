@@ -1,0 +1,111 @@
+{
+  "id": "numb",
+  "titel": "Numb",
+  "artiest": "Linkin Park",
+  "genre": "nu-metal",
+  "toonsoort": "F#m",
+  "capo": 2,
+  "bpm": 110,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "Couplet",
+      "maten": [
+        {
+          "akkoorden": [
+            "Em"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        }
+      ],
+      "herhalingen": 4
+    },
+    {
+      "naam": "Refrein",
+      "maten": [
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        },
+        {
+          "akkoorden": [
+            "Em"
+          ]
+        }
+      ],
+      "herhalingen": 4
+    },
+    {
+      "naam": "Brug",
+      "maten": [
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        }
+      ],
+      "herhalingen": 2
+    }
+  ],
+  "volgorde": [
+    "Couplet",
+    "Refrein",
+    "Couplet",
+    "Refrein",
+    "Brug",
+    "Refrein"
+  ],
+  "notities": [
+    "Origineel op piano en elektrische gitaar in F#m. Met capo 2 speel je Em, C, G en D.",
+    "Houd het slagpatroon strak; het nummer leunt op een vaste groove."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "origineleAkkoorden": [
+    "F#m",
+    "D",
+    "A",
+    "E"
+  ]
+}

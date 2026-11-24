@@ -1,0 +1,108 @@
+{
+  "id": "amazing-grace",
+  "titel": "Amazing Grace",
+  "artiest": "Traditioneel",
+  "genre": "traditioneel",
+  "toonsoort": "G",
+  "capo": 0,
+  "bpm": 80,
+  "maatsoort": "3/4",
+  "slagpatroon": "D - D U D U",
+  "secties": [
+    {
+      "naam": "Couplet",
+      "maten": [
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "C"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "D"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        },
+        {
+          "akkoorden": [
+            "G"
+          ]
+        }
+      ],
+      "herhalingen": 3
+    }
+  ],
+  "volgorde": [
+    "Couplet"
+  ],
+  "notities": [
+    "Een wals in 3/4: tel 1-2-3, 1-2-3.",
+    "Mooi rustig om G, C en D te oefenen."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}
