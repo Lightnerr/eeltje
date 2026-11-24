@@ -9,10 +9,6 @@
   justify-items: start;
 }
 
-.akkoorden-kopieer p:empty {
-  display: none;
-}
-
 .akkoorden-kopieer-tekst {
   width: 100%;
   padding: var(--ruimte-3);

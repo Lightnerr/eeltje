@@ -23,10 +23,18 @@ function KopieerKnop({ tekst }: { tekst: string }) {
   const [uitkomst, zetUitkomst] = useState<'gekopieerd' | 'mislukt' | null>(null)
   return (
     <div className="akkoorden-kopieer">
-      <button type="button" className="knop knop-rustig" onClick={async () => zetUitkomst((await naarKlembord(tekst)) ? 'gekopieerd' : 'mislukt')}>
+      <button
+        type="button"
+        className="knop knop-rustig"
+        onClick={async () => {
+          // Eerst leegmaken, zodat een schermlezer ook een tweede keer dezelfde melding voorleest.
+          zetUitkomst(null)
+          zetUitkomst((await naarKlembord(tekst)) ? 'gekopieerd' : 'mislukt')
+        }}
+      >
         Kopieer mijn akkoorden
       </button>
-      <p role="status" className="zacht">
+      <p role="status" className={uitkomst ? 'zacht' : 'verborgen'}>
         {uitkomst === 'gekopieerd' && `Gekopieerd: "${tekst}"`}
         {uitkomst === 'mislukt' && 'Kopiëren lukte niet. Selecteer de tekst hieronder en kopieer hem zelf.'}
       </p>

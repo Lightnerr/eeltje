@@ -70,7 +70,7 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 | Akkoord: één vingerzetting, met frets per snaar (lage E naar hoge e, `x` = niet spelen, `0` = open), vingers (0 = geen, 1 t/m 4 = wijsvinger t/m pink) en moeilijkheid 1 t/m 5 | `Akkoord` (`frets`, `vingers`, `moeilijkheid`, `basisfret`), `Fret`; `src/data/akkoorden.json` |
 | Variant: een andere zetting van hetzelfde akkoord; de standaard is wat je ziet tenzij je een andere kiest | `Akkoord.variant` (`eigen`, `barre`, `3-vingers`), `Akkoord.titel`, `Akkoord.standaard`; `variantenVan`, `standaardVariant`, `zoekAkkoord(naam, variantnaam?)` |
 | Voorkeursvariant (gekozen variant): de variant die je zelf koos, anders de standaard | `Voortgang.voorkeurVariant`, `zetVoorkeurVariant`, `gekozenVariant(akkoorden, voortgang, naam)` |
-| Akkoorddiagram: vakken, bolletjes met vingernummer, x en o, fretnummer, topkam, barré | `AkkoordDiagram` (`grootte`: `klein`, `middel`, `groot`); `diagramVan` → `Diagram` (`Bolletje`, `DiagramBarre`), `beschrijfAkkoord` |
+| Akkoorddiagram: vakken, bolletjes met vingernummer, x en o, fretnummer, topkam, barré | `AkkoordDiagram` (`grootte`: `klein`, `middel`, `groot`); `diagramVan` → `Diagram` (`Bolletje`, `DiagramBarre`, `ruimteLinks`), `beschrijfAkkoord` |
 | Akkoordenraster: elk akkoord één keer, met zijn status | `rasterVan(akkoorden, voortgang, filter?)` → `RasterItem`, `akkoordnamen` |
 | Aanslaan (alle snaren snel van laag naar hoog) en tokkelen (per snaar met een pauze) | `slaAan`, `tokkel`, `stopGitaar` (`src/audio/gitaar.ts`); `Speelwijze`, `aanslagen`, `toonhoogtes`, `frequentie`, `karplusStrong` (`src/lib/gitaar.ts`) |
 | Barré: één vinger over meerdere snaren | `Barre` (`fret`, `vanSnaar`, `totSnaar`), `Akkoord.barre` |
