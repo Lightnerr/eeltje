@@ -210,3 +210,30 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - Een nieuwe gebruiker met alleen A en D krijgt in de wisselreeks A7 als derde akkoord (de volgorde van `akkoorden.json`); beter is het makkelijkste nieuwe akkoord, bijvoorbeeld E.
 - Spider-ladder: starten op je record min 10 bpm, als opwarming.
 - Trillen bij het einde van de minuut (`navigator.vibrate`), en een klik bij elke tik.
+
+## Besluiten uit stap 6
+
+Voorwerk: de logica en de grafiek staan, de schermen Vandaag en Voortgang nog niet (die wachten op stap 4 en 5).
+
+### Besluiten
+
+- **Dagen zijn lokale dagen.** `dagSleutel(d)` geeft `2026-11-24` in lokale tijd. Een sessie hoort bij de dag waarop hij begon, ook als hij over middernacht loopt. Dagen tellen gaat met `new Date(j, m, d ± n)`, nooit met ± 24 uur: rond zomer- en wintertijd is een dag 23 of 25 uur.
+- **Streak straft niet.** Heb je vandaag nog niet geoefend, dan telt hij vanaf gisteren. Sessies van 0 seconden, met een kapotte datum of na `nu` tellen niet mee.
+- **Minuten** worden afgerond (`Math.round(seconden / 60)`) over het totaal, niet per sessie. `minutenPerWeek(v, nu, aantalWeken)` geeft weken van maandag t/m zondag, oudste eerst, de lopende week als laatste, ook weken met 0.
+- **Dagroutine** (`maakRoutine`): opwarmen 3 min (oefening `spider`, anders de eerste oefening), akkoordwissel 3 min, liedje 6 min: samen 12. Hangt alleen af van de akkoordstatussen, de inhoud en de datum (FNV-hash van `datum:onderdeel`, geen `Math.random`); sessies en challenges tellen niet mee, dus oefenen verandert de routine van vandaag niet.
+- **Akkoordwissel:** paren met minstens één akkoord op "oefenen" (staat niets op oefenen: twee op "kan ik"), bij voorkeur een wissel die echt in een liedje voorkomt (opeenvolgende akkoorden in `speelVolgorde`). Ken je er minder dan twee, dan komt het `leeradvies` erbij, en anders het makkelijkste akkoord. Route `{ pagina: 'one-minute-changes', a, b }` met a en b alfabetisch, zoals `paarSleutel`. Statussen van akkoorden die niet in de inhoud staan, tellen niet mee.
+- **Liedje:** de liedjes met de minste ontbrekende akkoorden (strikt, via `ontbrekendeAkkoorden`); daarvan liefst een met een akkoord op "oefenen". Een nieuwe gebruiker krijgt dus een liedje dat 1 akkoord mist (Kumbaya, mist G), met "Mist 1 akkoord: G" in de uitleg.
+- **Grafiek:** de as begint altijd bij 0, met hooguit 4 nette stappen (1, 2 of 5 maal een macht van 10, minstens 1, dus nooit halve ticks). Het svg meet zijn eigen breedte (`ResizeObserver`) en gebruikt die als viewBox, zodat de letters op 360 en 1280 even groot zijn. Labels onder de as: zoveel als er passen, altijd het nieuwste punt. Een lijn houdt 24px van de randen. `role="img"` met een `aria-label` uit `beschrijfGrafiek` ("Minuten per week: 8 waarden, van … naar …. Hoogste: …"). Zonder punten: "Nog niets om te laten zien."
+- **Voortgang** toont voorlopig de placeholder plus twee grafieken (minuten per week, A-D one minute changes). De A-D-lijn filtert `voortgang.challenges` met de hand; dat wordt `geschiedenis` uit stap 5.
+
+### Valkuilen
+
+- **Tijdzone in tests.** `tests/statistiek.test.ts` zet `process.env.TZ = 'Europe/Amsterdam'` bovenin het bestand (niet in `beforeAll`: de describe-blokken maken al datums bij het verzamelen) en zet hem in `afterAll` terug. Node pakt een nieuwe `TZ` tijdens het draaien op.
+- **DST-tests vanaf 12:00 vangen niets**: 24 uur terug vanaf de middag blijft op de goede datum. Test vlak na middernacht.
+- **oxlint (`react(purity)`)** keurt `new Date()` in de render af; gebruik `useState(() => new Date())`.
+
+### Open vragen voor het vervolg
+
+- Moet de routine echt de hele dag vastliggen, ook als je die dag een akkoord op "kan ik" zet? Nu verandert hij dan mee (het is een pure functie van de statussen). Vastzetten kan alleen met een extra opslagsleutel (`opslagSleutel('routine')`), want de voortgang blijft op versie 1.
+- Telt een liedje dat met een capo-suggestie speelbaar wordt mee als "kan je spelen" voor de routine? Nu niet.
+- Moet de akkoordwissel het paar met het laagste record kiezen (via `record` uit stap 5) in plaats van een vaste keuze per dag?

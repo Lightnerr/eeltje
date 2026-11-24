@@ -102,8 +102,9 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 | Grote tikknop en spatiebalk | `.challenge-tik`, `useSpatiebalk(actief, knop, opTik)` |
 | Starttempo van een challenge (stappen van 5 bpm) | `StartTempo` |
 | Akkoord kiezen voor een challenge, gegroepeerd op status | `AkkoordKiezer`, `standaardAkkoorden(v, namen, aantal)` |
-| Oefensessie, streak, geoefende minuten | `Sessie`, `voegSessieToe`; streak en minuten volgen in stap 6 |
-| Dagroutine |  |
+| Oefensessie, streak, geoefende minuten | `Sessie`, `voegSessieToe`; `streak`, `totaalMinuten`, `minutenVandaag`, `minutenPerWeek` → `WeekMinuten`, `dagSleutel` (`src/lib/statistiek.ts`) |
+| Dagroutine: opwarmen, een akkoordwissel en een liedje, de hele dag dezelfde | `maakRoutine(voortgang, inhoud, nu)` → `Routine` (`datum`, `onderdelen`, `minuten`), `RoutineOnderdeel` (`soort`: `opwarmen`, `akkoordwissel`, `liedje`), `Inhoud` |
+| Grafiek: staven of een lijn, as vanaf 0 met nette stappen | `Grafiek` (`punten`, `soort`, `eenheid`, `titel`), `GrafiekPunt`; `schaal`, `netteStap`, `indeling`, `labelIndices`, `beschrijfGrafiek` (`src/lib/grafiek.ts`) |
 | Voortgang: alles wat persoonlijk is, met een versie | `Voortgang` (`versie: 1`), `nieuweVoortgang`, `normaliseerVoortgang`, `exporteerVoortgang`, `importeerVoortgang`; `opslag`, `useVoortgang` |
 | Mijn akkoorden kopiëren | `kopieerTekst(voortgang, akkoorden)`, knop "Kopieer mijn akkoorden" op Akkoorden |
 | Demo-voortgang: een verzonnen gitarist die een maand bezig is, voor previews en screenshots | `demoVoortgang(nu)` in `src/lib/demo.ts` |
