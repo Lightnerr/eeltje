@@ -103,6 +103,11 @@ function spellingVan(a: Akkoordnaam): Spelling | null {
   return null
 }
 
+/** De gewone naam van een toonklasse: 1 is C#, 10 is Bb. */
+export function toonnaam(toon: number): string {
+  return noemToon(toon, null, false)
+}
+
 function noemToon(toon: number, spelling: Spelling | null, klein: boolean): string {
   const tabel = spelling === 'kruis' ? KRUISEN : spelling === 'mol' ? MOLLEN : klein ? GEWOON_KLEIN : GEWOON_GROOT
   return tabel[((toon % 12) + 12) % 12]
