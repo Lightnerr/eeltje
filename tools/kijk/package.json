@@ -1,0 +1,9 @@
+{
+  "name": "eeltje-kijk",
+  "private": true,
+  "type": "module",
+  "description": "Screenshots van de app met headless Chrome; geen onderdeel van de app.",
+  "dependencies": {
+    "puppeteer-core": "25.18.1"
+  }
+}
