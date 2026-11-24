@@ -1,0 +1,130 @@
+import { afterAll, describe, expect, it } from 'vitest'
+import { demoVoortgang } from '../src/lib/demo'
+import { dagSleutel, minutenPerWeek, minutenVandaag, streak, totaalMinuten } from '../src/lib/statistiek'
+import type { Sessie, Voortgang } from '../src/lib/types'
+import { nieuweVoortgang } from '../src/lib/voortgang'
+
+// Dagen zijn lokale dagen. Met een vaste tijdzone zijn zomer- en wintertijd ook te testen.
+// Bovenaan en niet in beforeAll, want de describe-blokken maken al datums bij het verzamelen.
+const oudeTz = process.env.TZ
+process.env.TZ = 'Europe/Amsterdam'
+afterAll(() => {
+  if (oudeTz === undefined) delete process.env.TZ
+  else process.env.TZ = oudeTz
+})
+
+function sessie(lokaal: string, minuten = 10): Sessie {
+  return { start: new Date(lokaal).toISOString(), seconden: minuten * 60 }
+}
+
+function met(...sessies: Sessie[]): Voortgang {
+  return { ...nieuweVoortgang(), sessies }
+}
+
+const nu = () => new Date('2026-11-24T12:00:00')
+
+describe('dagSleutel', () => {
+  it('is de lokale datum', () => {
+    expect(dagSleutel(new Date('2026-11-24T00:30:00'))).toBe('2026-11-24')
+    expect(dagSleutel(new Date('2026-11-23T23:59:59'))).toBe('2026-11-23')
+    expect(dagSleutel(new Date('2026-03-05T12:00:00'))).toBe('2026-03-05')
+  })
+})
+
+describe('streak', () => {
+  it('is 0 zonder sessies', () => {
+    expect(streak(met(), nu())).toBe(0)
+  })
+
+  it('telt aaneengesloten dagen tot en met vandaag', () => {
+    const v = met(sessie('2026-11-24T08:00:00'), sessie('2026-11-23T20:00:00'), sessie('2026-11-22T20:00:00'), sessie('2026-11-20T20:00:00'))
+    expect(streak(v, nu())).toBe(3)
+  })
+
+  it('straft niet: vandaag nog niet geoefend, gisteren wel, dan loopt hij door', () => {
+    const v = met(sessie('2026-11-23T20:00:00'), sessie('2026-11-22T20:00:00'))
+    expect(streak(v, nu())).toBe(2)
+  })
+
+  it('is 0 als je gisteren en vandaag niet oefende', () => {
+    expect(streak(met(sessie('2026-11-22T20:00:00')), nu())).toBe(0)
+  })
+
+  it('telt een dag met meer sessies één keer', () => {
+    expect(streak(met(sessie('2026-11-24T08:00:00'), sessie('2026-11-24T10:00:00')), nu())).toBe(1)
+  })
+
+  it('kijkt naar de lokale dag rond middernacht', () => {
+    const v = met(sessie('2026-11-23T23:55:00'), sessie('2026-11-23T00:05:00'))
+    expect(streak(v, new Date('2026-11-24T00:01:00'))).toBe(1)
+    expect(streak(met(sessie('2026-11-24T00:00:00'), sessie('2026-11-23T23:59:00')), new Date('2026-11-24T00:00:30'))).toBe(2)
+  })
+
+  it('loopt door over de overgang naar zomer- en wintertijd', () => {
+    // 29 maart 2026 heeft 23 uur, 25 oktober 2026 heeft 25 uur.
+    const zomer = met(sessie('2026-03-28T23:30:00'), sessie('2026-03-29T23:30:00'), sessie('2026-03-30T00:30:00'))
+    expect(streak(zomer, new Date('2026-03-30T12:00:00'))).toBe(3)
+    const winter = met(sessie('2026-10-24T00:30:00'), sessie('2026-10-25T00:30:00'), sessie('2026-10-25T23:30:00'), sessie('2026-10-26T00:10:00'))
+    expect(streak(winter, new Date('2026-10-26T12:00:00'))).toBe(3)
+    // Vlak na middernacht: 24 uur terug zou hier 29 maart overslaan.
+    expect(streak(met(sessie('2026-03-28T20:00:00'), sessie('2026-03-29T20:00:00')), new Date('2026-03-30T00:30:00'))).toBe(2)
+  })
+
+  it('negeert sessies van 0 seconden, in de toekomst of met een kapotte datum', () => {
+    const v = met({ start: new Date('2026-11-24T08:00:00').toISOString(), seconden: 0 }, sessie('2026-11-25T08:00:00'), { start: 'gisteren', seconden: 600 })
+    expect(streak(v, nu())).toBe(0)
+  })
+})
+
+describe('minuten', () => {
+  const v = met(sessie('2026-11-24T08:00:00', 12), sessie('2026-11-24T00:10:00', 3.5), sessie('2026-11-23T23:50:00', 20), sessie('2026-11-10T20:00:00', 15))
+
+  it('totaalMinuten telt alles op en rondt af', () => {
+    expect(totaalMinuten(v)).toBe(51)
+    expect(totaalMinuten(met())).toBe(0)
+  })
+
+  it('minutenVandaag telt alleen de sessies die vandaag begonnen', () => {
+    expect(minutenVandaag(v, nu())).toBe(16)
+    expect(minutenVandaag(v, new Date('2026-11-25T09:00:00'))).toBe(0)
+  })
+})
+
+describe('minutenPerWeek', () => {
+  it('geeft de laatste weken, oudste eerst, beginnend op maandag', () => {
+    // 24 november 2026 is een dinsdag.
+    const v = met(sessie('2026-11-23T08:00:00', 10), sessie('2026-11-22T21:00:00', 5), sessie('2026-11-16T00:01:00', 7), sessie('2026-11-02T08:00:00', 30))
+    expect(minutenPerWeek(v, nu(), 4)).toEqual([
+      { start: '2026-11-02', minuten: 30 },
+      { start: '2026-11-09', minuten: 0 },
+      { start: '2026-11-16', minuten: 12 },
+      { start: '2026-11-23', minuten: 10 },
+    ])
+  })
+
+  it('op zondagavond hoort zondag nog bij de week', () => {
+    const v = met(sessie('2026-11-29T23:30:00', 10))
+    expect(minutenPerWeek(v, new Date('2026-11-29T23:45:00'), 1)).toEqual([{ start: '2026-11-23', minuten: 10 }])
+  })
+
+  it('weken over zomer- en wintertijd blijven op maandag beginnen', () => {
+    const weken = minutenPerWeek(met(sessie('2026-03-29T12:00:00', 20), sessie('2026-10-25T12:00:00', 25)), new Date('2026-11-24T12:00:00'), 40)
+    expect(weken).toHaveLength(40)
+    for (const w of weken) expect(new Date(`${w.start}T12:00:00`).getDay(), w.start).toBe(1)
+    expect(weken.find((w) => w.start === '2026-03-23')?.minuten).toBe(20)
+    expect(weken.find((w) => w.start === '2026-10-19')?.minuten).toBe(25)
+  })
+
+  it('0 weken is een lege lijst', () => {
+    expect(minutenPerWeek(met(), nu(), 0)).toEqual([])
+  })
+})
+
+describe('met de demo-voortgang', () => {
+  it('een streak van 7, vandaag geoefend en minuten in elke week', () => {
+    const demo = demoVoortgang(nu())
+    expect(streak(demo, nu())).toBe(7)
+    expect(minutenVandaag(demo, nu())).toBeGreaterThan(0)
+    expect(minutenPerWeek(demo, nu(), 4).every((w) => w.minuten > 0)).toBe(true)
+  })
+})
