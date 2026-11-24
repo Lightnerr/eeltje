@@ -1,4 +1,5 @@
 import type { AkkoordStatus, ChallengeResultaat, Voortgang } from './types';
+import { demoVoortgang } from './demo';
 
 /**
  * Enige plek die weet waar de voortgang staat. Wil je later naar IndexedDB of
@@ -10,7 +11,8 @@ export interface Backend {
   wis(): void;
 }
 
-const SLEUTEL = 'eeltje.voortgang.v1';
+// Een PR-preview draait op hetzelfde domein; met een eigen sleutel raakt hij je echte voortgang niet.
+const SLEUTEL = 'eeltje.voortgang.v1' + (import.meta.env.VITE_PREVIEW ? `.${import.meta.env.VITE_PREVIEW}` : '');
 
 export function localStorageBackend(): Backend {
   return {
@@ -83,16 +85,19 @@ export class VoortgangOpslag {
   private huidig: Voortgang;
   private luisteraars = new Set<Luisteraar>();
 
-  constructor(private backend: Backend) {
+  constructor(
+    private backend: Backend,
+    private begin: () => Voortgang = beginVoortgang,
+  ) {
     this.huidig = this.laad();
   }
 
   private laad(): Voortgang {
     try {
       const tekst = this.backend.lees();
-      return tekst ? normaliseerVoortgang(JSON.parse(tekst)) : beginVoortgang();
+      return tekst ? normaliseerVoortgang(JSON.parse(tekst)) : this.begin();
     } catch {
-      return beginVoortgang();
+      return this.begin();
     }
   }
 
@@ -155,7 +160,7 @@ export class VoortgangOpslag {
 
   wisAlles(): void {
     this.backend.wis();
-    this.huidig = beginVoortgang();
+    this.huidig = this.begin();
     this.luisteraars.forEach((l) => l());
   }
 }
@@ -179,7 +184,8 @@ function maakStandaardOpslag(): VoortgangOpslag {
       return false;
     }
   })();
-  return new VoortgangOpslag(heeftLocalStorage ? localStorageBackend() : geheugenBackend());
+  const backend = heeftLocalStorage ? localStorageBackend() : geheugenBackend();
+  return new VoortgangOpslag(backend, import.meta.env.VITE_PREVIEW ? demoVoortgang : beginVoortgang);
 }
 
 export const opslag = maakStandaardOpslag();
