@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { akkoorden } from '../src/data'
-import { aanslagen, frequentie, karplusStrong, toonhoogtes } from '../src/lib/gitaar'
+import { aanslagen, frequentie, karplusStrong, moetUitsterven, toonhoogtes } from '../src/lib/gitaar'
 import type { Akkoord } from '../src/lib/types'
 
 const zoek = (naam: string, variant?: string) =>
@@ -80,5 +80,17 @@ describe('karplusStrong', () => {
     const rms = (van: number) => Math.sqrt(s.slice(van, van + 2000).reduce((t, x) => t + x * x, 0) / 2000)
     expect(rms(s.length - 2000)).toBeLessThan(rms(0) / 4)
     expect(s.every((x) => Math.abs(x) <= 1)).toBe(true)
+  })
+})
+
+describe('moetUitsterven', () => {
+  it('een aanslag die nog niet stil zou gaan, of pas later: ja', () => {
+    expect(moetUitsterven(null, 5)).toBe(true)
+    expect(moetUitsterven(6, 5)).toBe(true)
+  })
+
+  it('een aanslag die al eerder stil gaat niet opnieuw, anders zou hij weer klinken', () => {
+    expect(moetUitsterven(4, 5)).toBe(false)
+    expect(moetUitsterven(5, 5)).toBe(false)
   })
 })

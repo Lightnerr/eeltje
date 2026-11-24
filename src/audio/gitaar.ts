@@ -1,11 +1,18 @@
-import { aanslagen, karplusStrong, type Speelwijze } from '../lib/gitaar'
+import { aanslagen, karplusStrong, moetUitsterven, type Speelwijze } from '../lib/gitaar'
 import type { Akkoord } from '../lib/types'
 import { geefAudioContext } from './context'
 
 const NAKLANK = 2.5
+const UITSTERVEN = 0.05
 const buffers = new Map<string, AudioBuffer>()
-// Alles wat klinkt of al vooruit gepland is (meespelen plant op de audioklok).
-const klinkend = new Set<GainNode>()
+interface Klank {
+  begin: number
+  volume: number
+  /** Audiotijd waarop hij uitsterft, of `null`. */
+  stilVanaf: number | null
+}
+// Alles wat klinkt of al vooruit gepland is (meespelen plant op de audioklok), tot het uitgeklonken is.
+const klinkend = new Map<GainNode, Klank>()
 
 function snaarBuffer(context: AudioContext, frequentie: number): AudioBuffer {
   const sleutel = `${frequentie.toFixed(2)}@${context.sampleRate}`
@@ -19,18 +26,36 @@ function snaarBuffer(context: AudioContext, frequentie: number): AudioBuffer {
 }
 
 function laatUitsterven(vanaf: number) {
-  for (const gain of klinkend) {
+  for (const [gain, klank] of klinkend) {
+    if (!moetUitsterven(klank.stilVanaf, vanaf)) continue
     gain.gain.cancelScheduledValues(vanaf)
-    gain.gain.setValueAtTime(gain.gain.value, vanaf)
-    gain.gain.linearRampToValueAtTime(0, vanaf + 0.05)
+    gain.gain.setValueAtTime(klank.volume, vanaf)
+    gain.gain.linearRampToValueAtTime(0, vanaf + UITSTERVEN)
+    klank.stilVanaf = vanaf
   }
-  klinkend.clear()
 }
 
-/** Laat wat nog klinkt (en wat al gepland was) kort uitsterven, zodat twee keer tikken niet door elkaar klinkt. */
+/** Laat alles wat klinkt of al gepland is kort uitsterven, zodat twee keer tikken niet door elkaar klinkt. */
 export function stopGitaar() {
   if (klinkend.size === 0) return
   laatUitsterven(geefAudioContext().currentTime)
+}
+
+/** Haalt aanslagen weg die nog moeten beginnen; wat nu klinkt, klinkt gewoon door. */
+export function annuleerGeplandeGitaar() {
+  if (klinkend.size === 0) return
+  const nu = geefAudioContext().currentTime
+  for (const [gain, klank] of klinkend) {
+    if (klank.begin > nu) {
+      gain.disconnect()
+      klinkend.delete(gain)
+    } else if (klank.stilVanaf !== null && klank.stilVanaf > nu) {
+      // Het uitsterven was voor een aanslag die nu niet meer komt.
+      gain.gain.cancelScheduledValues(nu)
+      gain.gain.setValueAtTime(klank.volume, nu)
+      klank.stilVanaf = null
+    }
+  }
 }
 
 export interface SpeelOpties {
@@ -43,8 +68,9 @@ function speel(akkoord: Akkoord, wijze: Speelwijze, opties: SpeelOpties = {}) {
   const context = geefAudioContext()
   const begin = opties.tijd === undefined ? context.currentTime + 0.05 : Math.max(opties.tijd, context.currentTime)
   laatUitsterven(opties.tijd === undefined ? context.currentTime : begin)
+  const volume = wijze === 'aanslaan' ? 0.3 : 0.5
   const uit = context.createGain()
-  uit.gain.value = wijze === 'aanslaan' ? 0.3 : 0.5
+  uit.gain.value = volume
   uit.connect(context.destination)
   let laatste: AudioBufferSourceNode | null = null
   for (const a of aanslagen(akkoord, wijze)) {
@@ -55,7 +81,7 @@ function speel(akkoord: Akkoord, wijze: Speelwijze, opties: SpeelOpties = {}) {
     laatste = bron
   }
   if (laatste) laatste.onended = () => klinkend.delete(uit)
-  klinkend.add(uit)
+  klinkend.set(uit, { begin, volume, stilVanaf: null })
 }
 
 /** Alle snaren snel achter elkaar, van laag naar hoog. */
