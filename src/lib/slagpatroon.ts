@@ -17,16 +17,17 @@ const vast = (naam: string, maatsoort: Maatsoort, tekst: string): SlagpatroonKeu
 })
 
 export const VASTE_SLAGPATRONEN: SlagpatroonKeuze[] = [
-  vast('Eén per maat', '4/4', 'D - - - D - - -'),
+  vast('Eén per maat', '4/4', 'D - - -'),
+  vast('Op de 1 en de 3', '4/4', 'D - D -'),
   vast('Op de tel', '4/4', 'D D D D'),
   vast('Op en neer', '4/4', 'D U D U D U D U'),
-  vast('Rustig begin', '4/4', 'D - D - D U D U'),
+  vast('Rustig, dan op en neer', '4/4', 'D - D - D U D U'),
   vast('Het popritme', '4/4', 'D - D U - U D U'),
   vast('Wals', '3/4', 'D D D'),
   vast('Wals met tussenslagen', '3/4', 'D - D U D U'),
   vast('Mars', '2/4', 'D D'),
   vast('Mars met tussenslagen', '2/4', 'D - D U'),
-  vast('Twee groepen van drie', '6/8', 'D - - D - -'),
+  vast('Op de 1 en de 4', '6/8', 'D - - D - -'),
   vast('Wiegend', '6/8', 'D - U D - U'),
 ]
 

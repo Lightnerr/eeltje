@@ -11,6 +11,13 @@ describe('VASTE_SLAGPATRONEN', () => {
     for (const p of VASTE_SLAGPATRONEN) expect(slagenPasInMaat(p.slagen.length, p.maatsoort), p.naam).toBe(true)
   })
 
+  it('doet wat de naam zegt', () => {
+    const slagen = (naam: string) => VASTE_SLAGPATRONEN.find((p) => p.naam === naam)?.slagen.filter((s) => s !== '-')
+    expect(slagen('Eén per maat')).toEqual(['D'])
+    expect(slagen('Op de 1 en de 3')).toEqual(['D', 'D'])
+    expect(slagen('Op de tel')).toEqual(['D', 'D', 'D', 'D'])
+  })
+
   it('heeft voor elke maatsoort minstens één patroon', () => {
     for (const m of ['2/4', '3/4', '4/4', '6/8'] as const) expect(VASTE_SLAGPATRONEN.some((p) => p.maatsoort === m)).toBe(true)
   })

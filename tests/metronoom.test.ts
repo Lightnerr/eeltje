@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   MAX_BPM,
+  wisselMaatsoort,
+  wisselOnderverdeling,
   MIN_BPM,
   begrensBpm,
   beginStand,
@@ -63,13 +65,23 @@ describe('tapTempo', () => {
     expect(tapTempo([0, 1500, 2000, 2600, 3100, 3700])).toBe(109)
   })
 
+  it('negeert een tik die te snel op de vorige volgt', () => {
+    expect(tapTempo([0, 500, 1000, 1500, 1510])).toBe(120)
+    expect(tapTempo([0, 30, 60, 90, 120, 150])).toBeNull()
+    expect(voegTikToe([0, 500, 1000], 1030)).toEqual([0, 500, 1000])
+  })
+
+  it('laat een gemiste tik niet het hele tempo bepalen', () => {
+    expect(tapTempo([0, 500, 1000, 1500, 2500, 3000])).toBe(120)
+  })
+
   it('begint opnieuw na een lange pauze', () => {
     expect(tapTempo([0, 1000, 2000, 5000, 5500])).toBe(120)
     expect(tapTempo([0, 1000, 2000, 5000])).toBeNull()
   })
 
   it('blijft binnen de grenzen', () => {
-    expect(tapTempo([0, 100, 200])).toBe(220)
+    expect(tapTempo([0, 260, 520])).toBe(220)
     expect(tapTempo([0, 1900, 3800])).toBe(32)
   })
 })
@@ -105,7 +117,7 @@ describe('planStappen', () => {
   it('plant alleen wat binnen het venster valt', () => {
     const stand = vierKwart(beginStand(10))
     const { stappen, stand: na } = planStappen(stand, 10, 0.1)
-    expect(stappen).toEqual([{ slag: 0, tel: 0, opTel: true, tijd: 10 }])
+    expect(stappen).toEqual([{ slag: 0, tel: 0, opTel: true, onderverdeling: 1, tellen: 4, tijd: 10 }])
     expect(na.volgende).toBe(10.5)
     expect(planStappen(na, 10.025, 0.1).stappen).toEqual([])
   })
@@ -132,11 +144,11 @@ describe('planStappen', () => {
     const stand = { ...beginStand(0), bpm: 60, tellen: 4, onderverdeling: 2 }
     const { stappen } = planStappen(stand, 0, 2.1)
     expect(stappen).toEqual([
-      { slag: 0, tel: 0, opTel: true, tijd: 0 },
-      { slag: 1, tel: 0, opTel: false, tijd: 0.5 },
-      { slag: 2, tel: 1, opTel: true, tijd: 1 },
-      { slag: 3, tel: 1, opTel: false, tijd: 1.5 },
-      { slag: 4, tel: 2, opTel: true, tijd: 2 },
+      { slag: 0, tel: 0, opTel: true, onderverdeling: 2, tellen: 4, tijd: 0 },
+      { slag: 1, tel: 0, opTel: false, onderverdeling: 2, tellen: 4, tijd: 0.5 },
+      { slag: 2, tel: 1, opTel: true, onderverdeling: 2, tellen: 4, tijd: 1 },
+      { slag: 3, tel: 1, opTel: false, onderverdeling: 2, tellen: 4, tijd: 1.5 },
+      { slag: 4, tel: 2, opTel: true, onderverdeling: 2, tellen: 4, tijd: 2 },
     ])
   })
 
@@ -151,11 +163,43 @@ describe('planStappen', () => {
     const start = { ...beginStand(0), bpm: 60, tellen: 4, onderverdeling: 2 }
     const a = planStappen(start, 0, 0.1)
     expect(a.stand.slag).toBe(1)
-    const b = planStappen({ ...a.stand, onderverdeling: 1, wasOnderverdeling: 2 }, 0.45, 1.6)
+    const b = planStappen(wisselOnderverdeling(a.stand, 1), 0.45, 1.6)
     expect(b.stappen).toEqual([
-      { slag: 1, tel: 0, opTel: false, tijd: 0.5 },
-      { slag: 1, tel: 1, opTel: true, tijd: 1 },
-      { slag: 2, tel: 2, opTel: true, tijd: 2 },
+      { slag: 1, tel: 0, opTel: false, onderverdeling: 2, tellen: 4, tijd: 0.5 },
+      { slag: 1, tel: 1, opTel: true, onderverdeling: 1, tellen: 4, tijd: 1 },
+      { slag: 2, tel: 2, opTel: true, onderverdeling: 1, tellen: 4, tijd: 2 },
+    ])
+  })
+
+  it('terug naar de oude onderverdeling vóór de tel is geen wissel', () => {
+    const start = { ...beginStand(0), bpm: 60, tellen: 4, onderverdeling: 2 }
+    const a = planStappen(start, 0, 0.1).stand
+    expect(wisselOnderverdeling(wisselOnderverdeling(a, 1), 2)).toEqual(a)
+  })
+
+  it('begint een nieuwe maatsoort op de volgende hele tel, niet op een tussenslag', () => {
+    // 3/4 met achtsten, net na de 1; dan naar 6/8 (een slag per achtste).
+    const start = { ...beginStand(0), bpm: 60, tellen: 3, onderverdeling: 2 }
+    const a = planStappen(start, 0, 0.1)
+    const b = planStappen(wisselOnderverdeling(wisselMaatsoort(a.stand, 6), 1), 0.45, 2.6)
+    expect(b.stappen).toEqual([
+      { slag: 1, tel: 0, opTel: false, onderverdeling: 2, tellen: 3, tijd: 0.5 },
+      { slag: 0, tel: 0, opTel: true, onderverdeling: 1, tellen: 6, tijd: 1 },
+      { slag: 1, tel: 1, opTel: true, onderverdeling: 1, tellen: 6, tijd: 2 },
+      { slag: 2, tel: 2, opTel: true, onderverdeling: 1, tellen: 6, tijd: 3 },
+    ])
+    expect(b.stand.tellen).toBe(6)
+  })
+
+  it('begint een nieuwe maatsoort ook midden in de maat op de volgende tel met de 1', () => {
+    const start = { ...beginStand(0), bpm: 60, tellen: 4, onderverdeling: 2 }
+    const a = planStappen(start, 0, 2.1)
+    expect(a.stand.slag).toBe(5)
+    const b = planStappen(wisselMaatsoort(a.stand, 2), 2.45, 1.1)
+    expect(b.stappen.map((s) => [s.slag, s.tel, s.opTel, s.tellen, s.tijd])).toEqual([
+      [5, 2, false, 4, 2.5],
+      [0, 0, true, 2, 3],
+      [1, 0, false, 2, 3.5],
     ])
   })
 

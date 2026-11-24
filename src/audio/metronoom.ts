@@ -1,4 +1,4 @@
-import { beginStand, begrensBpm, isAccent, planStappen, type PlanStand } from '../lib/metronoom'
+import { beginStand, begrensBpm, isAccent, planStappen, wisselMaatsoort, wisselOnderverdeling, type PlanStand } from '../lib/metronoom'
 import { leesMaatsoort } from '../lib/muziek'
 import type { Maatsoort } from '../lib/types'
 import { geefAudioContext } from './context'
@@ -12,7 +12,10 @@ export interface MetronoomOpties {
   onderverdeling?: number
   /** Per tel, 0 = de 1. Komt binnen op het moment dat de tel klinkt; `tijd` is de audiotijd van de tel. */
   opTel?: (tel: number, tijd: number) => void
-  /** Per slag, geteld vanaf 0 binnen de maat (`tel * onderverdeling + n`). Ook op het moment dat hij klinkt. */
+  /**
+   * Per slag, geteld vanaf 0 binnen de maat (`tel * onderverdeling + n`). Ook op het moment dat hij klinkt. Slagen die
+   * nog in een oude onderverdeling of maatsoort geteld zijn (na een wissel, tot de volgende tel) komen niet door.
+   */
   opSlag?: (slag: number, tijd: number) => void
 }
 
@@ -20,7 +23,7 @@ export interface Metronoom {
   start(): void
   stop(): void
   zetBpm(bpm: number): void
-  /** Begint meteen een nieuwe maat. */
+  /** Begint een nieuwe maat op de volgende tel. */
   zetMaatsoort(maatsoort: Maatsoort): void
   zetAccent(accent: boolean): void
   /** Gaat in op de volgende tel. */
@@ -75,7 +78,7 @@ export function maakMetronoom(opties: MetronoomOpties): Metronoom {
       const melding = setTimeout(() => {
         meldingen.delete(melding)
         if (stap.opTel) opties.opTel?.(stap.tel, stap.tijd)
-        opties.opSlag?.(stap.slag, stap.tijd)
+        if (stap.onderverdeling === onderverdeling && stap.tellen === leesMaatsoort(maatsoort).tellen) opties.opSlag?.(stap.slag, stap.tijd)
       }, wacht)
       meldingen.add(melding)
     }
@@ -125,17 +128,14 @@ export function maakMetronoom(opties: MetronoomOpties): Metronoom {
     zetMaatsoort(nieuw) {
       if (nieuw === maatsoort) return
       maatsoort = nieuw
-      if (stand) stand = { ...stand, tellen: leesMaatsoort(nieuw).tellen, slag: 0, onderverdeling, wasOnderverdeling: undefined }
+      if (stand) stand = wisselMaatsoort(stand, leesMaatsoort(nieuw).tellen)
     },
     zetAccent(nieuw) {
       accent = nieuw
     },
     zetOnderverdeling(nieuw) {
       if (nieuw === onderverdeling) return
-      if (stand) {
-        const was = stand.wasOnderverdeling ?? stand.onderverdeling
-        stand = { ...stand, onderverdeling: nieuw, wasOnderverdeling: was === nieuw ? undefined : was }
-      }
+      if (stand) stand = wisselOnderverdeling(stand, nieuw)
       onderverdeling = nieuw
     },
     get loopt() {
