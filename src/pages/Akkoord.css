@@ -1,0 +1,184 @@
+.akkoord {
+  display: grid;
+  gap: var(--ruimte-4);
+}
+
+.akkoord-terug {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tikdoel);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.akkoord-kop {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ruimte-3);
+}
+
+.akkoord-kop h1 {
+  font-size: 2.5rem;
+}
+
+.akkoord-hoofd {
+  display: grid;
+  gap: var(--ruimte-4);
+}
+
+@media (min-width: 768px) {
+  .akkoord-hoofd {
+    grid-template-columns: minmax(280px, 340px) 1fr;
+    align-items: start;
+  }
+}
+
+.akkoord-groot {
+  display: grid;
+  justify-items: center;
+  padding: var(--ruimte-5) var(--ruimte-4);
+}
+
+.akkoord-zijkant {
+  display: grid;
+  gap: var(--ruimte-4);
+  align-content: start;
+}
+
+.akkoord-afspelen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ruimte-2);
+}
+
+.akkoord-afspelen .knop {
+  flex: 1 1 140px;
+}
+
+.akkoord-status {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.akkoord-status legend {
+  margin-bottom: var(--ruimte-2);
+  font-weight: 650;
+}
+
+.akkoord-status-keuzes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ruimte-2);
+}
+
+.akkoord-status-keuze {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tikdoel);
+  padding: var(--ruimte-2);
+  border: 2px solid var(--rand);
+  border-radius: var(--radius);
+  background: var(--vlak);
+  font-weight: 650;
+  text-align: center;
+  cursor: pointer;
+}
+
+.akkoord-status-keuze input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.akkoord-status-keuze:has(input:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.vinkje::before,
+.akkoord-status-keuze:has(input:checked)::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 12px;
+  margin: 0 var(--ruimte-2) 4px 2px;
+  border: solid currentColor;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+.akkoord-status-keuze.akkoord-status-nieuw:has(input:checked) {
+  border-color: var(--status-nieuw);
+  background: var(--status-nieuw-vlak);
+  color: var(--status-nieuw);
+}
+
+.akkoord-status-keuze.akkoord-status-oefenen:has(input:checked) {
+  border-color: var(--status-oefenen);
+  background: var(--status-oefenen-vlak);
+  color: var(--status-oefenen);
+}
+
+.akkoord-status-keuze.akkoord-status-kan-ik:has(input:checked) {
+  border-color: var(--status-kan-ik);
+  background: var(--status-kan-ik-vlak);
+  color: var(--status-kan-ik);
+}
+
+.akkoord-varianten {
+  display: grid;
+  gap: var(--ruimte-2);
+}
+
+.akkoord-varianten ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--ruimte-2);
+  margin-top: var(--ruimte-2);
+  padding: 0;
+  list-style: none;
+}
+
+.akkoord-variant {
+  display: grid;
+  gap: var(--ruimte-2);
+  align-content: space-between;
+  padding: var(--ruimte-3);
+}
+
+.akkoord-variant-getoond {
+  border: 2px solid var(--accent);
+}
+
+.akkoord-variant a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: var(--ruimte-1);
+  color: var(--tekst);
+  text-align: center;
+  text-decoration: none;
+}
+
+.akkoord-variant-noot {
+  font-size: var(--letter-klein);
+}
+
+.akkoord-kies {
+  padding-inline: var(--ruimte-2);
+}
+
+.akkoord-voorkeur {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tikdoel);
+  color: var(--status-kan-ik);
+  font-weight: 650;
+}

@@ -1,0 +1,70 @@
+.akkoord-diagram {
+  width: 100%;
+  height: auto;
+  color: var(--tekst);
+  font-family: var(--font);
+}
+
+.akkoord-diagram-klein {
+  max-width: 112px;
+}
+
+.akkoord-diagram-klein .vinger {
+  font-size: 14px;
+}
+
+.akkoord-diagram-klein .fret,
+.akkoord-diagram-klein .snaar {
+  stroke-width: 1.6;
+}
+
+.akkoord-diagram-middel {
+  max-width: 150px;
+}
+
+.akkoord-diagram-groot {
+  max-width: 300px;
+}
+
+.akkoord-diagram .fret {
+  stroke: var(--tekst-zacht);
+  stroke-width: 1.2;
+}
+
+.akkoord-diagram .snaar {
+  stroke: var(--tekst-zacht);
+}
+
+.akkoord-diagram .topkam {
+  fill: var(--tekst);
+}
+
+.akkoord-diagram .stip {
+  fill: var(--tekst);
+}
+
+.akkoord-diagram .vinger {
+  fill: var(--achtergrond);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.akkoord-diagram .open,
+.akkoord-diagram .dicht {
+  fill: none;
+  stroke: var(--tekst);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.akkoord-diagram .fretnummer {
+  fill: var(--tekst);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.akkoord-diagram .snaarnaam {
+  fill: var(--tekst-zacht);
+  font-size: 11px;
+  font-weight: 600;
+}

@@ -1,0 +1,83 @@
+.akkoorden {
+  display: grid;
+  gap: var(--ruimte-4);
+}
+
+.akkoorden-kopieer {
+  display: grid;
+  gap: var(--ruimte-2);
+  justify-items: start;
+}
+
+.akkoorden-kopieer-tekst {
+  width: 100%;
+  padding: var(--ruimte-3);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius-klein);
+  background: var(--vlak);
+  resize: vertical;
+}
+
+.akkoorden-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ruimte-2);
+}
+
+.akkoorden-filter button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ruimte-2);
+  min-height: var(--tikdoel);
+  padding: 0 var(--ruimte-4);
+  border: 1px solid var(--rand);
+  border-radius: 999px;
+  background: var(--vlak);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.akkoorden-filter button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--op-accent);
+}
+
+.akkoorden-aantal {
+  font-size: var(--letter-klein);
+  opacity: 0.75;
+}
+
+.akkoorden-raster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: var(--ruimte-2);
+  padding: 0;
+  list-style: none;
+}
+
+
+@media (min-width: 600px) {
+  .akkoorden-raster {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--ruimte-3);
+  }
+}
+
+.akkoorden-kaart {
+  display: grid;
+  /* Eén kolom zo breed als de kaart; anders krimpt het diagram mee met het statuslabel. */
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-content: start;
+  gap: var(--ruimte-2);
+  height: 100%;
+  padding: var(--ruimte-2) var(--ruimte-2) var(--ruimte-3);
+  color: var(--tekst);
+  text-decoration: none;
+}
+
+.akkoorden-naam {
+  font-size: var(--letter-groot);
+  font-weight: 700;
+}

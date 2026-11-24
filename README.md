@@ -41,4 +41,6 @@ Nieuwe liedjes, akkoorden en oefeningen voeg je toe met Claude Code: `/nieuw-num
 - **G is standaard de versie met 4 vingers** (past bij Cadd9 en Dsus4); de versie met 3 vingers is een variant die je als voorkeur kunt kiezen.
 - **Wonderwall heeft 5 akkoorden** (Em7, G, Dsus4, A7sus4, Cadd9): dat is één vingerfamilie, dus een uitzondering op "3 of 4 akkoorden".
 - **Kapotte voortgang wordt niet weggegooid** maar apart bewaard, zodat er niets verloren gaat.
+- **Geluid ook met de stilteschakelaar aan** (iPhone): zodra je zelf geluid start, zet de app de afspeelsessie op "playback". Muziek die op de achtergrond speelt, stopt dan.
+- **Het akkoordenraster toont elk akkoord één keer**, in de variant die je koos (anders de standaard). De andere varianten staan op de detailpagina.
 - Meer besluiten staan in `docs/OVERDRACHT.md`.
