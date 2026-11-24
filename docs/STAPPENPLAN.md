@@ -15,7 +15,7 @@ Dit is het bouwplan voor de eerste versie. Het waarom en de begrippen staan in `
 - [x] Stap 1: Projectopzet, datamodellen, voorbeelddata en muzieklogica
 - [x] Stap 2: Akkoorden
 - [x] Stap 3: Metronoom en slagpatroon
-- [ ] Stap 4: Liedjes en meespelen
+- [x] Stap 4: Liedjes en meespelen
 - [ ] Stap 5: Oefeningen en challenges
 - [ ] Stap 6: Vandaag en voortgang
 - [ ] Stap 7: PWA, commands en README

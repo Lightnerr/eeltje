@@ -81,12 +81,15 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 | Toonsoort, capo, bpm, maatsoort | `Liedje.toonsoort` (klinkend), `capo`, `bpm` (tellen van de noemer), `Maatsoort`, `leesMaatsoort` |
 | Slagpatroon (`D - D U - U D U`) en een slag | `Liedje.slagpatroon` (tekst), `Slag`, `leesSlagpatroon`, `slagenPasInMaat`, `slagenPerTel`, `SlagpatroonWeergave`, `telLabels` (`1 & 2 &`) |
 | Klinkend akkoord (wat je hoort) tegenover de vorm (wat je met capo grijpt) | `klinkendAkkoord(vorm, capo)`, `vormBijCapo(klinkend, capo)`, `transponeer`, `zelfdeAkkoord` |
-| Speelbaarheid: welke akkoorden je mist, en het label daarvan | `ontbrekendeAkkoorden(liedje, bekend)`, `speelbaarheidsLabel(ontbrekend)` |
+| Speelbaarheid: welke akkoorden je mist, en het label daarvan | `ontbrekendeAkkoorden(liedje, bekend)`, `speelbaarheidsLabel(ontbrekend)`, `Speelbaarheid` (`kan`, `bijna`, `mist`), `SpeelbaarheidLabel` |
 | Vereenvoudiging: een makkelijker akkoord dat hetzelfde werk doet (Fmaj7 voor F) | `vereenvoudigingen(naam)`, `vereenvoudig(akkoorden, bekend)`, `Liedje.origineleAkkoorden` |
-| Capo-suggestie: een andere capo of vorm waarmee het wel lukt | `capoSuggestie(liedje, bekend)` → `CapoSuggestie` |
-| Leeradvies: welk akkoord je nu moet leren | `leeradvies(liedjes, bekend)` → `Leeradvies` |
-| AI-versie, gecontroleerd: door Claude gemaakt, en of de eigenaar hem nakeek | `Liedje.bron`, `Liedje.geverifieerd` (in de data), `Voortgang.gecontroleerd`, `zetGecontroleerd` |
+| Capo-suggestie: een andere capo of vorm waarmee het wel lukt | `capoSuggestie(liedje, bekend)` → `CapoSuggestie`, `capoSuggestieTekst(liedje, suggestie)`; `capoTekst(capo)` ("Capo 2", "Geen capo") |
+| Leeradvies: welk akkoord je nu moet leren | `leeradvies(liedjes, bekend)` → `Leeradvies`, `leeradviesTekst` |
+| AI-versie, gecontroleerd: door Claude gemaakt, en of de eigenaar hem nakeek | `Liedje.bron`, `Liedje.geverifieerd` (in de data), `Voortgang.gecontroleerd`, `zetGecontroleerd`, `isGecontroleerd`, `toonAiLabel` |
 | Favoriet liedje | `Voortgang.favorieten`, `wisselFavoriet` |
+| Liedjeslijst: per liedje speelbaarheid, capo-suggestie, favoriet en AI-label | `liedjesOverzicht(liedjes, voortgang)` → `LiedjeRegel` (`src/lib/liedjes.ts`) |
+| Meespelen: aftellen, de huidige maat en tel, het volgende akkoord, een sectie herhalen | `meespeelStap(stand, actie, volgorde)` → `Meespeelstand` (`fase`: `stil`, `aftellen`, `spelen`, `einde`), `Meespeelactie`, `meespeelWeergave`, `akkoordOpTel` (`src/lib/meespelen.ts`) |
+| Meespeeltempo: 40% t/m 120% van het liedje | `begrensTempo`, `meespeelBpm`, `MIN_TEMPO`, `MAX_TEMPO`, `TEMPO_STAP` |
 | Oefening, met doel, stappen, tabje en standaardtempo | `Oefening` (`doel`, `stappen`, `tab`, `standaardtempo`); `src/data/oefeningen.json`, `zoekOefening` |
 | Challenge en zijn resultaat: wissels per minuut, hoogste bpm of volgehouden seconden | `ChallengeType`, `ChallengeResultaat` (`sleutel`, `waarde`, `bpm`) |
 | Akkoordpaar (A-D is hetzelfde als D-A) | `ChallengeResultaat.sleutel` (`A-D`); `paarSleutel` volgt in stap 5 |

@@ -132,3 +132,37 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - Een tweede, zachter accent op de 4 in 6/8.
 - Een zachte klik op de tussenslagen (`onderverdeling`) als optie.
 - Tempotrainer: na N maten automatisch een paar bpm sneller.
+
+## Besluiten uit stap 4
+
+### Besluiten
+
+- **Meespelen is een pure toestandsmachine** (`src/lib/meespelen.ts`): `meespeelStap(stand, actie, volgorde)` met de acties `start`, `pauze`, `tel` (elke `opTel` van de metronoom), `herhaal` en `naarSectie`; `meespeelWeergave(stand, volgorde, maatsoort)` geeft alles wat het scherm toont (aftelgetal, akkoord, volgend akkoord, de maten van de huidige sectie, of er aangeslagen moet worden). Het scherm rekent zelf niets.
+- **Maatgrenzen komen van de metronoom.** De stap gebruikt het telnummer uit `opTel`: elke 1 gaat naar de volgende maat. Aftellen loopt tot de volgende 1: bij de start een hele maat (in 6/8 zes achtsten), na een sprong naar een andere sectie tijdens het spelen de rest van de lopende maat. Zo valt de eerste maat altijd op het accent.
+- **Sectie herhalen** onthoudt de `volgordeIndex` (niet de naam), dus het tweede couplet herhaalt zichzelf en niet het eerste. Na de laatste maat van die sectie gaat hij terug naar zijn eerste maat, tot je het uitzet; dan loopt hij gewoon door. "Naar sectie" neemt herhalen mee naar de nieuwe sectie.
+- **Volgend akkoord** = het volgende akkoordvak: het tweede akkoord in de maat, anders het eerste van de volgende maat (met herhalen meegerekend). Ook als dat hetzelfde akkoord is.
+- **Pauze** houdt de maat vast; opnieuw starten telt af en begint aan het begin van die maat. Na de laatste maat staat hij op "einde" en stopt de metronoom; "Opnieuw" begint vooraan.
+- **Tempo** in stappen van 10%, 40 t/m 120%; `meespeelBpm` begrenst daarna op 30-220 van de metronoom (Amazing Grace op 40% wordt dus 34 bpm, niet lager).
+- **Akkoordgeluid** (standaard uit): `slaAan` met je voorkeursvariant op elke 1 en bij elke akkoordwissel binnen een maat. Direct in de `opTel`-callback, niet in een effect.
+- **`useMetronoom` kreeg een optionele `opTel(tel)`** naast de state `tel` (uitbreiding, bestaand gebruik blijft gelijk). Nodig omdat React state-updates samenvoegt: in een verborgen tabblad komen meerdere tellen tegelijk binnen en zou de state er één missen.
+- **Spatiebalk** start/pauzeert altijd, ook als een knop focus heeft (in de capture-fase, keydown én keyup tegengehouden); knoppen druk je dan met Enter. Anders sluit de spatie het scherm via de sluitknop die bij openen de focus krijgt.
+- **Liedjeslijst** (`liedjesOverzicht` in `src/lib/liedjes.ts`): favorieten in een eigen groep bovenaan, daarna op aantal ontbrekende akkoorden, dan op titel. De ster in de lijst is alleen een teken; favoriet maken gaat op de liedjespagina.
+- **Capo-suggestie als zin** (`capoSuggestieTekst`): "Met capo 5 en de vormen G, D, Em, C kan je dit spelen. Speel C voor Cmaj7." Een vereenvoudiging noemt het echte akkoord bij de nieuwe capo.
+- **AI-label**: `toonAiLabel` = `bron: 'ai-gegenereerd'` en niet `isGecontroleerd` (geverifieerd in de data, of in `Voortgang.gecontroleerd`). De knop "Ik heb hem gecontroleerd" gebruikt `zetGecontroleerd`; daarna staat er "Door jou gecontroleerd" met "Terugdraaien" (`zetGecontroleerd(v, id, false)`). Bij `geverifieerd: true` geen label en geen knop.
+- **`SpeelbaarheidLabel`** (`src/components`) in de kleuren van kan ik / oefenen / nieuw, met eigen klassen (`speelbaarheid-kan|bijna|mist`). **`Ster`** is een SVG, want ★ en ▶ ontbreken in sommige lettertypen (headless Chrome) of worden een emoji.
+- **"Origineel: Am, C, G, F, E"** toont de hele lijst `origineleAkkoorden`; de `opmerking` van het liedje zegt wat er vereenvoudigd is.
+
+### Valkuilen
+
+- `react-hooks/exhaustive-deps` staat in oxlint aan (waarschuwing). Een effect dat "alleen per tel" moet draaien, kun je beter als callback schrijven.
+- `react(refs)`: `useRef(beginMeespelen())` en dan `useState(ref.current)` geeft een waarschuwing; maak eerst de state en geef die aan `useRef`.
+- Met `kijk.sh` zie je het meespelen lopen met `'/liedjes/wonderwall/meespelen!.meespelen-start'`; na 650 ms zit hij nog in het aftellen. Met `KIJK_EVAL='new Promise(r=>setTimeout(r,5000))'` wacht hij tot er een maat oplicht.
+- `node_modules` in een verse worktree kan leeg zijn, ook al zegt iemand dat `bun install` gedaan is. Controleer `node_modules/.bin`.
+
+### Geparkeerde ideeën
+
+- `slaAan` klinkt ongeveer 50 ms plus de uitvoerlatentie na de klik, omdat `opTel` pas komt als de klik klinkt. Strakker kan met een `slaAan(akkoord, tijd)` die vooruit op de audioklok plant, via een `opGepland`-callback van de metronoom.
+- Het tempo per liedje onthouden (nu begint hij altijd op 100%).
+- Op een breed scherm de bediening naast het akkoord zetten; nu één kolom van max. 720px, die op een laptop scrolt.
+- In de lijst filteren op "Kan je spelen".
+- Een "speel A voor A7"-hint als er geen capo-suggestie is (`vereenvoudig`), uit stap 1.
