@@ -1,0 +1,34 @@
+.speelbaarheid {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ruimte-1);
+  padding: 2px var(--ruimte-2);
+  border-radius: 999px;
+  font-size: var(--letter-klein);
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.speelbaarheid::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.speelbaarheid-kan {
+  color: var(--status-kan-ik);
+  background: var(--status-kan-ik-vlak);
+}
+
+.speelbaarheid-bijna {
+  color: var(--status-oefenen);
+  background: var(--status-oefenen-vlak);
+}
+
+.speelbaarheid-mist {
+  color: var(--status-nieuw);
+  background: var(--status-nieuw-vlak);
+}
