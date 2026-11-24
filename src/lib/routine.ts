@@ -93,12 +93,21 @@ function akkoordwissel(voortgang: Voortgang, inhoud: Inhoud, datum: string): Rou
   return {
     soort: 'akkoordwissel',
     titel: `Wissel ${a} en ${b}`,
-    uitleg: oefenen.length
-      ? 'One minute changes: wissel een minuut lang en tel hoe vaak het lukt. Doe dat drie keer.'
-      : 'Deze ken je al. Houd de wissel snel: een minuut lang, drie keer.',
+    uitleg: wisselUitleg(voortgang, a, b),
     minuten: MINUTEN.akkoordwissel,
     route: { pagina: 'one-minute-changes', a, b },
   }
+}
+
+function wisselUitleg(voortgang: Voortgang, a: string, b: string): string {
+  const nieuw = [a, b].filter((n) => statusVan(voortgang, n) === 'nieuw')
+  if (nieuw.length) {
+    return `${nieuw.join(' en ')} ${nieuw.length === 1 ? 'is' : 'zijn'} nieuw voor je. Leer eerst de greep, wissel dan een minuut lang en tel hoe vaak het lukt.`
+  }
+  if (statusVan(voortgang, a) === 'kan ik' && statusVan(voortgang, b) === 'kan ik') {
+    return 'Deze ken je al. Houd de wissel snel: een minuut lang, drie keer.'
+  }
+  return 'One minute changes: wissel een minuut lang en tel hoe vaak het lukt. Doe dat drie keer.'
 }
 
 function makkelijkste(akkoorden: readonly Akkoord[], behalve: readonly string[]): string | undefined {
@@ -106,10 +115,20 @@ function makkelijkste(akkoorden: readonly Akkoord[], behalve: readonly string[])
   return [...kandidaten].sort((x, y) => x.moeilijkheid - y.moeilijkheid)[0]?.naam
 }
 
-/** Een liedje dat je (bijna) kunt: zo min mogelijk ontbrekende akkoorden, en dan liefst met een akkoord op "oefenen". */
-function liedje(voortgang: Voortgang, inhoud: Inhoud, datum: string): RoutineOnderdeel | null {
-  const bekend = bekendeAkkoorden(voortgang)
-  const oefenen = bekend.filter((n) => statusVan(voortgang, n) === 'oefenen')
+/** Zoals `speelbaarheidsLabel`, maar met de namen erbij: in de routine is er ruimte, en "Mist er 2" zegt je niets. */
+function ontbrekendLabel(ontbrekend: readonly string[]): string {
+  if (ontbrekend.length === 1) return speelbaarheidsLabel(ontbrekend)
+  return `Mist nog ${ontbrekend.slice(0, -1).join(', ')} en ${ontbrekend[ontbrekend.length - 1]}`
+}
+
+/**
+ * Een liedje dat je (bijna) kunt: zo min mogelijk ontbrekende akkoorden, en dan liefst met een akkoord op "oefenen".
+ * `erbij` zijn nieuwe akkoorden uit de wissel van vandaag: die tellen mee alsof je ze aan het oefenen bent, zodat het
+ * liedje aansluit op wat je net leerde. Capo-suggesties tellen niet mee.
+ */
+function liedje(voortgang: Voortgang, inhoud: Inhoud, datum: string, erbij: readonly string[]): RoutineOnderdeel | null {
+  const bekend = [...bekendeAkkoorden(voortgang), ...erbij]
+  const oefenen = [...bekend.filter((n) => statusVan(voortgang, n) === 'oefenen'), ...erbij]
   const metOntbrekend = [...inhoud.liedjes]
     .sort((x, y) => x.id.localeCompare(y.id))
     .map((l) => ({ liedje: l, ontbrekend: ontbrekendeAkkoorden(l, bekend) }))
@@ -118,12 +137,14 @@ function liedje(voortgang: Voortgang, inhoud: Inhoud, datum: string): RoutineOnd
   const bijna = metOntbrekend.filter((x) => x.ontbrekend.length === minst)
   const metOefenen = bijna.filter((x) => akkoordenVan(x.liedje).some((a) => oefenen.some((o) => zelfdeAkkoord(a, o))))
   const gekozen = kies(metOefenen.length ? metOefenen : bijna, datum, 'liedje')!
+  const uitDeWissel = erbij.filter((n) => akkoordenVan(gekozen.liedje).some((a) => zelfdeAkkoord(a, n)))
+  const metWissel = uitDeWissel.length ? `, met ${uitDeWissel.join(' en ')} uit de wissel erbij` : ''
   return {
     soort: 'liedje',
     titel: `Speel ${gekozen.liedje.titel}`,
     uitleg: gekozen.ontbrekend.length
-      ? `${speelbaarheidsLabel(gekozen.ontbrekend)}. Speel mee wat je kunt, in een rustig tempo.`
-      : 'Kan je spelen. Speel hem mee in een rustig tempo.',
+      ? `${ontbrekendLabel(gekozen.ontbrekend)}${metWissel}. Speel mee wat je kunt, in een rustig tempo.`
+      : `Kan je spelen${metWissel}. Speel hem mee in een rustig tempo.`,
     minuten: MINUTEN.liedje,
     route: { pagina: 'liedje', id: gekozen.liedje.id },
   }
@@ -135,8 +156,57 @@ function liedje(voortgang: Voortgang, inhoud: Inhoud, datum: string): RoutineOnd
  */
 export function maakRoutine(voortgang: Voortgang, inhoud: Inhoud, nu = new Date()): Routine {
   const datum = dagSleutel(nu)
-  const onderdelen = [opwarmen(inhoud), akkoordwissel(voortgang, inhoud, datum), liedje(voortgang, inhoud, datum)].filter(
-    (o): o is RoutineOnderdeel => o !== null,
-  )
+  const wissel = akkoordwissel(voortgang, inhoud, datum)
+  const erbij = wissel?.route.pagina === 'one-minute-changes' ? [wissel.route.a, wissel.route.b].filter((n): n is string => !!n && statusVan(voortgang, n) === 'nieuw') : []
+  const onderdelen = [opwarmen(inhoud), wissel, liedje(voortgang, inhoud, datum, erbij)].filter((o): o is RoutineOnderdeel => o !== null)
   return { datum, onderdelen, minuten: onderdelen.reduce((s, o) => s + o.minuten, 0) }
+}
+
+/** Zoals de routine van vandaag in de opslag staat (`opslag.bewaarRoutine`), apart van de voortgang. */
+export interface BewaardeRoutine {
+  datum: string
+  routine: Routine
+}
+
+const SOORTEN: readonly string[] = ['opwarmen', 'akkoordwissel', 'liedje']
+
+function isObject(x: unknown): x is Record<string, unknown> {
+  return typeof x === 'object' && x !== null && !Array.isArray(x)
+}
+
+function verwijstNaarInhoud(route: unknown, inhoud: Inhoud): boolean {
+  if (!isObject(route)) return false
+  switch (route.pagina) {
+    case 'oefening':
+      return inhoud.oefeningen.some((o) => o.id === route.id)
+    case 'liedje':
+      return inhoud.liedjes.some((l) => l.id === route.id)
+    case 'one-minute-changes':
+      return [route.a, route.b].every((n) => inhoud.akkoorden.some((a) => a.naam === n))
+    default:
+      return false
+  }
+}
+
+function isGeldigeRoutine(x: unknown, datum: string, inhoud: Inhoud): x is Routine {
+  if (!isObject(x) || x.datum !== datum || typeof x.minuten !== 'number' || !Array.isArray(x.onderdelen)) return false
+  return x.onderdelen.every(
+    (o: unknown) =>
+      isObject(o) &&
+      SOORTEN.includes(o.soort as string) &&
+      typeof o.titel === 'string' &&
+      typeof o.uitleg === 'string' &&
+      typeof o.minuten === 'number' &&
+      verwijstNaarInhoud(o.route, inhoud),
+  )
+}
+
+/**
+ * De routine van vandaag ligt vast zodra hij gemaakt is, ook als je daarna een status wijzigt. `bewaard` komt rauw uit
+ * de opslag: is hij van vandaag en verwijst hij nog naar bestaande inhoud, dan blijft hij; anders een nieuwe.
+ */
+export function routineVoorVandaag(bewaard: unknown, voortgang: Voortgang, inhoud: Inhoud, nu = new Date()): Routine {
+  const datum = dagSleutel(nu)
+  if (isObject(bewaard) && isGeldigeRoutine(bewaard.routine, datum, inhoud)) return bewaard.routine
+  return maakRoutine(voortgang, inhoud, nu)
 }

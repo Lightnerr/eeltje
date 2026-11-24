@@ -36,9 +36,22 @@ describe('streak', () => {
     expect(streak(met(), nu())).toBe(0)
   })
 
-  it('telt aaneengesloten dagen tot en met vandaag', () => {
-    const v = met(sessie('2026-11-24T08:00:00'), sessie('2026-11-23T20:00:00'), sessie('2026-11-22T20:00:00'), sessie('2026-11-20T20:00:00'))
+  it('telt de dagen waarop je oefende, tot en met vandaag', () => {
+    const v = met(sessie('2026-11-24T08:00:00'), sessie('2026-11-23T20:00:00'), sessie('2026-11-22T20:00:00'))
     expect(streak(v, nu())).toBe(3)
+  })
+
+  it('één losse dag niet oefenen breekt hem niet, maar telt ook niet mee', () => {
+    // 21 november overgeslagen: 24, 23, 22 en 20 tellen.
+    const v = met(sessie('2026-11-24T08:00:00'), sessie('2026-11-23T20:00:00'), sessie('2026-11-22T20:00:00'), sessie('2026-11-20T20:00:00'))
+    expect(streak(v, nu())).toBe(4)
+    // Om de dag oefenen houdt hem in leven.
+    expect(streak(met(sessie('2026-11-24T08:00:00'), sessie('2026-11-22T08:00:00'), sessie('2026-11-20T08:00:00')), nu())).toBe(3)
+  })
+
+  it('twee dagen achter elkaar niet oefenen breekt hem wel', () => {
+    const v = met(sessie('2026-11-24T08:00:00'), sessie('2026-11-23T20:00:00'), sessie('2026-11-20T20:00:00'), sessie('2026-11-19T20:00:00'))
+    expect(streak(v, nu())).toBe(2)
   })
 
   it('straft niet: vandaag nog niet geoefend, gisteren wel, dan loopt hij door', () => {
@@ -46,8 +59,13 @@ describe('streak', () => {
     expect(streak(v, nu())).toBe(2)
   })
 
-  it('is 0 als je gisteren en vandaag niet oefende', () => {
-    expect(streak(met(sessie('2026-11-22T20:00:00')), nu())).toBe(0)
+  it('vandaag telt pas als gemist als de dag om is', () => {
+    // Gisteren gemist, vandaag nog niet geoefend: nog maar één gemiste dag.
+    expect(streak(met(sessie('2026-11-22T20:00:00'), sessie('2026-11-21T20:00:00')), nu())).toBe(2)
+    // Gisteren en eergisteren gemist: voorbij.
+    expect(streak(met(sessie('2026-11-21T20:00:00')), nu())).toBe(0)
+    // Vandaag geoefend, maar de twee dagen ervoor niet.
+    expect(streak(met(sessie('2026-11-24T08:00:00'), sessie('2026-11-21T20:00:00')), nu())).toBe(1)
   })
 
   it('telt een dag met meer sessies één keer', () => {
@@ -79,9 +97,16 @@ describe('streak', () => {
 describe('minuten', () => {
   const v = met(sessie('2026-11-24T08:00:00', 12), sessie('2026-11-24T00:10:00', 3.5), sessie('2026-11-23T23:50:00', 20), sessie('2026-11-10T20:00:00', 15))
 
-  it('totaalMinuten telt alles op en rondt af', () => {
-    expect(totaalMinuten(v)).toBe(51)
-    expect(totaalMinuten(met())).toBe(0)
+  it('totaalMinuten telt alles tot nu op en rondt af', () => {
+    expect(totaalMinuten(v, nu())).toBe(51)
+    expect(totaalMinuten(met(), nu())).toBe(0)
+  })
+
+  it('totaalMinuten telt geen sessies in de toekomst, net als de weken', () => {
+    const metToekomst = met(...v.sessies, sessie('2026-11-25T08:00:00', 30))
+    expect(totaalMinuten(metToekomst, nu())).toBe(51)
+    const weken = minutenPerWeek(metToekomst, nu(), 3)
+    expect(weken.reduce((s, w) => s + w.minuten, 0)).toBe(totaalMinuten(metToekomst, nu()))
   })
 
   it('minutenVandaag telt alleen de sessies die vandaag begonnen', () => {
@@ -121,9 +146,9 @@ describe('minutenPerWeek', () => {
 })
 
 describe('met de demo-voortgang', () => {
-  it('een streak van 7, vandaag geoefend en minuten in elke week', () => {
+  it('elke dag van de week plus om de dag daarvoor telt mee, vandaag geoefend en minuten in elke week', () => {
     const demo = demoVoortgang(nu())
-    expect(streak(demo, nu())).toBe(7)
+    expect(streak(demo, nu())).toBe(demo.sessies.length)
     expect(minutenVandaag(demo, nu())).toBeGreaterThan(0)
     expect(minutenPerWeek(demo, nu(), 4).every((w) => w.minuten > 0)).toBe(true)
   })

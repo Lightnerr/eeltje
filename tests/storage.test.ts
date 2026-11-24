@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { demoVoortgang } from '../src/lib/demo'
 import { maakOpslag, opslagSleutel } from '../src/lib/storage'
-import { nieuweVoortgang, zetStatus } from '../src/lib/voortgang'
+import { exporteerVoortgang, nieuweVoortgang, zetStatus } from '../src/lib/voortgang'
+import type { BewaardeRoutine } from '../src/lib/routine'
 
 class GeheugenOpslag implements Storage {
   private data = new Map<string, string>()
@@ -116,5 +117,51 @@ describe('maakOpslag', () => {
     expect(echt.isEigenWijziging(null, storage)).toBe(true)
     expect(echt.isEigenWijziging('eeltje.voortgang.v1', new GeheugenOpslag())).toBe(false)
     expect(echt.isEigenWijziging('iets-anders', storage)).toBe(false)
+  })
+
+  describe('routine van vandaag', () => {
+    const bewaard: BewaardeRoutine = {
+      datum: '2026-11-24',
+      routine: { datum: '2026-11-24', minuten: 6, onderdelen: [{ soort: 'liedje', titel: 'Speel Zombie', uitleg: 'Kan je spelen.', minuten: 6, route: { pagina: 'liedje', id: 'zombie' } }] },
+    }
+
+    it('bewaart hem onder een eigen sleutel, met het previewachtervoegsel', () => {
+      const storage = new GeheugenOpslag()
+      const echt = maakOpslag({ storage })
+      const preview = maakOpslag({ storage, preview: 'pr-12', klok })
+      expect(echt.laadRoutine()).toBeNull()
+      expect(echt.bewaarRoutine(bewaard)).toBe(true)
+      expect(JSON.parse(storage.getItem('eeltje.voortgang.routine')!)).toEqual(bewaard)
+      expect(echt.laadRoutine()).toEqual(bewaard)
+      expect(preview.laadRoutine()).toBeNull()
+      preview.bewaarRoutine(bewaard)
+      expect(storage.getItem('eeltje.voortgang.routine.pr-12')).not.toBeNull()
+    })
+
+    it('raakt de voortgang niet en zit niet in de export', () => {
+      const storage = new GeheugenOpslag()
+      const opslag = maakOpslag({ storage })
+      opslag.bewaarRoutine(bewaard)
+      expect(storage.getItem('eeltje.voortgang.v1')).toBeNull()
+      expect(exporteerVoortgang(opslag.laad())).not.toContain('Zombie')
+    })
+
+    it('wis haalt ook de routine weg', () => {
+      const storage = new GeheugenOpslag()
+      const opslag = maakOpslag({ storage })
+      opslag.bewaar(nieuweVoortgang())
+      opslag.bewaarRoutine(bewaard)
+      opslag.wis()
+      expect(storage.getItem('eeltje.voortgang.routine')).toBeNull()
+      expect(opslag.laadRoutine()).toBeNull()
+    })
+
+    it('kapotte JSON of een weigerende opslag geeft null', () => {
+      const storage = new GeheugenOpslag()
+      storage.setItem('eeltje.voortgang.routine', '{kapot')
+      expect(maakOpslag({ storage }).laadRoutine()).toBeNull()
+      expect(maakOpslag({ storage: new KapotteOpslag() }).laadRoutine()).toBeNull()
+      expect(maakOpslag({ storage: null }).bewaarRoutine(bewaard)).toBe(false)
+    })
   })
 })

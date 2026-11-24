@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 import * as data from '../src/data'
 import { demoVoortgang } from '../src/lib/demo'
 import { ontbrekendeAkkoorden } from '../src/lib/muziek'
-import { maakRoutine, type Inhoud, type Routine } from '../src/lib/routine'
+import { maakRoutine, routineVoorVandaag, type Inhoud, type Routine } from '../src/lib/routine'
 import type { Akkoord, AkkoordStatus, Liedje, Oefening, Voortgang } from '../src/lib/types'
-import { bekendeAkkoorden, nieuweVoortgang } from '../src/lib/voortgang'
+import { bekendeAkkoorden, nieuweVoortgang, statusVan, zetStatus } from '../src/lib/voortgang'
 
 const nu = new Date('2026-11-24T12:00:00')
 const echt: Inhoud = { akkoorden: data.akkoorden, liedjes: data.liedjes, oefeningen: data.oefeningen }
@@ -193,6 +193,99 @@ describe('maakRoutine', () => {
   it('zonder spider warm je op met de eerste oefening', () => {
     const r = maakRoutine(nieuweVoortgang(), { ...eigen, oefeningen: [oefening('chromatisch')] }, nu)
     expect(onderdeel(r, 'opwarmen').route).toEqual({ pagina: 'oefening', id: 'chromatisch' })
+  })
+})
+
+describe('uitleg en liedje als de wissel akkoorden bevat die je nog niet kent', () => {
+  function wisselAkkoorden(r: Routine): [string, string] {
+    const route = onderdeel(r, 'akkoordwissel').route as { a: string; b: string }
+    return [route.a, route.b]
+  }
+
+  // Met alleen Em op oefenen kan het niet beter dan 2: elk liedje met Em heeft 4 akkoorden.
+  for (const [naam, v, hoogstens] of [
+    ['alles op nieuw', met({}), 1],
+    ['één akkoord op kan ik, niets op oefenen', met({ D: 'kan ik' }), 1],
+    ['één akkoord op oefenen', met({ Em: 'oefenen' }), 2],
+  ] as const) {
+    it(`${naam}: geen "ken je al", wel welk akkoord nieuw is, en een liedje met die akkoorden`, () => {
+      for (let d = 0; d < 7; d++) {
+        const r = maakRoutine(v, echt, dag(d))
+        controleerVorm(r)
+        const wissel = wisselAkkoorden(r)
+        const nieuw = wissel.filter((a) => statusVan(v, a) === 'nieuw')
+        expect(nieuw.length, `dag ${d}`).toBeGreaterThan(0)
+        const uitleg = onderdeel(r, 'akkoordwissel').uitleg
+        expect(uitleg).not.toMatch(/ken je al/)
+        for (const a of nieuw) expect(uitleg).toContain(a)
+
+        const metWissel = [...bekendeAkkoorden(v), ...wissel]
+        const liedje = data.zoekLiedje((onderdeel(r, 'liedje').route as { id: string }).id)!
+        const minst = Math.min(...data.liedjes.map((l) => ontbrekendeAkkoorden(l, metWissel).length))
+        expect(ontbrekendeAkkoorden(liedje, metWissel), `dag ${d} ${liedje.id}`).toHaveLength(minst)
+        expect(minst).toBeLessThanOrEqual(hoogstens)
+        const uitleg2 = onderdeel(r, 'liedje').uitleg
+        expect(uitleg2).not.toMatch(/Mist er/)
+        for (const a of ontbrekendeAkkoorden(liedje, metWissel)) expect(uitleg2).toContain(a)
+      }
+    })
+  }
+
+  it('twee akkoorden op kan ik: "ken je al"', () => {
+    const r = maakRoutine(met({ A: 'kan ik', D: 'kan ik' }), eigen, nu)
+    expect(onderdeel(r, 'akkoordwissel').uitleg).toMatch(/ken je al/)
+  })
+
+  it('een akkoord op oefenen: one minute changes, zonder "ken je al" of "nieuw"', () => {
+    const uitleg = onderdeel(maakRoutine(met({ A: 'oefenen', D: 'kan ik' }), eigen, nu), 'akkoordwissel').uitleg
+    expect(uitleg).toMatch(/minuut/)
+    expect(uitleg).not.toMatch(/ken je al|nieuw/)
+  })
+})
+
+describe('routineVoorVandaag', () => {
+  const v = demoVoortgang(nu)
+  const vandaag = maakRoutine(v, echt, nu)
+  const bewaard = { datum: '2026-11-24', routine: vandaag }
+
+  it('houdt de routine van vandaag vast, ook als je een status wijzigt', () => {
+    const anders = zetStatus(v, 'G', 'kan ik')
+    expect(maakRoutine(anders, echt, nu)).not.toEqual(vandaag)
+    expect(routineVoorVandaag(structuredClone(bewaard), anders, echt, new Date('2026-11-24T22:00:00'))).toEqual(vandaag)
+  })
+
+  it('maakt een nieuwe op een nieuwe dag', () => {
+    const morgen = new Date('2026-11-25T08:00:00')
+    expect(routineVoorVandaag(bewaard, v, echt, morgen)).toEqual(maakRoutine(v, echt, morgen))
+  })
+
+  it('maakt een nieuwe als er niets of iets vreemds bewaard is', () => {
+    for (const vreemd of [null, undefined, 'tekst', 42, {}, { datum: '2026-11-24' }, { datum: '2026-11-24', routine: { onderdelen: 'nee' } },
+      { datum: '2026-11-24', routine: { ...vandaag, onderdelen: [{ ...vandaag.onderdelen[0], route: null }] } },
+      { datum: '2026-11-24', routine: { ...vandaag, datum: '2026-11-23' } }]) {
+      expect(routineVoorVandaag(vreemd, v, echt, nu), JSON.stringify(vreemd)).toEqual(vandaag)
+    }
+  })
+
+  it('maakt een nieuwe als de bewaarde naar inhoud verwijst die er niet meer is', () => {
+    const v2 = met({ A: 'oefenen', D: 'oefenen' })
+    const eigenVandaag = maakRoutine(v2, eigen, nu)
+    const metOnderdeel = (soort: string, route: unknown) => ({
+      datum: '2026-11-24',
+      routine: { ...eigenVandaag, onderdelen: eigenVandaag.onderdelen.map((o) => (o.soort === soort ? { ...o, route } : o)) },
+    })
+    expect(routineVoorVandaag({ datum: '2026-11-24', routine: eigenVandaag }, v2, eigen, nu)).toEqual(eigenVandaag)
+    const weg = [
+      metOnderdeel('opwarmen', { pagina: 'oefening', id: 'weg' }),
+      metOnderdeel('akkoordwissel', { pagina: 'one-minute-changes', a: 'A', b: 'Weg' }),
+      metOnderdeel('liedje', { pagina: 'liedje', id: 'weg' }),
+      metOnderdeel('liedje', { pagina: 'vandaag' }),
+    ]
+    for (const b of weg) {
+      // Een gewijzigde status laat zien dat er echt opnieuw gemaakt is.
+      const anders = zetStatus(v2, 'E', 'oefenen')
+      expect(routineVoorVandaag(b, anders, eigen, nu), JSON.stringify(b.routine.onderdelen)).toEqual(maakRoutine(anders, eigen, nu))
+    }
   })
 })
 

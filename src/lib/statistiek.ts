@@ -33,22 +33,29 @@ function naarMinuten(seconden: number): number {
 }
 
 /**
- * Aaneengesloten dagen met een sessie, tot en met vandaag. Heb je vandaag nog niet geoefend maar gisteren wel, dan
- * loopt hij nog door: de streak straft niet zolang de dag nog niet om is.
+ * Het aantal dagen waarop je oefende, terugtellend vanaf vandaag. De streak straft niet: één losse dag zonder oefenen
+ * breekt hem niet (maar telt ook niet mee), pas twee gemiste dagen achter elkaar. Vandaag telt pas als gemist als de
+ * dag om is.
  */
 export function streak(v: Voortgang, nu = new Date()): number {
   const dagen = new Set(geldigeSessies(v, nu).map((s) => dagSleutel(s.start)))
   let dag = dagen.has(dagSleutel(nu)) ? nu : dagenErbij(nu, -1)
   let aantal = 0
-  while (dagen.has(dagSleutel(dag))) {
-    aantal++
+  let gemistAchterElkaar = 0
+  while (gemistAchterElkaar < 2) {
+    if (dagen.has(dagSleutel(dag))) {
+      aantal++
+      gemistAchterElkaar = 0
+    } else {
+      gemistAchterElkaar++
+    }
     dag = dagenErbij(dag, -1)
   }
   return aantal
 }
 
-export function totaalMinuten(v: Voortgang): number {
-  return naarMinuten(geldigeSessies(v).reduce((som, s) => som + s.seconden, 0))
+export function totaalMinuten(v: Voortgang, nu = new Date()): number {
+  return naarMinuten(geldigeSessies(v, nu).reduce((som, s) => som + s.seconden, 0))
 }
 
 export function minutenVandaag(v: Voortgang, nu = new Date()): number {
