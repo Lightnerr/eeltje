@@ -1,6 +1,6 @@
 import type { AkkoordStatus, ChallengeResultaat, ChallengeType, Sessie, Voortgang } from './types'
 
-const STATUSSEN: readonly AkkoordStatus[] = ['nieuw', 'oefenen', 'kan ik']
+export const STATUSSEN: readonly AkkoordStatus[] = ['nieuw', 'oefenen', 'kan ik']
 const CHALLENGES: readonly ChallengeType[] = ['one-minute-changes', 'spider-ladder', 'wisselreeks']
 const GEEN_VOORTGANG = 'Dit is geen voortgang van Eeltje.'
 

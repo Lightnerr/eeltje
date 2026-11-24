@@ -40,3 +40,5 @@ export function kopieerTekst(voortgang: Voortgang, akkoorden: readonly Pick<Akko
     .map(([lijst, kop]) => `${kop}: ${lijst}.`)
   return zinnen.length ? zinnen.join(' ') : 'Ik ken nog geen akkoorden.'
 }
+
+export const STATUSLABEL: Record<AkkoordStatus, string> = { nieuw: 'Nieuw', oefenen: 'Oefenen', 'kan ik': 'Kan ik' }
