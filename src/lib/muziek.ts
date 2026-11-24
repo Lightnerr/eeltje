@@ -239,34 +239,36 @@ export interface CapoSuggestie {
 
 const HOOGSTE_CAPO = 7
 
-/** Een andere capo waarmee een liedje dat je nog niet kunt wel lukt met de akkoorden die je kent. */
+/** Hoe het liedje bij `capo` uitpakt: per oude vorm de bekende vorm, of `null` als er een akkoord ontbreekt. */
+function opCapo(oud: readonly string[], oudeCapo: number, capo: number, bekend: readonly string[]): CapoSuggestie | null {
+  const vormen: Record<string, string> = {}
+  const vereenvoudigd: string[] = []
+  for (const vorm of oud) {
+    const nieuw = transponeer(vorm, oudeCapo - capo)
+    const direct = vindBekend(nieuw, bekend)
+    const vervanger = direct ?? vereenvoudig([nieuw], bekend)[nieuw]
+    if (!vervanger) return null
+    vormen[vorm] = vervanger
+    if (!direct) vereenvoudigd.push(vorm)
+  }
+  return { capo, vormen, vereenvoudigd }
+}
+
+/**
+ * Een andere capo waarmee een liedje dat je nog niet kunt wel lukt met de akkoorden die je kent. De huidige capo
+ * doet mee als kandidaat: lukt het daar met vereenvoudigingen net zo goed, dan is er geen suggestie.
+ */
 export function capoSuggestie(liedje: Liedje, bekend: Iterable<string>): CapoSuggestie | null {
   const lijst = [...bekend]
   const oud = akkoordenVan(liedje)
   if (ontbrekendIn(oud, lijst).length === 0) return null
   let beste: CapoSuggestie | null = null
-  for (let capo = 0; capo <= HOOGSTE_CAPO; capo++) {
-    if (capo === liedje.capo) continue
-    const vormen: Record<string, string> = {}
-    const vereenvoudigd: string[] = []
-    const lukt = oud.every((vorm) => {
-      const nieuw = transponeer(vorm, liedje.capo - capo)
-      const direct = vindBekend(nieuw, lijst)
-      if (direct) {
-        vormen[vorm] = direct
-        return true
-      }
-      const vervanger = vereenvoudig([nieuw], lijst)[nieuw]
-      if (!vervanger) return false
-      vormen[vorm] = vervanger
-      vereenvoudigd.push(vorm)
-      return true
-    })
-    if (!lukt) continue
-    const kandidaat = { capo, vormen, vereenvoudigd }
-    if (!beste || isBeter(kandidaat, beste, liedje.capo)) beste = kandidaat
+  const capos = new Set([liedje.capo, ...Array.from({ length: HOOGSTE_CAPO + 1 }, (_, c) => c)])
+  for (const capo of capos) {
+    const kandidaat = opCapo(oud, liedje.capo, capo, lijst)
+    if (kandidaat && (!beste || isBeter(kandidaat, beste, liedje.capo))) beste = kandidaat
   }
-  return beste
+  return beste && beste.capo !== liedje.capo ? beste : null
 }
 
 function isBeter(a: CapoSuggestie, b: CapoSuggestie, oudeCapo: number): boolean {

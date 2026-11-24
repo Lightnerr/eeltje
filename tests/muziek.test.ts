@@ -197,6 +197,16 @@ describe('capoSuggestie', () => {
     expect(capoSuggestie(liedje('x', ['G', 'C']), ['B7'])).toBeNull()
   })
 
+  it('geeft niets als de huidige capo met een vereenvoudiging net zo goed lukt', () => {
+    const susanna = liedje('s', ['D', 'G', 'A7'])
+    expect(capoSuggestie(susanna, ['A', 'D', 'E', 'Em', 'G', 'C', 'Am'])).toBeNull()
+  })
+
+  it('stelt wel een capo voor die minder vereenvoudigingen nodig heeft dan de huidige', () => {
+    const l = liedje('x', ['D', 'G', 'A7'])
+    expect(capoSuggestie(l, ['A', 'D', 'G', 'C', 'F', 'G7'])).toEqual({ capo: 2, vormen: { D: 'C', G: 'F', A7: 'G7' }, vereenvoudigd: [] })
+  })
+
   it('kiest liever zonder vereenvoudiging, dan dicht bij de oude capo', () => {
     const l = liedje('x', ['C', 'G'])
     expect(capoSuggestie(l, ['A', 'E', 'G', 'D', 'Bb', 'Fmaj7'])?.capo).toBe(3)
