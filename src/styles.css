@@ -1,0 +1,320 @@
+/* Basis voor de hele app: variabelen, reset, tabbalk, knoppen, focus. Pagina's en componenten hebben een eigen css-bestand. */
+
+:root {
+  color-scheme: light dark;
+
+  --achtergrond: #faf7f2;
+  --vlak: #ffffff;
+  --vlak-zacht: #f1ebe2;
+  --rand: #e2d9cc;
+  --tekst: #1f1a14;
+  --tekst-zacht: #675d52;
+  --accent: #a8480c;
+  --accent-zacht: #f8e6d6;
+  --op-accent: #ffffff;
+  --focus: #1d4ed8;
+  --gevaar: #b91c1c;
+
+  --status-nieuw: #6b6259;
+  --status-nieuw-vlak: #eee8df;
+  --status-oefenen: #1d4ed8;
+  --status-oefenen-vlak: #e0e9fd;
+  --status-kan-ik: #15803d;
+  --status-kan-ik-vlak: #dcf3e3;
+
+  --ruimte-1: 4px;
+  --ruimte-2: 8px;
+  --ruimte-3: 12px;
+  --ruimte-4: 16px;
+  --ruimte-5: 24px;
+  --ruimte-6: 32px;
+  --ruimte-7: 48px;
+
+  --tikdoel: 48px;
+  --radius: 12px;
+  --radius-klein: 8px;
+  --schaduw: 0 1px 2px rgb(0 0 0 / 0.06), 0 2px 8px rgb(0 0 0 / 0.06);
+
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --letter-klein: 0.875rem;
+  --letter: 1.0625rem;
+  --letter-groot: 1.25rem;
+  --letter-titel: 1.75rem;
+  --letter-reus: clamp(3rem, 18vw, 8rem);
+
+  --tabbalk-hoogte: 64px;
+  --inhoud-breedte: 960px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --achtergrond: #16130f;
+    --vlak: #221d17;
+    --vlak-zacht: #2c261f;
+    --rand: #3d352b;
+    --tekst: #f3eee7;
+    --tekst-zacht: #b6ab9d;
+    --accent: #f59e4b;
+    --accent-zacht: #3d2a17;
+    --op-accent: #1a1209;
+    --focus: #8ab4ff;
+    --gevaar: #f87171;
+
+    --status-nieuw: #b6ab9d;
+    --status-nieuw-vlak: #2f2922;
+    --status-oefenen: #8ab4ff;
+    --status-oefenen-vlak: #1c2a45;
+    --status-kan-ik: #6ee7a0;
+    --status-kan-ik-vlak: #183626;
+
+    --schaduw: 0 1px 2px rgb(0 0 0 / 0.4);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--achtergrond);
+  color: var(--tekst);
+  font-family: var(--font);
+  font-size: var(--letter);
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol {
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--letter-titel);
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: var(--letter-groot);
+  line-height: 1.3;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--accent);
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.verborgen {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.naar-inhoud {
+  position: absolute;
+  left: var(--ruimte-2);
+  top: -100px;
+  z-index: 20;
+  padding: var(--ruimte-3) var(--ruimte-4);
+  background: var(--vlak);
+  border-radius: var(--radius-klein);
+}
+
+.naar-inhoud:focus {
+  top: var(--ruimte-2);
+}
+
+/* Opbouw: inhoud met de tabbalk onderaan (duim) op mobiel, bovenaan op desktop. */
+
+.app-inhoud {
+  max-width: var(--inhoud-breedte);
+  margin: 0 auto;
+  padding: var(--ruimte-5) var(--ruimte-4) calc(var(--tabbalk-hoogte) + env(safe-area-inset-bottom) + var(--ruimte-5));
+}
+
+.app-inhoud:focus {
+  outline: none;
+}
+
+.tabbalk {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 10;
+  background: var(--vlak);
+  border-top: 1px solid var(--rand);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tabbalk ul {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  max-width: var(--inhoud-breedte);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.tabbalk a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--tabbalk-hoogte);
+  padding: var(--ruimte-1);
+  color: var(--tekst-zacht);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tabbalk svg {
+  width: 26px;
+  height: 26px;
+}
+
+.tabbalk a[aria-current='page'] {
+  color: var(--accent);
+}
+
+.tabbalk a[aria-current='page'] svg {
+  background: var(--accent-zacht);
+  border-radius: 999px;
+  width: 52px;
+  padding: 0 13px;
+}
+
+.tabbalk a:focus-visible {
+  outline-offset: -3px;
+}
+
+@media (min-width: 768px) {
+  .tabbalk {
+    position: sticky;
+    inset: 0 0 auto;
+    border-top: 0;
+    border-bottom: 1px solid var(--rand);
+    padding-bottom: 0;
+  }
+
+  .tabbalk ul {
+    display: flex;
+    gap: var(--ruimte-2);
+    padding: 0 var(--ruimte-4);
+  }
+
+  .tabbalk a {
+    flex-direction: row;
+    gap: var(--ruimte-2);
+    min-height: 56px;
+    padding: 0 var(--ruimte-4);
+    font-size: var(--letter);
+  }
+
+  .tabbalk svg,
+  .tabbalk a[aria-current='page'] svg {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    background: none;
+  }
+
+  .tabbalk a[aria-current='page'] {
+    box-shadow: inset 0 -3px 0 var(--accent);
+  }
+
+  .app-inhoud {
+    padding: var(--ruimte-6) var(--ruimte-5) var(--ruimte-7);
+  }
+}
+
+/* Knoppen en kaarten */
+
+.knop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ruimte-2);
+  min-height: var(--tikdoel);
+  min-width: var(--tikdoel);
+  padding: var(--ruimte-2) var(--ruimte-5);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--op-accent);
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.knop:active {
+  transform: scale(0.97);
+}
+
+.knop:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.knop-rustig {
+  background: transparent;
+  color: var(--accent);
+}
+
+.kaart {
+  background: var(--vlak);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  box-shadow: var(--schaduw);
+  padding: var(--ruimte-4);
+}
+
+.zacht {
+  color: var(--tekst-zacht);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
