@@ -124,12 +124,11 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 ### Valkuilen
 
 - **Namen uit de afspraken:** daar staan `parseSlagpatroon`/`parseMaatsoort`, maar stap 1 maakte `leesSlagpatroon`/`leesMaatsoort` (in `muziek.ts`). Gebruik die.
-- **iPhone met de stille schakelaar** dempt Web Audio. Niet opgelost: `navigator.audioSession.type = 'playback'` zou het verhelpen, maar onderbreekt ook muziek die op de achtergrond speelt.
+- **iPhone:** de metronoom gebruikt `geefAudioContext()` van stap 2, dus hij klinkt ook met de stilteschakelaar aan (`audioSession.type = 'playback'`) en muziek op de achtergrond stopt. Na een onderbreking (`'interrupted'`, telefoontje) staat de audioklok stil; zodra hij weer loopt, springt de planner naar nu in plaats van gemiste klikken in te halen.
 - Headless Chrome in `kijk.sh` speelt de metronoom gewoon af: `/oefenen/metronoom!.metronoom-start` laat een oplichtende tel zien.
 
 ### Geparkeerde ideeën
 
 - Een tweede, zachter accent op de 4 in 6/8.
 - Een zachte klik op de tussenslagen (`onderverdeling`) als optie.
-- `audioSession.type` in `geefAudioContext`, als de eigenaar de stille schakelaar lastig vindt.
 - Tempotrainer: na N maten automatisch een paar bpm sneller.
