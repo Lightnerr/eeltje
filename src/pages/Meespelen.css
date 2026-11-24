@@ -199,3 +199,16 @@
   color: var(--accent);
   box-shadow: inset 0 0 0 1px var(--accent);
 }
+
+.meespelen-hint {
+  display: none;
+  margin-top: calc(var(--ruimte-2) * -1);
+  text-align: center;
+  font-size: var(--letter-klein);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .meespelen-hint {
+    display: block;
+  }
+}

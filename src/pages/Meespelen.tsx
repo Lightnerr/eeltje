@@ -15,6 +15,7 @@ import {
   meespeelBpm,
   meespeelStap,
   meespeelWeergave,
+  geplandAkkoord,
   MIN_TEMPO,
   TEMPO_STAP,
   type Meespeelactie,
@@ -24,6 +25,10 @@ import { leesSlagpatroon, slagenPerTel, speelVolgorde } from '../lib/muziek'
 import type { RouteGegevens } from '../lib/route'
 import type { Liedje } from '../lib/types'
 import NietGevondenPagina from './NietGevonden'
+
+function isVrijeFocus(el: Element | null): boolean {
+  return !el || el === document.body || el.getAttribute('role') === 'dialog' || el.classList.contains('schermvullend-sluit')
+}
 import './Meespelen.css'
 
 export default function MeespelenPagina({ id }: RouteGegevens<'meespelen'>) {
@@ -45,6 +50,7 @@ function Meespelen({ liedje }: { liedje: Liedje }) {
     maatsoort: liedje.maatsoort,
     onderverdeling: slagenPerTel(slagen.length, liedje.maatsoort),
     opTel,
+    opPlan,
   })
   const w = meespeelWeergave(stand, volgorde, liedje.maatsoort)
   const speelt = w.fase === 'aftellen' || w.fase === 'spelen'
@@ -56,21 +62,35 @@ function Meespelen({ liedje }: { liedje: Liedje }) {
     return standRef.current
   }
 
+  // Tellen die de metronoom al plande maar die nog niet klinken; de stand loopt daar achter.
+  const wachtend = useRef<number[]>([])
+
+  // Het akkoord gaat op de audioklok mee met de klik, dus zonder de vertraging van opTel.
+  function opPlan(tel: number, tijd: number) {
+    const naam = geplandAkkoord(standRef.current, wachtend.current, tel, volgorde, liedje.maatsoort)
+    wachtend.current.push(tel)
+    const akkoord = geluid && naam ? gekozenVariant(akkoorden, voortgang, naam) : undefined
+    if (akkoord) slaAan(akkoord, { tijd })
+  }
+
   function opTel(tel: number) {
-    const nu = meespeelWeergave(doe({ type: 'tel', tel }), volgorde, liedje.maatsoort)
-    if (nu.fase === 'einde') metronoom.stop()
-    if (geluid && nu.aanslaan && nu.akkoord) {
-      const akkoord = gekozenVariant(akkoorden, voortgang, nu.akkoord)
-      if (akkoord) slaAan(akkoord)
-    }
+    wachtend.current.shift()
+    if (doe({ type: 'tel', tel }).fase === 'einde') stopMetronoom()
+  }
+
+  function stopMetronoom() {
+    metronoom.stop()
+    wachtend.current = []
   }
 
   function wissel() {
     const { fase } = standRef.current
     if (fase === 'aftellen' || fase === 'spelen') {
-      metronoom.stop()
+      stopMetronoom()
+      stopGitaar()
       doe({ type: 'pauze' })
     } else {
+      wachtend.current = []
       metronoom.start()
       doe({ type: 'start' })
     }
@@ -78,14 +98,15 @@ function Meespelen({ liedje }: { liedje: Liedje }) {
 
   useEffect(() => stopGitaar, [])
 
-  // De spatiebalk start of pauzeert altijd, ook als een knop de focus heeft (die druk je met Enter).
+  // Spatie = start/pauze, behalve op een knop die zelf iets doet. Op de sluitknop ook start/pauze, zodat de spatie
+  // het scherm nooit per ongeluk sluit.
   const wisselRef = useRef(wissel)
   useEffect(() => {
     wisselRef.current = wissel
   })
   useEffect(() => {
     const opToets = (e: KeyboardEvent) => {
-      if (e.key !== ' ') return
+      if (e.key !== ' ' || !isVrijeFocus(document.activeElement)) return
       e.preventDefault()
       if (e.type === 'keydown' && !e.repeat) wisselRef.current()
     }
@@ -136,6 +157,7 @@ function Meespelen({ liedje }: { liedje: Liedje }) {
         <button type="button" className="knop meespelen-start" onClick={wissel}>
           {startTekst}
         </button>
+        <p className="zacht meespelen-hint">Spatie: start/pauze</p>
 
         <div className="meespelen-tempo" role="group" aria-label="Tempo">
           <button

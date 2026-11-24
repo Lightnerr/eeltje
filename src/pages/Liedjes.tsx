@@ -11,7 +11,7 @@ import { bekendeAkkoorden } from '../lib/voortgang'
 import './Liedjes.css'
 
 function Regel({ regel }: { regel: LiedjeRegel }) {
-  const { liedje, label, speelbaarheid, capoSuggestie, favoriet } = regel
+  const { liedje, label, speelbaarheid, capoSuggestie, favoriet, aiVersie } = regel
   return (
     <li>
       <a className="kaart liedjes-kaart" href={naarHash({ pagina: 'liedje', id: liedje.id })}>
@@ -25,7 +25,10 @@ function Regel({ regel }: { regel: LiedjeRegel }) {
           )}
         </span>
         <span className="zacht liedjes-artiest">{liedje.artiest}</span>
-        <SpeelbaarheidLabel speelbaarheid={speelbaarheid} label={label} />
+        <span className="liedjes-labels">
+          <SpeelbaarheidLabel speelbaarheid={speelbaarheid} label={label} />
+          {aiVersie && <span className="liedjes-ai">AI-versie</span>}
+        </span>
         {capoSuggestie && <span className="liedjes-capo">{capoSuggestieTekst(liedje, capoSuggestie)}</span>}
       </a>
     </li>

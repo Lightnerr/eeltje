@@ -86,3 +86,18 @@
 .liedjes-capo {
   font-size: var(--letter-klein);
 }
+
+.liedjes-labels {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ruimte-2);
+}
+
+.liedjes-ai {
+  padding: 1px var(--ruimte-2);
+  border: 1px solid var(--rand);
+  border-radius: 999px;
+  color: var(--tekst-zacht);
+  font-size: var(--letter-klein);
+}

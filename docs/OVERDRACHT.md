@@ -143,9 +143,15 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - **Volgend akkoord** = het volgende akkoordvak: het tweede akkoord in de maat, anders het eerste van de volgende maat (met herhalen meegerekend). Ook als dat hetzelfde akkoord is.
 - **Pauze** houdt de maat vast; opnieuw starten telt af en begint aan het begin van die maat. Na de laatste maat staat hij op "einde" en stopt de metronoom; "Opnieuw" begint vooraan.
 - **Tempo** in stappen van 10%, 40 t/m 120%; `meespeelBpm` begrenst daarna op 30-220 van de metronoom (Knockin' on Heaven's Door op 40% wordt dus 30 bpm in plaats van 27).
-- **Akkoordgeluid** (standaard uit): `slaAan` met je voorkeursvariant op elke 1 en bij elke akkoordwissel binnen een maat. Direct in de `opTel`-callback, niet in een effect.
-- **`useMetronoom` kreeg een optionele `opTel(tel)`** naast de state `tel` (uitbreiding, bestaand gebruik blijft gelijk). Nodig omdat React state-updates samenvoegt: in een verborgen tabblad komen meerdere tellen tegelijk binnen en zou de state er één missen.
-- **Spatiebalk** start/pauzeert altijd, ook als een knop focus heeft (in de capture-fase, keydown én keyup tegengehouden); knoppen druk je dan met Enter. Anders sluit de spatie het scherm via de sluitknop die bij openen de focus krijgt.
+- **Akkoordgeluid** (standaard uit): `slaAan` met je voorkeursvariant op elke 1 en bij elke akkoordwissel binnen een maat, op precies dezelfde audiotijd als de klik. Het scherm plant hem in `opPlan`: `geplandAkkoord(stand, wachtend, tel, …)` speelt de tellen die al gepland zijn maar nog niet klonken (`wachtend`) vooruit door `meespeelStap` en kijkt of op de nieuwe tel een akkoord begint. Pauze roept `stopGitaar()` aan, ook voor wat al gepland was.
+- **Uitbreidingen van gedeelde stukken (bestaand gebruik ongewijzigd):**
+  - `maakMetronoom` en `useMetronoom`: optionele `opPlan(tel, tijd)`, die afgaat zodra een tel gepland wordt (ruim vóór hij klinkt) met de audiotijd van die tel. Om er geluid op te plannen; `opTel` blijft voor de UI.
+  - `useMetronoom`: optionele `opTel(tel)` naast de state `tel`.
+  - `slaAan(akkoord, { tijd? })` (`SpeelOpties`): begint op die audiotijd; wat ervoor klinkt, sterft pas dan uit. `src/audio/gitaar.ts` houdt nu alle klinkende en geplande aanslagen bij, en `stopGitaar()` laat ze allemaal uitsterven (voorheen alleen de laatste).
+- **Waarom `opTel` als callback:** React voegt state-updates samen; in een verborgen tabblad komen meerdere tellen tegelijk binnen en zou de state er één missen.
+- **Spatiebalk:** op een knop (schakelaars, tempo, secties, start) doet Spatie wat die knop doet. Staat de focus nergens, op het paneel of op de sluitknop (die bij openen de focus krijgt), dan is Spatie start/pauze; keydown en keyup worden dan tegengehouden, zodat de spatie het scherm nooit sluit. De hint "Spatie: start/pauze" staat er alleen bij een muis (`hover: hover` en `pointer: fine`); headless Chrome heeft die niet, dus in `kijk.sh` zie je hem niet.
+- **Opnieuw na het einde** begint vooraan en wist het herhalen; anders herhaalde hij de laatste sectie terwijl je de intro zag.
+- **AI-label in de lijst:** een klein, rustig "AI-versie" naast het speelbaarheidslabel.
 - **Liedjeslijst** (`liedjesOverzicht` in `src/lib/liedjes.ts`): favorieten in een eigen groep bovenaan, daarna op aantal ontbrekende akkoorden, dan op titel. De ster in de lijst is alleen een teken; favoriet maken gaat op de liedjespagina.
 - **Capo-suggestie als zin** (`capoSuggestieTekst`): "Met capo 5 en de vormen G, D, Em, C kan je dit spelen. Speel C voor Cmaj7." Een vereenvoudiging noemt het echte akkoord bij de nieuwe capo.
 - **AI-label**: `toonAiLabel` = `bron: 'ai-gegenereerd'` en niet `isGecontroleerd` (geverifieerd in de data, of in `Voortgang.gecontroleerd`). De knop "Ik heb hem gecontroleerd" gebruikt `zetGecontroleerd`; daarna staat er "Door jou gecontroleerd" met "Terugdraaien" (`zetGecontroleerd(v, id, false)`). Bij `geverifieerd: true` geen label en geen knop.
@@ -161,7 +167,6 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 
 ### Geparkeerde ideeën
 
-- `slaAan` klinkt ongeveer 50 ms plus de uitvoerlatentie na de klik, omdat `opTel` pas komt als de klik klinkt. Strakker kan met een `slaAan(akkoord, tijd)` die vooruit op de audioklok plant, via een `opGepland`-callback van de metronoom.
 - Het tempo per liedje onthouden (nu begint hij altijd op 100%).
 - Op een breed scherm de bediening naast het akkoord zetten; nu één kolom van max. 720px, die op een laptop scrolt.
 - In de lijst filteren op "Kan je spelen".
