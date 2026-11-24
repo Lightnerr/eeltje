@@ -15,12 +15,12 @@
     },
     {
       "naam": "refrein",
-      "maten": [["Fmaj7"], ["G"], ["Am"], ["E"], ["Fmaj7"], ["G"], ["Am", "E"], ["Am"]]
+      "maten": [["C"], ["G"], ["Am"], ["E"], ["C"], ["G"], ["Am", "E"], ["Am"]]
     }
   ],
   "volgorde": ["couplet", "refrein", "couplet", "refrein"],
-  "origineleAkkoorden": ["Am", "G", "F", "E", "C"],
+  "origineleAkkoorden": ["Am", "C", "G", "F", "E"],
   "bron": "ai-gegenereerd",
   "geverifieerd": false,
-  "opmerking": "Fmaj7 in plaats van F, en de C uit het refrein is weggelaten."
+  "opmerking": "Vereenvoudigd: de F uit het couplet is weggelaten."
 }
