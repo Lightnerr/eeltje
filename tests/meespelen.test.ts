@@ -6,6 +6,7 @@ import {
   meespeelBpm,
   meespeelStap,
   meespeelWeergave,
+  geplandAkkoord,
   type Meespeelactie,
   type Meespeelstand,
 } from '../src/lib/meespelen'
@@ -175,6 +176,13 @@ describe('meespelen volgt speelVolgorde', () => {
     expect(meespeelWeergave(s, volgorde, '4/4')).toMatchObject({ akkoord: null, volgend: null, aanslaan: false })
   })
 
+  it('opnieuw na het einde wist het herhalen, zodat het niet op de laatste sectie blijft hangen', () => {
+    let s = tik(doe(beginMeespelen(), { type: 'start' }), 4 + volgorde.length * 4 + 1)
+    s = doe(s, { type: 'herhaal', aan: true }, { type: 'start' })
+    expect(s).toMatchObject({ fase: 'aftellen', maat: 0, herhaal: null })
+    expect(meespeelWeergave(s, volgorde, '4/4').herhaalt).toBe(false)
+  })
+
   it('start na het einde opnieuw vooraan', () => {
     const s = doe(tik(doe(beginMeespelen(), { type: 'start' }), 4 + volgorde.length * 4 + 1), { type: 'start' })
     expect(s).toMatchObject({ fase: 'aftellen', maat: 0 })
@@ -304,5 +312,38 @@ describe('naar een sectie', () => {
   it('een onbekende sectie verandert niets', () => {
     const s = beginMeespelen()
     expect(doe(s, { type: 'naarSectie', volgordeIndex: 9 })).toEqual(s)
+  })
+})
+
+describe('geplandAkkoord', () => {
+  it('kiest bij het plannen van een tel het akkoord dat dan begint, ook met tellen die nog moeten klinken', () => {
+    // Speel het hele liedje en plan steeds twee tellen vooruit; dat moet dezelfde aanslagen geven als direct stappen.
+    const tellen = [...Array(4 + volgorde.length * 4).keys()].map((i) => i % 4)
+    let stand = doe(beginMeespelen(), { type: 'start' })
+    const wachtend: number[] = []
+    const gepland: (string | null)[] = []
+    const direct: (string | null)[] = []
+    let controle = stand
+    for (const tel of tellen) {
+      gepland.push(geplandAkkoord(stand, wachtend, tel, volgorde, '4/4'))
+      wachtend.push(tel)
+      if (wachtend.length > 2) stand = meespeelStap(stand, { type: 'tel', tel: wachtend.shift()! }, volgorde)
+      controle = meespeelStap(controle, { type: 'tel', tel }, volgorde)
+      const w = meespeelWeergave(controle, volgorde, '4/4')
+      direct.push(w.aanslaan ? w.akkoord : null)
+    }
+    expect(gepland).toEqual(direct)
+    expect(gepland.slice(0, 12)).toEqual([null, null, null, null, 'C', null, null, null, 'G', null, 'Am', null])
+  })
+
+  it('met herhalen: na de laatste tel van de sectie weer het begin', () => {
+    const s: Meespeelstand = { fase: 'spelen', maat: 3, tel: 2, herhaal: 1 }
+    expect(geplandAkkoord(s, [3], 0, volgorde, '4/4')).toBe('F')
+    expect(geplandAkkoord(s, [], 3, volgorde, '4/4')).toBeNull()
+  })
+
+  it('niets als hij stilstaat of na het einde', () => {
+    expect(geplandAkkoord(beginMeespelen(), [], 0, volgorde, '4/4')).toBeNull()
+    expect(geplandAkkoord({ fase: 'spelen', maat: 5, tel: 2 , herhaal: null }, [3], 0, volgorde, '4/4')).toBeNull()
   })
 })

@@ -69,7 +69,8 @@ export function meespeelStap(stand: Meespeelstand, actie: Meespeelactie, volgord
   switch (actie.type) {
     case 'start':
       if (speelt(stand) || volgorde.length === 0) return stand
-      return { ...stand, fase: 'aftellen', tel: -1, maat: stand.fase === 'einde' ? 0 : stand.maat }
+      if (stand.fase === 'einde') return { ...stand, fase: 'aftellen', tel: -1, maat: 0, herhaal: null }
+      return { ...stand, fase: 'aftellen', tel: -1 }
     case 'pauze':
       return speelt(stand) ? { ...stand, fase: 'stil', tel: -1 } : stand
     case 'herhaal':
@@ -136,4 +137,20 @@ export function meespeelWeergave(stand: Meespeelstand, volgorde: readonly SpeelM
     actieveMaat: huidig.maatIndex,
     herhaalt: stand.herhaal !== null,
   }
+}
+
+/**
+ * Het akkoord om aan te slaan op een tel die de metronoom nu plant (vóór hij klinkt), of `null`. `wachtend` zijn de
+ * tellen die al gepland zijn maar nog niet geklonken; de stand loopt daar nog achter.
+ */
+export function geplandAkkoord(
+  stand: Meespeelstand,
+  wachtend: readonly number[],
+  tel: number,
+  volgorde: readonly SpeelMaat[],
+  maatsoort: Maatsoort,
+): string | null {
+  const straks = [...wachtend, tel].reduce((s, t) => meespeelStap(s, { type: 'tel', tel: t }, volgorde), stand)
+  const w = meespeelWeergave(straks, volgorde, maatsoort)
+  return w.aanslaan ? w.akkoord : null
 }
