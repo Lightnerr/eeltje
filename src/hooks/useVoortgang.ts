@@ -23,7 +23,7 @@ function abonneer(luisteraar: () => void) {
   luisteraars.add(luisteraar)
   // Een ander tabblad wijzigde de opslag: opnieuw inlezen.
   const opStorage = (e: StorageEvent) => {
-    if (e.storageArea !== localStorage || (e.key !== null && !e.key.startsWith('eeltje.voortgang'))) return
+    if (!opslag.isEigenWijziging(e.key, e.storageArea)) return
     huidige = null
     luisteraar()
   }

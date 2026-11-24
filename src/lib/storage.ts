@@ -17,6 +17,8 @@ export interface Opslag {
   /** `false` als de browser niet wilde opslaan (privémodus, vol). */
   bewaar(v: Voortgang): boolean
   wis(): void
+  /** Hoort een `storage`-event (een ander tabblad schreef) bij deze voortgang? `sleutel` null = alles gewist. */
+  isEigenWijziging(sleutel: string | null, gebied: Storage | null): boolean
 }
 
 export function maakOpslag({ storage, preview, klok = () => new Date() }: { storage: Storage | null; preview?: string; klok?: () => Date }): Opslag {
@@ -62,6 +64,9 @@ export function maakOpslag({ storage, preview, klok = () => new Date() }: { stor
       } catch {
         // Niets te wissen als de browser geen opslag geeft.
       }
+    },
+    isEigenWijziging(gewijzigd, gebied) {
+      return storage !== null && gebied === storage && (gewijzigd === null || gewijzigd === sleutel)
     },
   }
 }
