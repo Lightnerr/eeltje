@@ -36,4 +36,9 @@ Nieuwe liedjes, akkoorden en oefeningen voeg je toe met Claude Code: `/nieuw-num
 
 - **Hash-routes** (`#/liedjes/...`), omdat GitHub Pages geen fallback naar `index.html` heeft.
 - **bun** voor pakketbeheer, net als in derde-helft.
+- **Opnieuw begonnen.** De app is vanaf nul opnieuw gebouwd; alleen de werkwijze, CI, Pages en de kijktool bleven.
+- **Eén CSS-bestand per scherm en component**, naast het component. `styles.css` heeft alleen de basis en de variabelen, zodat stappen die tegelijk gebouwd worden elkaar niet raken.
+- **G is standaard de versie met 4 vingers** (past bij Cadd9 en Dsus4); de versie met 3 vingers is een variant die je als voorkeur kunt kiezen.
+- **Wonderwall heeft 5 akkoorden** (Em7, G, Dsus4, A7sus4, Cadd9): dat is één vingerfamilie, dus een uitzondering op "3 of 4 akkoorden".
+- **Kapotte voortgang wordt niet weggegooid** maar apart bewaard, zodat er niets verloren gaat.
 - Meer besluiten staan in `docs/OVERDRACHT.md`.
