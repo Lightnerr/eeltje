@@ -1,0 +1,63 @@
+.slagpatroon {
+  display: flex;
+  gap: var(--ruimte-1);
+  padding: 0;
+  list-style: none;
+}
+
+.slag {
+  display: grid;
+  justify-items: center;
+  gap: var(--ruimte-1);
+  flex: 0 1 auto;
+  min-width: 0;
+  border-radius: var(--radius-klein);
+  color: var(--tekst);
+}
+
+.slag svg {
+  width: 100%;
+  height: auto;
+}
+
+.pijl-omhoog {
+  transform: rotate(180deg);
+}
+
+.slag-rust {
+  color: var(--tekst-zacht);
+}
+
+.slag-tel {
+  color: var(--tekst-zacht);
+  font-size: var(--letter-klein);
+  font-weight: 650;
+  line-height: 1;
+}
+
+.slagpatroon-klein .slag {
+  width: 16px;
+}
+
+.slagpatroon-groot {
+  justify-content: center;
+  gap: var(--ruimte-2);
+}
+
+.slagpatroon-groot .slag {
+  flex: 0 1 56px;
+  padding: var(--ruimte-2) var(--ruimte-1);
+}
+
+.slagpatroon-groot .slag-tel {
+  font-size: var(--letter);
+}
+
+.slag-aan {
+  background: var(--accent);
+  color: var(--op-accent);
+}
+
+.slag-aan .slag-tel {
+  color: var(--op-accent);
+}

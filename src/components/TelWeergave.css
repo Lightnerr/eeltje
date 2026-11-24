@@ -1,0 +1,55 @@
+.tel-weergave {
+  display: flex;
+  justify-content: center;
+  gap: var(--ruimte-2);
+  padding: 0;
+  list-style: none;
+}
+
+.tel {
+  display: grid;
+  place-items: center;
+  flex: 0 1 72px;
+  aspect-ratio: 1;
+  min-width: 0;
+  border: 3px solid var(--rand);
+  border-radius: 50%;
+  background: var(--vlak-zacht);
+  color: var(--tekst-zacht);
+  font-size: clamp(1.25rem, 6vw, 2rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tel-accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.tel-aan {
+  border-color: var(--tekst);
+  background: var(--tekst);
+  color: var(--achtergrond);
+  animation: tel-tik 0.15s ease-out;
+}
+
+.tel-accent.tel-aan {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--op-accent);
+}
+
+@keyframes tel-tik {
+  from {
+    transform: scale(1.15);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tel-aan {
+    animation: none;
+  }
+}

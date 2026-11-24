@@ -1,0 +1,81 @@
+.slagpatroon-pagina {
+  display: grid;
+  gap: var(--ruimte-4);
+  max-width: 640px;
+}
+
+.slagpatroon-speler,
+.slagpatroon-ontwerp {
+  display: grid;
+  gap: var(--ruimte-3);
+}
+
+.slagpatroon-leeg {
+  min-height: 72px;
+  text-align: center;
+  align-content: center;
+}
+
+.slagpatroon-status {
+  text-align: center;
+  font-weight: 600;
+}
+
+.slagpatroon-start {
+  min-height: 64px;
+  font-size: var(--letter-groot);
+}
+
+.slagpatroon-knoppen {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ruimte-2);
+}
+
+.slagpatroon-knoppen .knop {
+  min-height: 64px;
+  padding-inline: var(--ruimte-2);
+}
+
+.slagpatroon-knoppen-wis {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.slagpatroon-knoppen-wis .knop {
+  min-height: var(--tikdoel);
+}
+
+.slagpatroon-keuzes {
+  display: grid;
+  gap: var(--ruimte-3);
+}
+
+.slagpatroon-keuzes ul {
+  display: grid;
+  gap: var(--ruimte-2);
+  padding: 0;
+  list-style: none;
+}
+
+.slagpatroon-keuze {
+  display: grid;
+  gap: var(--ruimte-2);
+  width: 100%;
+  min-height: var(--tikdoel);
+  text-align: left;
+  cursor: pointer;
+}
+
+.slagpatroon-keuze[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-zacht);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.slagpatroon-keuze-naam {
+  font-weight: 650;
+}
+
+.slagpatroon-keuze-liedjes {
+  font-size: var(--letter-klein);
+}
