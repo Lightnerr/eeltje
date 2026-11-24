@@ -4,9 +4,9 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 
 ## Waar we staan
 
-- Stap 1 is af: projectopzet, types, inhoud (akkoorden, 15 liedjes, oefeningen), storage, muzieklogica en validatie, met 62 tests.
-- De schermen van stap 2 t/m 6 zijn nog placeholders.
-- De werkwijze, de kijktool, CI, Dependabot en GitHub Pages met PR-previews komen uit derde-helft (de teamapp van de eigenaar) en zijn op een statische app aangepast.
+- Eeltje begint opnieuw. De app-code van een eerdere bouwsessie is weggegooid en is geen voorbeeld: lees hem niet, ook niet in de git-geschiedenis (de commits "Fase N: …").
+- Wat blijft: de werkwijze (`CLAUDE.md`, de docs), CI, Dependabot, GitHub Pages met PR-previews en de kijktool. Die komen uit derde-helft (de teamapp van de eigenaar) en zijn op een statische app aangepast.
+- Stap 1 t/m 7 worden parallel gebouwd volgens `docs/PARALLEL-BOUWEN.md`. Elke stap vult hieronder zijn eigen sectie "Besluiten uit stap N".
 
 ## Besluiten die afwijken van of aanvullen op de docs
 
