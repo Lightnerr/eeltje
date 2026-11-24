@@ -7,6 +7,7 @@ import {
   meespeelStap,
   meespeelWeergave,
   geplandAkkoord,
+  herplan,
   type Meespeelactie,
   type Meespeelstand,
 } from '../src/lib/meespelen'
@@ -345,5 +346,34 @@ describe('geplandAkkoord', () => {
   it('niets als hij stilstaat of na het einde', () => {
     expect(geplandAkkoord(beginMeespelen(), [], 0, volgorde, '4/4')).toBeNull()
     expect(geplandAkkoord({ fase: 'spelen', maat: 5, tel: 2 , herhaal: null }, [3], 0, volgorde, '4/4')).toBeNull()
+  })
+})
+
+describe('herplan', () => {
+  const wachtend = (...tellen: number[]) => tellen.map((tel, i) => ({ tel, tijd: 10 + i }))
+
+  it('herhalen aangezet in de laatste maat: op de 1 het begin van de sectie, niet wat al gepland stond', () => {
+    // Laatste maat van het refrein, tel 3 klinkt; de 1 erna is al gepland (en was het couplet).
+    const s: Meespeelstand = { fase: 'spelen', maat: 3, tel: 3, herhaal: null }
+    expect(herplan(s, wachtend(0), volgorde, '4/4')).toEqual([{ tijd: 10, akkoord: 'C' }])
+    expect(herplan({ ...s, herhaal: 1 }, wachtend(0), volgorde, '4/4')).toEqual([{ tijd: 10, akkoord: 'F' }])
+  })
+
+  it('naar een sectie vlak voor de 1: aftellen, dus niets', () => {
+    const s = meespeelStap({ fase: 'spelen', maat: 0, tel: 3, herhaal: null }, { type: 'naarSectie', volgordeIndex: 1 }, volgorde)
+    expect(herplan(s, wachtend(0), volgorde, '4/4')).toEqual([])
+  })
+
+  it('meerdere wachtende tellen, elk op zijn eigen tijd', () => {
+    const s: Meespeelstand = { fase: 'spelen', maat: 0, tel: 3, herhaal: null }
+    expect(herplan(s, wachtend(0, 1, 2, 3, 0), volgorde, '4/4')).toEqual([
+      { tijd: 10, akkoord: 'G' },
+      { tijd: 12, akkoord: 'Am' },
+      { tijd: 14, akkoord: 'F' },
+    ])
+  })
+
+  it('niets wachtend: niets te plannen', () => {
+    expect(herplan({ fase: 'spelen', maat: 0, tel: 0, herhaal: null }, [], volgorde, '4/4')).toEqual([])
   })
 })

@@ -154,3 +154,26 @@ export function geplandAkkoord(
   const w = meespeelWeergave(straks, volgorde, maatsoort)
   return w.aanslaan ? w.akkoord : null
 }
+
+export interface WachtendeTel {
+  tel: number
+  /** Audiotijd waarop hij klinkt. */
+  tijd: number
+}
+
+/**
+ * Na een standwijziging (herhalen, naar een sectie, geluid aan) opnieuw uitrekenen welke aanslagen er moeten staan
+ * voor de tellen die al gepland zijn maar nog niet klonken, elk op zijn eigen audiotijd.
+ */
+export function herplan(
+  stand: Meespeelstand,
+  wachtend: readonly WachtendeTel[],
+  volgorde: readonly SpeelMaat[],
+  maatsoort: Maatsoort,
+): { tijd: number; akkoord: string }[] {
+  const tellen = wachtend.map((w) => w.tel)
+  return wachtend.flatMap((w, i) => {
+    const akkoord = geplandAkkoord(stand, tellen.slice(0, i), w.tel, volgorde, maatsoort)
+    return akkoord ? [{ tijd: w.tijd, akkoord }] : []
+  })
+}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { slaAan, stopGitaar } from '../audio/gitaar'
+import { annuleerGeplandeGitaar, slaAan, stopGitaar } from '../audio/gitaar'
 import { Schermvullend } from '../components/Schermvullend'
 import { SlagpatroonWeergave } from '../components/SlagpatroonWeergave'
 import { akkoorden, zoekLiedje } from '../data'
@@ -16,18 +16,22 @@ import {
   meespeelStap,
   meespeelWeergave,
   geplandAkkoord,
+  herplan,
   MIN_TEMPO,
   TEMPO_STAP,
   type Meespeelactie,
   type Meespeelstand,
+  type WachtendeTel,
 } from '../lib/meespelen'
 import { leesSlagpatroon, slagenPerTel, speelVolgorde } from '../lib/muziek'
 import type { RouteGegevens } from '../lib/route'
 import type { Liedje } from '../lib/types'
 import NietGevondenPagina from './NietGevonden'
 
-function isVrijeFocus(el: Element | null): boolean {
-  return !el || el === document.body || el.getAttribute('role') === 'dialog' || el.classList.contains('schermvullend-sluit')
+/** Spatie doet wat de knop doet alleen als die met het toetsenbord focus kreeg; anders is Spatie start/pauze. */
+function spatieVoorKnop(el: Element | null, viaMuis: Element | null): boolean {
+  if (!el || el === document.body || el === viaMuis || el.classList.contains('schermvullend-sluit')) return false
+  return el.matches('button, a[href], input') && el.matches(':focus-visible')
 }
 import './Meespelen.css'
 
@@ -63,14 +67,33 @@ function Meespelen({ liedje }: { liedje: Liedje }) {
   }
 
   // Tellen die de metronoom al plande maar die nog niet klinken; de stand loopt daar achter.
-  const wachtend = useRef<number[]>([])
+  const wachtend = useRef<WachtendeTel[]>([])
+
+  function slaAanOp(naam: string, tijd: number) {
+    const akkoord = gekozenVariant(akkoorden, voortgang, naam)
+    if (akkoord) slaAan(akkoord, { tijd })
+  }
 
   // Het akkoord gaat op de audioklok mee met de klik, dus zonder de vertraging van opTel.
   function opPlan(tel: number, tijd: number) {
-    const naam = geplandAkkoord(standRef.current, wachtend.current, tel, volgorde, liedje.maatsoort)
-    wachtend.current.push(tel)
-    const akkoord = geluid && naam ? gekozenVariant(akkoorden, voortgang, naam) : undefined
-    if (akkoord) slaAan(akkoord, { tijd })
+    const naam = geplandAkkoord(standRef.current, wachtend.current.map((x) => x.tel), tel, volgorde, liedje.maatsoort)
+    wachtend.current.push({ tel, tijd })
+    if (geluid && naam) slaAanOp(naam, tijd)
+  }
+
+  // Wat al gepland stond hoort bij de oude stand: weghalen en voor de nieuwe stand opnieuw plannen.
+  function herplanGeluid(stand: Meespeelstand, aan: boolean) {
+    annuleerGeplandeGitaar()
+    if (aan) for (const { akkoord, tijd } of herplan(stand, wachtend.current, volgorde, liedje.maatsoort)) slaAanOp(akkoord, tijd)
+  }
+
+  function wijzigStand(actie: Meespeelactie) {
+    herplanGeluid(doe(actie), geluid)
+  }
+
+  function wisselGeluid() {
+    herplanGeluid(standRef.current, !geluid)
+    zetGeluid(!geluid)
   }
 
   function opTel(tel: number) {
@@ -101,18 +124,30 @@ function Meespelen({ liedje }: { liedje: Liedje }) {
   // Spatie = start/pauze, behalve op een knop die zelf iets doet. Op de sluitknop ook start/pauze, zodat de spatie
   // het scherm nooit per ongeluk sluit.
   const wisselRef = useRef(wissel)
+  const viaMuis = useRef<Element | null>(null)
   useEffect(() => {
     wisselRef.current = wissel
   })
   useEffect(() => {
     const opToets = (e: KeyboardEvent) => {
-      if (e.key !== ' ' || !isVrijeFocus(document.activeElement)) return
+      if (e.key !== ' ' || spatieVoorKnop(document.activeElement, viaMuis.current)) return
       e.preventDefault()
       if (e.type === 'keydown' && !e.repeat) wisselRef.current()
     }
+    // Een knop die met de muis of een vinger focus kreeg, voert de spatie niet nog eens uit.
+    const opWijzen = (e: PointerEvent) => {
+      viaMuis.current = e.target instanceof Element ? e.target.closest('button, a[href], input') : null
+    }
+    const opTab = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') viaMuis.current = null
+    }
+    document.addEventListener('pointerdown', opWijzen, true)
+    document.addEventListener('keydown', opTab, true)
     document.addEventListener('keydown', opToets, true)
     document.addEventListener('keyup', opToets, true)
     return () => {
+      document.removeEventListener('pointerdown', opWijzen, true)
+      document.removeEventListener('keydown', opTab, true)
       document.removeEventListener('keydown', opToets, true)
       document.removeEventListener('keyup', opToets, true)
     }
@@ -184,10 +219,10 @@ function Meespelen({ liedje }: { liedje: Liedje }) {
         </div>
 
         <div className="meespelen-schakelaars">
-          <button type="button" className="knop knop-rustig" aria-pressed={w.herhaalt} onClick={() => doe({ type: 'herhaal', aan: !w.herhaalt })}>
+          <button type="button" className="knop knop-rustig" aria-pressed={w.herhaalt} onClick={() => wijzigStand({ type: 'herhaal', aan: !w.herhaalt })}>
             Herhaal deze sectie
           </button>
-          <button type="button" className="knop knop-rustig" aria-pressed={geluid} onClick={() => zetGeluid((g) => !g)}>
+          <button type="button" className="knop knop-rustig" aria-pressed={geluid} onClick={wisselGeluid}>
             Akkoordgeluid
           </button>
         </div>
@@ -201,7 +236,7 @@ function Meespelen({ liedje }: { liedje: Liedje }) {
                   type="button"
                   className="meespelen-sectieknop"
                   aria-current={i === w.volgordeIndex ? 'true' : undefined}
-                  onClick={() => doe({ type: 'naarSectie', volgordeIndex: i })}
+                  onClick={() => wijzigStand({ type: 'naarSectie', volgordeIndex: i })}
                 >
                   {naam}
                 </button>
