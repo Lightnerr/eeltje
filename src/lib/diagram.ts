@@ -31,7 +31,9 @@ export interface Diagram {
 
 const MINSTE_VAKKEN = 4
 
-function barresVan(akkoord: Akkoord): { fret: number; vanSnaar: number; totSnaar: number; vinger: number }[] {
+type BarreOpFret = { fret: number; vanSnaar: number; totSnaar: number; vinger: number }
+
+function barresVan(akkoord: Akkoord): BarreOpFret[] {
   const { frets, vingers, barre } = akkoord
   const groepen = new Map<string, number[]>()
   frets.forEach((fret, snaar) => {
@@ -49,21 +51,21 @@ function barresVan(akkoord: Akkoord): { fret: number; vanSnaar: number; totSnaar
     }))
     // Een vinger die over een open of niet gespeelde snaar zou liggen, is geen barré maar twee losse vingertoppen.
     .filter((b) => frets.slice(b.vanSnaar, b.totSnaar + 1).every((f) => typeof f === 'number' && f >= b.fret))
-  if (barre) {
-    const vinger = vingers[barre.vanSnaar]
-    const zonder = resultaat.filter((b) => !(b.fret === barre.fret && b.vinger === vinger))
-    zonder.push({ ...barre, vinger })
-    return zonder.sort((a, b) => a.fret - b.fret || a.vanSnaar - b.vanSnaar)
-  }
-  return resultaat.sort((a, b) => a.fret - b.fret || a.vanSnaar - b.vanSnaar)
+  // Een barré uit de data gaat voor: die mag verder reiken dan de snaren waar de vinger echt het verschil maakt.
+  const vinger = barre ? vingers[barre.vanSnaar] : 0
+  const alle = barre ? [...resultaat.filter((b) => !(b.fret === barre.fret && b.vinger === vinger)), { ...barre, vinger }] : resultaat
+  return alle.sort((a, b) => a.fret - b.fret || a.vanSnaar - b.vanSnaar)
+}
+
+function onderBarre(barres: BarreOpFret[], akkoord: Akkoord, snaar: number): boolean {
+  const fret = akkoord.frets[snaar]
+  return barres.some((b) => b.fret === fret && b.vanSnaar <= snaar && snaar <= b.totSnaar && b.vinger === akkoord.vingers[snaar])
 }
 
 export function diagramVan(akkoord: Akkoord): Diagram {
   const basisfret = akkoord.basisfret ?? 1
   const vak = (fret: number) => fret - basisfret + 1
   const barres = barresVan(akkoord)
-  const onderBarre = (snaar: number, fret: number) =>
-    barres.some((b) => b.fret === fret && b.vanSnaar <= snaar && snaar <= b.totSnaar && b.vinger === akkoord.vingers[snaar])
   const gegrepen = akkoord.frets.filter((f): f is number => typeof f === 'number' && f > 0)
   return {
     basisfret,
@@ -73,7 +75,7 @@ export function diagramVan(akkoord: Akkoord): Diagram {
     boven: akkoord.frets.map((f) => (f === 'x' ? 'x' : f === 0 ? 'o' : null)),
     barres: barres.map(({ fret, ...rest }) => ({ vak: vak(fret), ...rest })),
     bolletjes: akkoord.frets.flatMap((fret, snaar) =>
-      typeof fret === 'number' && fret > 0 && !onderBarre(snaar, fret) ? [{ snaar, vak: vak(fret), vinger: akkoord.vingers[snaar] }] : [],
+      typeof fret === 'number' && fret > 0 && !onderBarre(barres, akkoord, snaar) ? [{ snaar, vak: vak(fret), vinger: akkoord.vingers[snaar] }] : [],
     ),
   }
 }
@@ -92,7 +94,7 @@ export function beschrijfAkkoord(akkoord: Akkoord): string {
     const naam = SNAREN_VOLUIT[snaar]
     if (fret === 'x') delen.push(`${naam} niet spelen`)
     else if (fret === 0) delen.push(`${naam} open`)
-    else if (!barres.some((b) => b.fret === fret && b.vanSnaar <= snaar && snaar <= b.totSnaar && b.vinger === akkoord.vingers[snaar])) {
+    else if (!onderBarre(barres, akkoord, snaar)) {
       delen.push(`${naam} ${fret}e fret ${VINGERS[akkoord.vingers[snaar]]}`)
     }
   })
