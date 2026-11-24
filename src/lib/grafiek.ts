@@ -46,6 +46,8 @@ export interface Maten {
 }
 
 const MAX_STAAFBREEDTE = 48
+/** Zo staat het label onder het eerste en laatste punt niet buiten de grafiek. */
+const LIJN_MARGE = 24
 
 export function indeling(waarden: readonly number[], soort: GrafiekSoort, maten: Maten) {
   const { max, ticks } = schaal(waarden)
@@ -56,7 +58,7 @@ export function indeling(waarden: readonly number[], soort: GrafiekSoort, maten:
   const xVan = (i: number) => {
     if (soort === 'staaf') return maten.links + vak * (i + 0.5)
     if (waarden.length === 1) return maten.links + vlakBreedte / 2
-    return maten.links + (vlakBreedte * i) / (waarden.length - 1)
+    return maten.links + LIJN_MARGE + ((vlakBreedte - 2 * LIJN_MARGE) * i) / (waarden.length - 1)
   }
   return {
     ticks: ticks.map((waarde) => ({ waarde, y: yVan(waarde) })),

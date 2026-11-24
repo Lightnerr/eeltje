@@ -69,10 +69,10 @@ describe('indeling', () => {
     expect(punten[1].x - punten[0].x).toBeCloseTo(punten[2].x - punten[1].x)
   })
 
-  it('lijn: eerste en laatste punt op de randen, één punt in het midden', () => {
+  it('lijn: eerste en laatste punt iets binnen de randen (ruimte voor hun label), één punt in het midden', () => {
     const { punten } = indeling([1, 2, 3], 'lijn', maten)
-    expect(punten[0].x).toBe(maten.links)
-    expect(punten[2].x).toBe(maten.breedte - maten.rechts)
+    expect(punten[0].x).toBe(maten.links + 24)
+    expect(punten[2].x).toBe(maten.breedte - maten.rechts - 24)
     expect(indeling([5], 'lijn', maten).punten[0].x).toBe((maten.links + maten.breedte - maten.rechts) / 2)
   })
 

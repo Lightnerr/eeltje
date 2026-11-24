@@ -1,0 +1,4 @@
+.voortgang {
+  display: grid;
+  gap: var(--ruimte-4);
+}

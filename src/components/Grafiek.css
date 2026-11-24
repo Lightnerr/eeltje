@@ -1,0 +1,61 @@
+.grafiek {
+  display: grid;
+  gap: var(--ruimte-2);
+  margin: 0;
+  min-width: 0;
+}
+
+.grafiek-titel {
+  font-weight: 650;
+}
+
+.grafiek-vlak {
+  min-width: 0;
+}
+
+.grafiek svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--font);
+}
+
+.grafiek-leeg {
+  margin: 0;
+  padding: var(--ruimte-5) 0;
+}
+
+.grafiek-hulplijn {
+  stroke: var(--rand);
+  stroke-width: 1;
+}
+
+.grafiek-as {
+  stroke: var(--tekst-zacht);
+  stroke-width: 1.5;
+}
+
+.grafiek-tick,
+.grafiek-label {
+  fill: var(--tekst-zacht);
+  font-size: var(--letter-klein);
+}
+
+.grafiek-staaf {
+  fill: var(--accent);
+}
+
+.grafiek-lijn {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.grafiek-punt {
+  fill: var(--vlak);
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
