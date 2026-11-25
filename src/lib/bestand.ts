@@ -17,8 +17,8 @@ export function bestandsnaam(nu = new Date()): string {
  */
 export function leesBestand(tekst: string): Voortgang {
   if (tekst.length > MAX_BESTAND_TEKENS) throw new Error('Dit bestand is te groot voor een voortgang van Eeltje.')
-  // Kladblok op Windows zet soms een BOM vooraan.
-  const schoon = tekst.replace(/^﻿/, '').trim()
+  // trim() haalt ook de BOM weg die Kladblok soms vooraan zet.
+  const schoon = tekst.trim()
   if (!schoon) throw new Error('Dit bestand is leeg.')
   return importeerVoortgang(schoon)
 }
