@@ -1,5 +1,6 @@
 import { akkoordenPassenInMaat, klinkendeTonen, leesSlagpatroon, ontleedAkkoord, slagenPasInMaat, tonenVan, toonnaam } from './muziek'
-import type { Maatsoort } from './types'
+import { riffLengte, SNAREN } from './riffs'
+import type { Maatsoort, Riff, Snaar } from './types'
 
 // Controleert de inhoud in src/data tegen het schema in types.ts. Elke functie geeft een lijst met Nederlandse
 // foutmeldingen; leeg is goed.
@@ -208,6 +209,48 @@ export function valideerOefening(data: unknown): string[] {
   return fouten.map((f) => `Oefening ${String(data.id)}: ${f}`)
 }
 
+const RIFFVELDEN = ['id', 'titel', 'artiest', 'bpm', 'maatsoort', 'onderverdeling', 'maten', 'noten', 'uitleg', 'bron', 'geverifieerd']
+const NOOTVELDEN = ['stap', 'snaar', 'fret']
+
+function foutenInNoten(noten: unknown, lengte: number | null): string[] {
+  if (!Array.isArray(noten) || noten.length === 0) return ['noten moet een lijst met minstens één noot zijn']
+  const fouten: string[] = []
+  const bezet = new Set<string>()
+  noten.forEach((n, i) => {
+    if (!isObject(n)) {
+      fouten.push(`noot ${i + 1}: moet een object zijn`)
+      return
+    }
+    fouten.push(...onbekendeVelden(n, NOOTVELDEN).map((f) => `noot ${i + 1}: ${f}`))
+    if (!isGeheel(n.stap, 0, 1000)) fouten.push(`noot ${i + 1}: stap moet een geheel getal vanaf 0 zijn`)
+    else if (lengte !== null && n.stap >= lengte) fouten.push(`noot ${i + 1}: stap ${n.stap} valt buiten de riff (${lengte} stappen)`)
+    if (!SNAREN.includes(n.snaar as Snaar)) fouten.push(`noot ${i + 1}: snaar moet een van ${SNAREN.join(', ')} zijn`)
+    if (!isGeheel(n.fret, 0, 24)) fouten.push(`noot ${i + 1}: fret moet 0 t/m 24 zijn`)
+    const plek = `${String(n.stap)}|${String(n.snaar)}`
+    if (bezet.has(plek)) fouten.push(`noot ${i + 1}: twee noten op dezelfde snaar en stap`)
+    bezet.add(plek)
+  })
+  return fouten
+}
+
+export function valideerRiff(data: unknown): string[] {
+  if (!isObject(data)) return ['Riff: moet een object zijn']
+  const fouten = onbekendeVelden(data, RIFFVELDEN)
+  if (typeof data.id !== 'string' || !KEBAB.test(data.id)) fouten.push('id moet kebab-case zijn')
+  if (!isTekst(data.titel)) fouten.push('titel ontbreekt')
+  if (!isTekst(data.artiest)) fouten.push('artiest ontbreekt')
+  if (!isGeheel(data.bpm, 30, 220)) fouten.push('bpm moet 30 t/m 220 zijn')
+  if (!isMaatsoort(data.maatsoort)) fouten.push(`maatsoort moet een van ${MAATSOORTEN.join(', ')} zijn`)
+  if (![1, 2, 4].includes(data.onderverdeling as number)) fouten.push('onderverdeling moet 1, 2 of 4 stappen per tel zijn')
+  if (!isGeheel(data.maten, 1, 16)) fouten.push('maten moet 1 t/m 16 zijn')
+  const vormOk = isMaatsoort(data.maatsoort) && [1, 2, 4].includes(data.onderverdeling as number) && isGeheel(data.maten, 1, 16)
+  fouten.push(...foutenInNoten(data.noten, vormOk ? riffLengte(data as unknown as Riff) : null))
+  if (!isTekstLijst(data.uitleg) || data.uitleg.length === 0) fouten.push('uitleg moet een lijst met minstens één stap zijn')
+  if (data.bron !== 'ai-gegenereerd' && data.bron !== 'eigenaar') fouten.push('bron is ai-gegenereerd of eigenaar')
+  if (typeof data.geverifieerd !== 'boolean') fouten.push('geverifieerd moet true of false zijn')
+  return fouten.map((f) => `Riff ${String(data.id)}: ${f}`)
+}
+
 function dubbeleIds(lijst: readonly unknown[], soort: string): string[] {
   const gezien = new Set<unknown>()
   const fouten: string[] = []
@@ -219,7 +262,7 @@ function dubbeleIds(lijst: readonly unknown[], soort: string): string[] {
   return fouten
 }
 
-export function valideerInhoud(inhoud: { akkoorden: unknown; liedjes: readonly unknown[]; oefeningen: unknown }): string[] {
+export function valideerInhoud(inhoud: { akkoorden: unknown; liedjes: readonly unknown[]; oefeningen: unknown; riffs: readonly unknown[] }): string[] {
   const akkoordnamen = Array.isArray(inhoud.akkoorden)
     ? inhoud.akkoorden.filter(isObject).map((a) => a.naam).filter((n): n is string => typeof n === 'string')
     : []
@@ -231,5 +274,7 @@ export function valideerInhoud(inhoud: { akkoorden: unknown; liedjes: readonly u
     ...(Array.isArray(inhoud.oefeningen) ? [] : ['oefeningen.json: moet een lijst zijn']),
     ...oefeningen.flatMap(valideerOefening),
     ...dubbeleIds(oefeningen, 'Oefening'),
+    ...inhoud.riffs.flatMap(valideerRiff),
+    ...dubbeleIds(inhoud.riffs, 'Riff'),
   ]
 }

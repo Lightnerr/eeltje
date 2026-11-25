@@ -81,6 +81,33 @@ export interface Oefening {
   slagpatroon?: string
 }
 
+/** Snaarnaam zoals in een tab: lage E t/m hoge e. */
+export type Snaar = 'E' | 'A' | 'D' | 'G' | 'B' | 'e'
+
+/** Eén noot van een riff. `stap` telt vanaf 0 over de hele riff, `onderverdeling` stappen per tel. */
+export interface RiffNoot {
+  stap: number
+  snaar: Snaar
+  fret: number
+}
+
+/** Een kort loopje van een paar maten dat steeds rond gaat. Op gehoor nagemaakt, nooit van een website. */
+export interface Riff {
+  id: string
+  titel: string
+  artiest: string
+  /** Het tempo van het origineel, in tellen van de noemer (in 6/8 achtsten). */
+  bpm: number
+  maatsoort: Maatsoort
+  /** Stappen per tel: 1, 2 (achtsten in x/4) of 4 (zestienden). */
+  onderverdeling: number
+  maten: number
+  noten: RiffNoot[]
+  uitleg: string[]
+  bron: Bron
+  geverifieerd: boolean
+}
+
 export type AkkoordStatus = 'nieuw' | 'oefenen' | 'kan ik'
 
 export type ChallengeType = 'one-minute-changes' | 'spider-ladder' | 'wisselreeks'

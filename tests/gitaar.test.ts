@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { akkoorden } from '../src/data'
-import { aanslagen, frequentie, karplusStrong, moetUitsterven, toonhoogtes } from '../src/lib/gitaar'
+import { aanslagen, frequentie, karplusStrong, moetUitsterven, toonhoogte, toonhoogtes } from '../src/lib/gitaar'
 import type { Akkoord } from '../src/lib/types'
 
 const zoek = (naam: string, variant?: string) =>
@@ -11,6 +11,14 @@ describe('toonhoogtes', () => {
     expect(toonhoogtes(zoek('E'))).toEqual([40, 47, 52, 56, 59, 64])
     expect(toonhoogtes(zoek('D'))).toEqual([null, null, 50, 57, 62, 66])
     expect(toonhoogtes(zoek('A', 'barre'))).toEqual([45, 52, 57, 61, 64, 69])
+  })
+})
+
+describe('toonhoogte', () => {
+  it('geeft de MIDI-noot van één snaar en fret', () => {
+    expect(toonhoogte(0, 0)).toBe(40)
+    expect(toonhoogte(1, 7)).toBe(52)
+    expect(toonhoogte(5, 12)).toBe(76)
   })
 })
 

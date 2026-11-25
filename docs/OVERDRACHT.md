@@ -290,3 +290,19 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - **Score** is een heel getal van 0 t/m `MAX_WISSELS` (200, meer dan 3 per seconde lukt niemand). `leesWissels` leest het invulveld; een ongeldige waarde houdt "Bewaar" uit. 0 bewaart niets, zoals voorheen.
 - **Het invulveld** is tekst met `inputMode="numeric"` (geen `type="number"`: die laat op desktop "2,5" of "e" toe en heeft piepkleine pijltjes), met grote −/+ knoppen. Bij het openen is het getal geselecteerd, dus typen vervangt het voorstel meteen.
 - **Screenshot van het invullen:** `KIJK_EVAL` kan `performance.now` vooruitzetten nadat `kijk.sh` op Start tikte; zie de PR.
+## Besluiten uit de riffs (na stap 7)
+
+### Besluiten
+
+- **Riffs zijn inhoud**, net als liedjes: `src/data/riffs/<id>.json`, gelezen via `src/data/index.ts`, bewaakt door `valideerRiff`. Een noot is `{ stap, snaar, fret }`; `stap` telt over de hele riff, `onderverdeling` stappen per tel (1, 2 of 4; in 6/8 is een tel een achtste). Snaren als in een tab (`E A D G B e`), want zo schrijf en lees je ze. Geen duur: een noot klinkt tot de volgende (de gitaar is per riff eenstemmig, `speelNoten` laat het vorige uitsterven).
+- **De tab is data, geen tekst.** `tabVan` geeft per maat een kolom per stap (hoge e bovenaan), zodat de huidige stap kan oplichten. Lege zestienden zijn smal; past een maat toch niet (Thunderstruck op 360px), dan scrollt alleen de tab.
+- **Spelen** gebruikt `useMetronoom` met `onderverdeling` van de riff: maat 0 is aftellen, daarna gaat hij steeds rond. `opPlan` plant de noten op de audioklok (eigen maatteller, want plannen loopt vóór op horen); `opTel`/`slag` zetten de cursor. Begint op 60% van het origineel, in stappen van 10% (`begrensTempo`, `meespeelBpm` uit meespelen).
+- **Geen voortgang**: riffs raken `Voortgang` niet, dus geen nieuwe versie en niets in de demo.
+- **`speel` in `src/audio/gitaar.ts`** neemt nu een lijst aanslagen; `slaAan`, `tokkel` en `speelNoten` maken die lijst. Gedrag van de akkoorden gelijk.
+- **AI-label** zonder knop "gecontroleerd": `Voortgang.gecontroleerd` gaat over liedjes. De eigenaar zet `geverifieerd: true` in de JSON.
+
+### Geparkeerde ideeën
+
+- `/nieuwe-riff` als command, zoals `/nieuw-nummer`.
+- Een riff-ladder (zoals de spider-ladder): na een geslaagde ronde 5% sneller, met record.
+- Een riff alleen laten horen zonder metronoom, of de klik uit.

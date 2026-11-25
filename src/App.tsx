@@ -14,6 +14,7 @@ import NietGevondenPagina from './pages/NietGevonden'
 import OefenenPagina from './pages/Oefenen'
 import OefeningPagina from './pages/Oefening'
 import OneMinuteChangesPagina from './pages/OneMinuteChanges'
+import RiffPagina from './pages/Riff'
 import SlagpatroonPagina from './pages/Slagpatroon'
 import SpiderLadderPagina from './pages/SpiderLadder'
 import VandaagPagina from './pages/Vandaag'
@@ -42,6 +43,8 @@ function Pagina({ route }: { route: Route }) {
       return <SlagpatroonPagina />
     case 'oefening':
       return <OefeningPagina key={route.id} id={route.id} />
+    case 'riff':
+      return <RiffPagina key={route.id} id={route.id} />
     case 'one-minute-changes':
       return <OneMinuteChangesPagina key={`${route.a}|${route.b}`} a={route.a} b={route.b} />
     case 'spider-ladder':

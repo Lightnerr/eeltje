@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { valideerAkkoorden, valideerInhoud, valideerLiedje, valideerOefening } from '../src/lib/validatie'
+import { valideerAkkoorden, valideerInhoud, valideerLiedje, valideerOefening, valideerRiff } from '../src/lib/validatie'
 
 const A = {
   naam: 'A',
@@ -148,11 +148,52 @@ describe('valideerOefening', () => {
   })
 })
 
+const riff = {
+  id: 'seven-nation-army',
+  titel: 'Seven Nation Army',
+  artiest: 'The White Stripes',
+  bpm: 124,
+  maatsoort: '4/4',
+  onderverdeling: 4,
+  maten: 2,
+  noten: [
+    { stap: 0, snaar: 'A', fret: 7 },
+    { stap: 31, snaar: 'e', fret: 0 },
+  ],
+  uitleg: ['Alles op de A-snaar.'],
+  bron: 'ai-gegenereerd',
+  geverifieerd: false,
+}
+
+describe('valideerRiff', () => {
+  it('keurt een goede riff goed', () => {
+    expect(valideerRiff(riff)).toEqual([])
+    expect(valideerRiff(met(riff, { maatsoort: '6/8', onderverdeling: 1, maten: 6 }))).toEqual([])
+  })
+
+  it('vindt fouten', () => {
+    const fout = (wijziging: Record<string, unknown>) => valideerRiff(met(riff, wijziging)).join()
+    expect(fout({ id: 'Seven Nation' })).toMatch(/id/)
+    expect(fout({ bpm: 10 })).toMatch(/bpm/)
+    expect(fout({ onderverdeling: 3 })).toMatch(/onderverdeling/)
+    expect(fout({ maten: 0 })).toMatch(/maten/)
+    expect(fout({ noten: [] })).toMatch(/noten/)
+    expect(fout({ noten: [{ stap: 32, snaar: 'A', fret: 7 }] })).toMatch(/stap 32 valt buiten/)
+    expect(fout({ noten: [{ stap: 0, snaar: 'H', fret: 7 }] })).toMatch(/snaar/)
+    expect(fout({ noten: [{ stap: 0, snaar: 'A', fret: 25 }] })).toMatch(/fret/)
+    expect(fout({ noten: [{ stap: 0, snaar: 'A', fret: 7 }, { stap: 0, snaar: 'A', fret: 5 }] })).toMatch(/twee noten/)
+    expect(fout({ uitleg: [] })).toMatch(/uitleg/)
+    expect(fout({ bron: 'internet' })).toMatch(/bron/)
+    expect(fout({ tab: ['e|---|'] })).toMatch(/onbekend veld "tab"/)
+  })
+})
+
 describe('valideerInhoud', () => {
   it('ids zijn uniek', () => {
-    expect(valideerInhoud({ akkoorden: [A, D], liedjes: [wonderwall, wonderwall], oefeningen: [spider, spider] })).toEqual([
+    expect(valideerInhoud({ akkoorden: [A, D], liedjes: [wonderwall, wonderwall], oefeningen: [spider, spider], riffs: [riff, riff] })).toEqual([
       'Liedje wonderwall: id staat er twee keer in',
       'Oefening spider: id staat er twee keer in',
+      'Riff seven-nation-army: id staat er twee keer in',
     ])
   })
 })

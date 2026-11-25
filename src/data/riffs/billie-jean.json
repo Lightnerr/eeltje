@@ -1,0 +1,27 @@
+{
+  "id": "billie-jean",
+  "titel": "Billie Jean",
+  "artiest": "Michael Jackson",
+  "bpm": 117,
+  "maatsoort": "4/4",
+  "onderverdeling": 2,
+  "maten": 1,
+  "noten": [
+    { "stap": 0, "snaar": "D", "fret": 4 },
+    { "stap": 1, "snaar": "A", "fret": 4 },
+    { "stap": 2, "snaar": "D", "fret": 2 },
+    { "stap": 3, "snaar": "D", "fret": 4 },
+    { "stap": 4, "snaar": "D", "fret": 2 },
+    { "stap": 5, "snaar": "A", "fret": 4 },
+    { "stap": 6, "snaar": "A", "fret": 2 },
+    { "stap": 7, "snaar": "A", "fret": 4 }
+  ],
+  "uitleg": [
+    "De baslijn, op de A- en D-snaar. Alles ligt op de 2e en 4e fret.",
+    "Zet je wijsvinger op de 2e fret en je ringvinger op de 4e, en laat je hand daar staan.",
+    "Acht gelijke noten per maat, één op elke tel en één op elke \"&\".",
+    "Speel kort en strak: til je vinger na elke noot een heel klein beetje op."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

@@ -1,0 +1,31 @@
+{
+  "id": "smoke-on-the-water",
+  "titel": "Smoke on the Water",
+  "artiest": "Deep Purple",
+  "bpm": 112,
+  "maatsoort": "4/4",
+  "onderverdeling": 2,
+  "maten": 4,
+  "noten": [
+    { "stap": 0, "snaar": "G", "fret": 0 },
+    { "stap": 2, "snaar": "G", "fret": 3 },
+    { "stap": 4, "snaar": "G", "fret": 5 },
+    { "stap": 7, "snaar": "G", "fret": 0 },
+    { "stap": 9, "snaar": "G", "fret": 3 },
+    { "stap": 11, "snaar": "G", "fret": 6 },
+    { "stap": 12, "snaar": "G", "fret": 5 },
+    { "stap": 16, "snaar": "G", "fret": 0 },
+    { "stap": 18, "snaar": "G", "fret": 3 },
+    { "stap": 20, "snaar": "G", "fret": 5 },
+    { "stap": 23, "snaar": "G", "fret": 3 },
+    { "stap": 25, "snaar": "G", "fret": 0 }
+  ],
+  "uitleg": [
+    "Alles op de G-snaar: open, 3e fret, 5e fret en één keer de 6e.",
+    "Wijsvinger op de 3e fret, ringvinger op de 5e, pink op de 6e.",
+    "Let op het ritme: een paar noten vallen net tussen de tellen. Luister eerst een keer.",
+    "Klinkt het goed? Speel dezelfde frets dan ook op de D-snaar erbij, voor de dikke rockversie."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

@@ -1,0 +1,26 @@
+{
+  "id": "seven-nation-army",
+  "titel": "Seven Nation Army",
+  "artiest": "The White Stripes",
+  "bpm": 124,
+  "maatsoort": "4/4",
+  "onderverdeling": 4,
+  "maten": 2,
+  "noten": [
+    { "stap": 0, "snaar": "A", "fret": 7 },
+    { "stap": 6, "snaar": "A", "fret": 7 },
+    { "stap": 8, "snaar": "A", "fret": 10 },
+    { "stap": 11, "snaar": "A", "fret": 7 },
+    { "stap": 14, "snaar": "A", "fret": 5 },
+    { "stap": 16, "snaar": "A", "fret": 3 },
+    { "stap": 24, "snaar": "A", "fret": 2 }
+  ],
+  "uitleg": [
+    "Alles op de A-snaar. Je hand schuift mee, dus één vinger is genoeg: neem je wijs- of middelvinger.",
+    "De eerste noot (7e fret) klinkt lang, daarna komen er vier snel achter elkaar.",
+    "De laatste twee (3e en 2e fret) laat je elk een halve maat doorklinken.",
+    "Druk vlak achter het fretijzer, dan klinkt het schoon zonder hard te knijpen."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

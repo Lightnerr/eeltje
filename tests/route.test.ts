@@ -20,6 +20,7 @@ describe('leesRoute', () => {
     expect(leesRoute('#/oefenen/metronoom')).toEqual({ pagina: 'metronoom' })
     expect(leesRoute('#/oefenen/slagpatroon')).toEqual({ pagina: 'slagpatroon' })
     expect(leesRoute('#/oefenen/oefeningen/spider')).toEqual({ pagina: 'oefening', id: 'spider' })
+    expect(leesRoute('#/oefenen/riffs/billie-jean')).toEqual({ pagina: 'riff', id: 'billie-jean' })
     expect(leesRoute('#/oefenen/one-minute-changes?a=A&b=D')).toEqual({ pagina: 'one-minute-changes', a: 'A', b: 'D' })
     expect(leesRoute('#/oefenen/one-minute-changes')).toEqual({ pagina: 'one-minute-changes' })
     expect(leesRoute('#/oefenen/spider-ladder?bpm=60')).toEqual({ pagina: 'spider-ladder', bpm: 60 })
@@ -50,6 +51,7 @@ describe('leesRoute', () => {
     expect(leesRoute('#/bestaat-niet')).toEqual({ pagina: 'niet-gevonden' })
     expect(leesRoute('#/liedjes/a/b/c')).toEqual({ pagina: 'niet-gevonden' })
     expect(leesRoute('#/oefenen/oefeningen')).toEqual({ pagina: 'niet-gevonden' })
+    expect(leesRoute('#/oefenen/riffs')).toEqual({ pagina: 'niet-gevonden' })
   })
 })
 
@@ -77,6 +79,7 @@ describe('naarHash', () => {
       { pagina: 'metronoom' },
       { pagina: 'slagpatroon' },
       { pagina: 'oefening', id: 'spider' },
+      { pagina: 'riff', id: 'seven-nation-army' },
       { pagina: 'one-minute-changes' },
       { pagina: 'one-minute-changes', a: 'F#m', b: 'D' },
       { pagina: 'spider-ladder' },
@@ -96,6 +99,7 @@ describe('tabVan', () => {
     expect(tabVan({ pagina: 'meespelen', id: 'x' })).toBe('liedjes')
     expect(tabVan({ pagina: 'spider-ladder' })).toBe('oefenen')
     expect(tabVan({ pagina: 'oefening', id: 'spider' })).toBe('oefenen')
+    expect(tabVan({ pagina: 'riff', id: 'billie-jean' })).toBe('oefenen')
     expect(tabVan({ pagina: 'voortgang' })).toBe('voortgang')
     expect(tabVan({ pagina: 'niet-gevonden' })).toBeNull()
   })

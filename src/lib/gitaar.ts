@@ -9,9 +9,14 @@ export type Speelwijze = 'aanslaan' | 'tokkelen'
 
 const TUSSENTIJD: Record<Speelwijze, number> = { aanslaan: 0.025, tokkelen: 0.4 }
 
+/** De MIDI-noot van `fret` op `snaar` (0 = lage E). */
+export function toonhoogte(snaar: number, fret: number): number {
+  return OPEN_SNAREN[snaar] + fret
+}
+
 /** De MIDI-noot per snaar, `null` als de snaar niet klinkt. */
 export function toonhoogtes(akkoord: Akkoord): (number | null)[] {
-  return akkoord.frets.map((fret, snaar) => (fret === 'x' ? null : OPEN_SNAREN[snaar] + fret))
+  return akkoord.frets.map((fret, snaar) => (fret === 'x' ? null : toonhoogte(snaar, fret)))
 }
 
 export function frequentie(midi: number): number {

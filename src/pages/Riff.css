@@ -1,0 +1,161 @@
+.riff {
+  display: grid;
+  gap: var(--ruimte-4);
+}
+
+.riff-terug {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tikdoel);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.riff-ai {
+  padding: var(--ruimte-3) var(--ruimte-4);
+  border: 1px solid var(--status-oefenen);
+  border-radius: var(--radius);
+  background: var(--status-oefenen-vlak);
+}
+
+.riff-tab {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ruimte-3) 0;
+  margin: 0;
+  padding: var(--ruimte-3);
+  background: var(--vlak);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  /* Past een maat toch niet, dan scrollt alleen de tab. */
+  overflow-x: auto;
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: clamp(0.8125rem, 3.8vw, var(--letter-groot));
+  line-height: 1;
+}
+
+.riff-maat {
+  display: flex;
+  /* De maatstreep. */
+  border-right: 2px solid var(--tekst-zacht);
+}
+
+.riff-kolom {
+  display: grid;
+  min-width: 1.3em;
+  border-radius: var(--radius-klein);
+}
+
+.riff-snaarnamen {
+  min-width: 1.2em;
+  color: var(--tekst-zacht);
+  font-size: var(--letter-klein);
+}
+
+.riff-maat:not(:first-child) .riff-snaarnamen {
+  display: none;
+}
+
+/* Zestienden zonder noot hoeven weinig plek. */
+.riff-leeg {
+  min-width: 0.7em;
+}
+
+.riff-op-tel {
+  margin-left: 0.25em;
+}
+
+.riff-nu {
+  background: var(--accent-zacht);
+}
+
+.riff-cel {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 1.6em;
+}
+
+.riff-kolom:not(.riff-snaarnamen) .riff-cel::before {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  border-top: 1px solid var(--rand);
+}
+
+.riff-fret {
+  position: relative;
+  padding: 0 0.15em;
+  background: var(--vlak);
+  font-weight: 700;
+}
+
+.riff-nu .riff-fret {
+  background: var(--accent);
+  color: var(--op-accent);
+  border-radius: var(--radius-klein);
+}
+
+.riff-speler {
+  display: grid;
+  gap: var(--ruimte-4);
+}
+
+.riff-stand {
+  display: grid;
+  place-items: center;
+  min-height: 3.5rem;
+  text-align: center;
+}
+
+.riff-stand strong {
+  font-size: var(--letter-reus);
+  line-height: 1;
+}
+
+.riff-start {
+  min-height: 64px;
+  font-size: var(--letter-groot);
+}
+
+.riff-tempo {
+  display: grid;
+  grid-template-columns: 64px 1fr 64px;
+  align-items: center;
+  gap: var(--ruimte-3);
+}
+
+.riff-tempo .knop {
+  min-height: 56px;
+  padding: 0;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.riff-tempo-waarde {
+  display: grid;
+  justify-items: center;
+  font-size: var(--letter-titel);
+  line-height: 1.2;
+}
+
+.riff-tempo-waarde .zacht {
+  font-size: var(--letter);
+}
+
+.riff-uitleg {
+  display: grid;
+  gap: var(--ruimte-3);
+}
+
+.riff-uitleg ol {
+  display: grid;
+  gap: var(--ruimte-3);
+  padding-left: var(--ruimte-5);
+}
+
+.riff-uitleg li::marker {
+  color: var(--accent);
+  font-weight: 700;
+}

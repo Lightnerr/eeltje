@@ -1,0 +1,35 @@
+{
+  "id": "thunderstruck",
+  "titel": "Thunderstruck",
+  "artiest": "AC/DC",
+  "bpm": 133,
+  "maatsoort": "4/4",
+  "onderverdeling": 4,
+  "maten": 1,
+  "noten": [
+    { "stap": 0, "snaar": "B", "fret": 4 },
+    { "stap": 1, "snaar": "B", "fret": 0 },
+    { "stap": 2, "snaar": "B", "fret": 5 },
+    { "stap": 3, "snaar": "B", "fret": 0 },
+    { "stap": 4, "snaar": "B", "fret": 4 },
+    { "stap": 5, "snaar": "B", "fret": 0 },
+    { "stap": 6, "snaar": "B", "fret": 2 },
+    { "stap": 7, "snaar": "B", "fret": 0 },
+    { "stap": 8, "snaar": "B", "fret": 4 },
+    { "stap": 9, "snaar": "B", "fret": 0 },
+    { "stap": 10, "snaar": "B", "fret": 5 },
+    { "stap": 11, "snaar": "B", "fret": 0 },
+    { "stap": 12, "snaar": "B", "fret": 4 },
+    { "stap": 13, "snaar": "B", "fret": 0 },
+    { "stap": 14, "snaar": "B", "fret": 2 },
+    { "stap": 15, "snaar": "B", "fret": 0 }
+  ],
+  "uitleg": [
+    "Alles op de B-snaar. Tussen elke gegrepen noot speel je de open snaar.",
+    "Wijsvinger op de 2e fret, middelvinger op de 4e, ringvinger op de 5e.",
+    "Begin langzaam: het origineel is erg snel. Gaat het gelijkmatig, dan pas sneller.",
+    "Lukt aanslaan goed? Probeer de open noten dan met je vinger van de snaar te trekken (pull-off)."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}
