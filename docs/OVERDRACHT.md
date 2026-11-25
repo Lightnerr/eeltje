@@ -172,3 +172,38 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - Op een breed scherm de bediening naast het akkoord zetten; nu één kolom van max. 720px, die op een laptop scrolt.
 - In de lijst filteren op "Kan je spelen".
 - Een "speel A voor A7"-hint als er geen capo-suggestie is (`vereenvoudig`), uit stap 1.
+
+## Besluiten uit stap 5
+
+### Besluiten
+
+- **Contract voor stap 6** (`src/lib/challenges.ts`):
+  - `paarSleutel(a, b)`: de twee namen gesorteerd met de gewone `sort()` (codepunten) en met `-` ertussen: `paarSleutel('D', 'A') === 'A-D'`, `paarSleutel('G', 'Em') === 'Em-G'`. De one-minute-changes-pagina rekent de sleutel zelf uit, dus een link met `a` en `b` in de "verkeerde" volgorde werkt ook.
+  - `reeksSleutel(akkoorden)`: in volgorde, `G-C-D`. De spider heeft altijd `SPIDER_SLEUTEL` (`'spider'`).
+  - `voegResultaatToe(v, resultaat)`: plakt het resultaat achteraan `challenges`, geeft een nieuwe `Voortgang`.
+  - `record(v, type, sleutel?)`: het hele `ChallengeResultaat` met de hoogste `waarde`, of `null` als er niets is. Bij gelijke waarde wint het hogere `bpm` (wisselreeks), dan het oudste (wie het eerst haalde). Zonder sleutel: het beste van het hele type, over alle paren of reeksen heen.
+  - `geschiedenis(v, type, sleutel?)`: een nieuwe array, gesorteerd op `datum` van oud naar nieuw. Zonder sleutel alles van het type.
+  - Verder: `beoordeel(waarde, vorigRecord)` (`'eerste' | 'nieuw-record' | 'evenaard' | 'onder-record'`; nieuw record alleen bij echt hoger), `resultaatTekst(r)` ("31 wissels", "70 bpm", "1 min 30 s op 80 bpm"), `recordTekst(v, type)` ("Record 31 wissels · A-D") en `duurTekst(seconden)`. Stap 6 kan die voor de records en grafiekjes gebruiken.
+- **Verloop per challenge** is een pure reducer met een stand en acties (`omcVerloop`, `spiderVerloop`, `wisselreeksVerloop`); de pagina's doen `zetStand((s) => verloop(s, actie))`. De tijd zit in de actie (`nu` uit `performance.now()`), en de fase volgt uit die tijd, niet uit het aantal timertikken: een tabblad dat op de achtergrond sliep, eindigt de minuut op tijd en telt tikken na het einde niet mee. `useKlok(actief, ms, opTijd)` stuurt de tijd door en werkt meteen bij als het tabblad terugkomt.
+- **One minute changes:** 3 s aftellen, dan 60 s. Tikken tijdens het aftellen tellen niet. Standaard je eerste twee akkoorden op "oefenen" (dan "kan ik", dan de rest), anders wat de route zegt (`geldigPaar`: twee verschillende, bestaande akkoorden).
+- **Spider-ladder:** begint op 50 bpm (`?bpm=` of +/- 5 vooraf), elke geslaagde ronde 5 bpm erbij tot 220. "Lukte niet, stoppen" maakt hem af; het record is het hoogste tempo dat lukte. De metronoom loopt mee in 4/4.
+- **Wisselreeks:** 3 of 4 akkoorden, elk één maat van 4 tellen, één maat aftellen met de metronoom. Geen twee dezelfde na elkaar, ook niet van het laatste naar het eerste (`geldigeReeks`), want dan is er geen wissel. De grote knop is "Ik ben eruit"; de waarde is het aantal hele seconden sinds het aftellen, met `bpm`. Het record is per reeks, ongeacht het tempo.
+- **Eén grote knop** per challenge: hetzelfde element is "Start", daarna de tikknop, zodat de focus en dus de spatiebalk blijven. Bij het openen krijgt hij de focus (een frame na `Schermvullend`, dat de sluitknop focust), anders sluit de eerste spatie de challenge.
+- **Spatiebalk** (`useSpatiebalk`): op de grote knop zelf of zonder focus telt een spatie één keer (keydown, zonder herhaling; de klik bij het loslaten wordt tegengehouden). Op een andere knop, een keuzelijst of een invoer blijft de spatie van hen. Na "klaar" doet de spatie niets, zodat een late tik niet meteen een nieuwe ronde start. Getest in headless Chrome.
+- **Opslaan** gaat via `useChallengeResultaat(type, sleutel, stand, resultaat)`: één keer per stand, alleen als de lib een resultaat geeft. Dat is pas bij "klaar", en niet bij 0 wissels, geen geslaagde spiderronde of minder dan een seconde volgehouden. Sluiten of Escape slaat dus niets op. Het record van vóór de poging wordt bij de start onthouden, voor "Nieuw record!".
+- **Oefeningenpagina:** doel, stappen, het tabje in een `<pre>` (monospace, past op 360px), en een metronoom op het standaardtempo met `useMetronoom` en `TempoKiezer`. Heeft de oefening een slagpatroon, dan lopen de pijltjes mee. Spider en akkoordwissels linken naar hun challenge.
+- **`TempoKiezer`** heeft `onMaatsoort` nu optioneel: zonder die prop is de maatsoort vast en zie je de keuze niet (de oefening bepaalt hem).
+- **Demo-voortgang** niet gewijzigd: hij had al genoeg. `tests/challenges.test.ts` controleert dat `record` en `geschiedenis` er iets zinnigs uit halen (A-D 31, spider 70, G-C-D 70 s op 70 bpm).
+
+### Valkuilen
+
+- **`kijk.sh` splitste routes op elke komma**, dus `?akkoorden=G,C,D` brak. Nu splitst hij alleen op `,/` (een komma vóór een nieuwe route).
+- **Een lopende challenge fotograferen:** `/pad!.challenge-tik` laat alleen het aftellen zien. Voor "lopen" en "klaar" heb ik een los puppeteer-script gebruikt dat `performance.now` vooruitzet (`window.__extra += 60000`); de lib rekent met die tijd, dus de minuut is zo om.
+- Headless Chrome heeft geen `⇄`; de wisselpijl is daarom een svg.
+
+### Geparkeerde ideeën
+
+- Record van de wisselreeks per tempo (nu wint het langst volhouden, ongeacht het tempo).
+- Een nieuwe gebruiker met alleen A en D krijgt in de wisselreeks A7 als derde akkoord (de volgorde van `akkoorden.json`); beter is het makkelijkste nieuwe akkoord, bijvoorbeeld E.
+- Spider-ladder: starten op je record min 10 bpm, als opwarming.
+- Trillen bij het einde van de minuut (`navigator.vibrate`), en een klik bij elke tik.
