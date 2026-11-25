@@ -47,4 +47,8 @@ Nieuwe liedjes, akkoorden en oefeningen voeg je toe met Claude Code: `/nieuw-num
 - **Het akkoordgeluid bij meespelen wordt op de audioklok ingepland**, tegelijk met de klik, ook met een Bluetooth-koptelefoon.
 - **Een challenge stopt als je scherm uitgaat** (vergrendelen, ander tabblad). Dan wordt er niets opgeslagen, zodat een halve minuut nooit als record telt.
 - **Het record van de wisselreeks** geldt per reeks akkoorden; bij gelijke tijd telt het hogere tempo.
+- **De streak straft niet:** één dag overslaan mag, twee dagen achter elkaar breekt hem.
+- **De dagroutine ligt de hele dag vast**, ook als je overdag een akkoord op "kan ik" zet. Hij wordt apart bewaard, niet in je voortgang.
+- **De oefentimer loopt door** als je naar een challenge of liedje gaat, en na herladen. Een vergeten timer telt hooguit 3 uur.
+- **"Alles wissen" wist echt alles** van dit apparaat (ook de routine, de timer en een reservekopie van een kapotte voortgang), na bevestiging.
 - Meer besluiten staan in `docs/OVERDRACHT.md`.

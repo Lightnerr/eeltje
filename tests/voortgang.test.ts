@@ -74,6 +74,23 @@ describe('normaliseerVoortgang', () => {
     expect(v.gecontroleerd).toEqual([])
   })
 
+  it('gooit dubbele sessies (zelfde start) weg, de eerste blijft', () => {
+    const start = '2026-11-24T18:00:00.000Z'
+    const v = normaliseerVoortgang({
+      versie: 1,
+      sessies: [
+        { start, seconden: 600 },
+        { start: '2026-11-23T18:00:00.000Z', seconden: 300 },
+        { start, seconden: 600 },
+        { start, seconden: 900 },
+      ],
+    })
+    expect(v.sessies).toEqual([
+      { start, seconden: 600 },
+      { start: '2026-11-23T18:00:00.000Z', seconden: 300 },
+    ])
+  })
+
   it('gooit bij iets dat geen Eeltje-voortgang is', () => {
     expect(() => normaliseerVoortgang(null)).toThrow('Dit is geen voortgang van Eeltje.')
     expect(() => normaliseerVoortgang([1, 2])).toThrow('Dit is geen voortgang van Eeltje.')
@@ -131,6 +148,9 @@ describe('wijzigers', () => {
   it('voegSessieToe', () => {
     const sessie = { start: '2026-11-21T18:00:00.000Z', seconden: 300 }
     expect(voegSessieToe(voorbeeld, sessie).sessies).toEqual([...voorbeeld.sessies, sessie])
+    // Dezelfde sessie nog eens (een tweede tabblad) komt er niet dubbel in.
+    const een = voegSessieToe(voorbeeld, sessie)
+    expect(voegSessieToe(een, { ...sessie })).toBe(een)
     expect(voorbeeld.sessies).toHaveLength(1)
   })
 
