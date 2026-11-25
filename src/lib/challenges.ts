@@ -26,10 +26,14 @@ export function geschiedenis(v: Voortgang, type: ChallengeType, sleutel?: string
   return vanType(v, type, sleutel).sort((x, y) => Date.parse(x.datum) - Date.parse(y.datum))
 }
 
+/** Positief als `x` beter is dan `y`: eerst de waarde, dan het tempo. */
+function vergelijk(x: Pick<ChallengeResultaat, 'waarde' | 'bpm'>, y: Pick<ChallengeResultaat, 'waarde' | 'bpm'>): number {
+  return x.waarde !== y.waarde ? x.waarde - y.waarde : (x.bpm ?? 0) - (y.bpm ?? 0)
+}
+
 function beter(x: ChallengeResultaat, y: ChallengeResultaat): boolean {
-  if (x.waarde !== y.waarde) return x.waarde > y.waarde
-  if ((x.bpm ?? 0) !== (y.bpm ?? 0)) return (x.bpm ?? 0) > (y.bpm ?? 0)
-  return Date.parse(x.datum) < Date.parse(y.datum)
+  const verschil = vergelijk(x, y)
+  return verschil !== 0 ? verschil > 0 : Date.parse(x.datum) < Date.parse(y.datum)
 }
 
 /**
@@ -42,10 +46,11 @@ export function record(v: Voortgang, type: ChallengeType, sleutel?: string): Cha
 
 export type Beoordeling = 'eerste' | 'nieuw-record' | 'evenaard' | 'onder-record'
 
-export function beoordeel(waarde: number, vorig: ChallengeResultaat | null): Beoordeling {
+/** Met dezelfde vergelijking als `record`: wat hier een nieuw record is, is daarna ook het record. */
+export function beoordeel(nieuw: Pick<ChallengeResultaat, 'waarde' | 'bpm'>, vorig: ChallengeResultaat | null): Beoordeling {
   if (vorig === null) return 'eerste'
-  if (waarde > vorig.waarde) return 'nieuw-record'
-  return waarde === vorig.waarde ? 'evenaard' : 'onder-record'
+  const verschil = vergelijk(nieuw, vorig)
+  return verschil > 0 ? 'nieuw-record' : verschil === 0 ? 'evenaard' : 'onder-record'
 }
 
 export function duurTekst(seconden: number): string {

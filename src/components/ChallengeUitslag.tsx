@@ -13,8 +13,8 @@ interface Props {
   children: ReactNode
 }
 
-function Oordeel({ waarde, vorigRecord }: { waarde: number; vorigRecord: ChallengeResultaat | null }) {
-  switch (beoordeel(waarde, vorigRecord)) {
+function Oordeel({ resultaat, vorigRecord }: { resultaat: Omit<ChallengeResultaat, 'datum'>; vorigRecord: ChallengeResultaat | null }) {
+  switch (beoordeel(resultaat, vorigRecord)) {
     case 'eerste':
       return <p>Je eerste record. Nu weet je waar je staat.</p>
     case 'nieuw-record':
@@ -41,7 +41,7 @@ export function ChallengeUitslag({ resultaat, vorigRecord, leeg, children }: Pro
       <h2 ref={kop} tabIndex={-1}>
         {resultaat ? resultaatTekst(resultaat) : 'Klaar'}
       </h2>
-      {resultaat ? <Oordeel waarde={resultaat.waarde} vorigRecord={vorigRecord} /> : <p className="zacht">{leeg}</p>}
+      {resultaat ? <Oordeel resultaat={resultaat} vorigRecord={vorigRecord} /> : <p className="zacht">{leeg}</p>}
       <div className="challenge-uitslag-knoppen">{children}</div>
     </div>
   )

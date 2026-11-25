@@ -125,15 +125,26 @@ describe('demo-voortgang', () => {
 
 describe('beoordeel', () => {
   const vorig = omc('A-D', 25, '2026-11-21T18:00:00.000Z')
+  const nieuw = (waarde: number) => ({ type: 'one-minute-changes' as const, sleutel: 'A-D', waarde })
 
   it('nieuw record alleen als het oude echt verbeterd is', () => {
-    expect(beoordeel(26, vorig)).toBe('nieuw-record')
-    expect(beoordeel(25, vorig)).toBe('evenaard')
-    expect(beoordeel(24, vorig)).toBe('onder-record')
+    expect(beoordeel(nieuw(26), vorig)).toBe('nieuw-record')
+    expect(beoordeel(nieuw(25), vorig)).toBe('evenaard')
+    expect(beoordeel(nieuw(24), vorig)).toBe('onder-record')
   })
 
   it('zonder vorig record is het je eerste', () => {
-    expect(beoordeel(3, null)).toBe('eerste')
+    expect(beoordeel(nieuw(3), null)).toBe('eerste')
+  })
+
+  it('vergelijkt net als record: evenlang op een hoger tempo is een nieuw record', () => {
+    const oud: ChallengeResultaat = { type: 'wisselreeks', sleutel: 'G-C-D', waarde: 30, bpm: 60, datum: '2026-11-20T18:00:00.000Z' }
+    const sneller = { type: 'wisselreeks' as const, sleutel: 'G-C-D', waarde: 30, bpm: 80 }
+    expect(beoordeel(sneller, oud)).toBe('nieuw-record')
+    expect(beoordeel({ ...sneller, bpm: 60 }, oud)).toBe('evenaard')
+    expect(beoordeel({ ...sneller, bpm: 50 }, oud)).toBe('onder-record')
+    const daarna = voegResultaatToe(metResultaten(oud), { ...sneller, datum: '2026-11-21T18:00:00.000Z' })
+    expect(record(daarna, 'wisselreeks', 'G-C-D')?.bpm).toBe(80)
   })
 })
 
