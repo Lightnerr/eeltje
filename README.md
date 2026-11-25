@@ -45,4 +45,6 @@ Nieuwe liedjes, akkoorden en oefeningen voeg je toe met Claude Code: `/nieuw-num
 - **Het akkoordenraster toont elk akkoord één keer**, in de variant die je koos (anders de standaard). De andere varianten staan op de detailpagina.
 - **Spatie in meespelen** is start/pauze. Alleen een knop die je met het toetsenbord (Tab) hebt gekozen, bedien je met de spatie; zo sluit de spatie nooit per ongeluk het scherm.
 - **Het akkoordgeluid bij meespelen wordt op de audioklok ingepland**, tegelijk met de klik, ook met een Bluetooth-koptelefoon.
+- **Een challenge stopt als je scherm uitgaat** (vergrendelen, ander tabblad). Dan wordt er niets opgeslagen, zodat een halve minuut nooit als record telt.
+- **Het record van de wisselreeks** geldt per reeks akkoorden; bij gelijke tijd telt het hogere tempo.
 - Meer besluiten staan in `docs/OVERDRACHT.md`.
