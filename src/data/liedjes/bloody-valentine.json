@@ -1,0 +1,25 @@
+{
+  "id": "bloody-valentine",
+  "titel": "Bloody Valentine",
+  "artiest": "Machine Gun Kelly",
+  "soort": "pop",
+  "toonsoort": "D",
+  "capo": 2,
+  "bpm": 160,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D - D U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["C"], ["G"], ["Em"], ["D"], ["C"], ["G"], ["Em"], ["D"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["C"], ["G"], ["Em"], ["D"], ["C"], ["G"], ["Em"], ["D"]]
+    }
+  ],
+  "volgorde": ["couplet", "refrein", "couplet", "refrein", "refrein"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Met capo 2 grijp je C, G, Em en D, zo heb je geen F#m (barré) nodig. Het origineel heeft hier en daar nog een Bm."
+}

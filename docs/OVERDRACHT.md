@@ -306,3 +306,8 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - `/nieuwe-riff` als command, zoals `/nieuw-nummer`.
 - Een riff-ladder (zoals de spider-ladder): na een geslaagde ronde 5% sneller, met record.
 - Een riff alleen laten horen zonder metronoom, of de klik uit.
+
+## Liedjes opgezocht (na stap 7)
+
+- **Bloody Valentine, Love You More en In Too Deep** kende Claude niet goed genoeg uit het hoofd. Met toestemming van de eigenaar zijn alleen de toonsoort, het tempo en de akkoordenvolgorde online opgezocht; het schema is zelf geschreven en vereenvoudigd, zonder tabs en zonder tekst. `/nieuw-nummer` blijft zonder internet werken.
+- Het tempo van Love You More stond nergens; 76 bpm is geschat.
