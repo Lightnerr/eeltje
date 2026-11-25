@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, it } from 'vitest'
 import { demoVoortgang } from '../src/lib/demo'
-import { dagSleutel, minutenPerWeek, minutenVandaag, streak, totaalMinuten } from '../src/lib/statistiek'
+import { challengeSleutels, dagSleutel, minutenPerWeek, minutenVandaag, streak, totaalMinuten } from '../src/lib/statistiek'
 import type { Sessie, Voortgang } from '../src/lib/types'
 import { nieuweVoortgang } from '../src/lib/voortgang'
 
@@ -151,5 +151,21 @@ describe('met de demo-voortgang', () => {
     expect(streak(demo, nu())).toBe(demo.sessies.length)
     expect(minutenVandaag(demo, nu())).toBeGreaterThan(0)
     expect(minutenPerWeek(demo, nu(), 4).every((w) => w.minuten > 0)).toBe(true)
+  })
+})
+
+describe('challengeSleutels', () => {
+  const r = (sleutel: string, datum: string) => ({ type: 'one-minute-changes' as const, sleutel, waarde: 10, datum: new Date(datum).toISOString() })
+
+  it('de paren of reeksen met resultaten, het laatst geoefende eerst', () => {
+    const v = { ...met(), challenges: [r('A-D', '2026-11-01T19:00:00'), r('C-G', '2026-11-20T19:00:00'), r('A-D', '2026-11-10T19:00:00'), { ...r('spider', '2026-11-23T19:00:00'), type: 'spider-ladder' as const }] }
+    expect(challengeSleutels(v, 'one-minute-changes')).toEqual(['C-G', 'A-D'])
+    expect(challengeSleutels(v, 'spider-ladder')).toEqual(['spider'])
+    expect(challengeSleutels(v, 'wisselreeks')).toEqual([])
+  })
+
+  it('met de demo: A-D het laatst', () => {
+    expect(challengeSleutels(demoVoortgang(nu()), 'one-minute-changes')[0]).toMatch(/^(A-D|C-G)$/)
+    expect(challengeSleutels(demoVoortgang(nu()), 'wisselreeks')).toEqual(['G-C-D', 'A-D-E'])
   })
 })

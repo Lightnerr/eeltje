@@ -1,4 +1,5 @@
-import type { Sessie, Voortgang } from './types'
+import { geschiedenis } from './challenges'
+import type { ChallengeType, Sessie, Voortgang } from './types'
 
 // Alles in lokale dagen: een sessie hoort bij de dag waarop hij begon, ook als hij over middernacht loopt.
 // Dagen tellen we met new Date(j, m, d ± n), nooit met ± 24 uur, want rond zomer- en wintertijd is een dag 23 of 25 uur.
@@ -79,4 +80,9 @@ export function minutenPerWeek(v: Voortgang, nu = new Date(), aantalWeken = 8): 
     if (seconden.has(week)) seconden.set(week, seconden.get(week)! + s.seconden)
   }
   return weken.map((start) => ({ start, minuten: naarMinuten(seconden.get(start)!) }))
+}
+
+/** De paren, reeksen of `spider` waarvan je resultaten hebt, het laatst geoefende eerst. */
+export function challengeSleutels(v: Voortgang, type: ChallengeType): string[] {
+  return [...new Set(geschiedenis(v, type).reverse().map((c) => c.sleutel))]
 }
