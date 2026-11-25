@@ -6,12 +6,16 @@ import type { ChallengeResultaat } from './types'
 
 export const AFTELLEN_MS = 3000
 export const DUUR_MS = 60_000
+/** Meer dan 3 per seconde lukt niemand; het vangt een tikfout als 3100 af. */
+export const MAX_WISSELS = 200
 
 export type OmcStand =
   | { fase: 'wacht' }
   /** `begin` is het moment van starten; het lopen begint `AFTELLEN_MS` later. */
   | { fase: 'aftellen'; begin: number }
   | { fase: 'lopen'; begin: number; wissels: number }
+  /** De minuut is om: je vult zelf in hoeveel wissels je had; `wissels` is wat je tikte, als voorstel. */
+  | { fase: 'invullen'; wissels: number }
   | { fase: 'klaar'; wissels: number }
   /** Het scherm ging uit of het tabblad naar de achtergrond: wat je in die tijd deed, kan de app niet tellen. */
   | { fase: 'onderbroken' }
@@ -20,14 +24,19 @@ export type OmcActie =
   | { soort: 'start'; nu: number }
   | { soort: 'tik'; nu: number }
   | { soort: 'tijd'; nu: number }
+  | { soort: 'invullen'; wissels: number }
   /** De pagina raakte verborgen: afbreken, zonder resultaat. */
   | { soort: 'verborgen'; nu: number }
   | { soort: 'opnieuw' }
 
 function bijTijd(stand: OmcStand, nu: number): OmcStand {
   if (stand.fase === 'aftellen' && nu >= stand.begin + AFTELLEN_MS) return bijTijd({ fase: 'lopen', begin: stand.begin, wissels: 0 }, nu)
-  if (stand.fase === 'lopen' && nu >= stand.begin + AFTELLEN_MS + DUUR_MS) return { fase: 'klaar', wissels: stand.wissels }
+  if (stand.fase === 'lopen' && nu >= stand.begin + AFTELLEN_MS + DUUR_MS) return { fase: 'invullen', wissels: stand.wissels }
   return stand
+}
+
+function isGeldigeScore(wissels: number): boolean {
+  return Number.isInteger(wissels) && wissels >= 0 && wissels <= MAX_WISSELS
 }
 
 export function omcVerloop(stand: OmcStand, actie: OmcActie): OmcStand {
@@ -38,6 +47,8 @@ export function omcVerloop(stand: OmcStand, actie: OmcActie): OmcStand {
       return { fase: 'wacht' }
     case 'tijd':
       return bijTijd(stand, actie.nu)
+    case 'invullen':
+      return stand.fase === 'invullen' && isGeldigeScore(actie.wissels) ? { fase: 'klaar', wissels: actie.wissels } : stand
     case 'verborgen': {
       const nu = bijTijd(stand, actie.nu)
       return nu.fase === 'aftellen' || nu.fase === 'lopen' ? { fase: 'onderbroken' } : nu
@@ -60,6 +71,14 @@ export function omcResterend(stand: OmcStand, nu: number): number {
 export function omcResultaat(stand: OmcStand, a: string, b: string): Omit<ChallengeResultaat, 'datum'> | null {
   if (stand.fase !== 'klaar' || stand.wissels === 0) return null
   return { type: 'one-minute-changes', sleutel: paarSleutel(a, b), waarde: stand.wissels }
+}
+
+/** De score uit het invulveld: een heel getal van 0 t/m `MAX_WISSELS`, anders `null`. */
+export function leesWissels(tekst: string): number | null {
+  const schoon = tekst.trim()
+  if (!/^\d+$/.test(schoon)) return null
+  const wissels = Number(schoon)
+  return isGeldigeScore(wissels) ? wissels : null
 }
 
 /** "1:00", "0:39": resterende ms als klok, naar boven afgerond op hele seconden. */

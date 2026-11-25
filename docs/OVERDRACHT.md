@@ -283,3 +283,10 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - Een balkje "Preview PR 12" (stond al geparkeerd) zou ook laten zien dat er geen service worker draait.
 - Een eigen icoon voor previews, zodat een geïnstalleerde preview niet op Eeltje lijkt.
 - **Donker opstartscherm.** Het manifest kent maar één `background_color` (nu het lichte `--achtergrond`), dus in donkere modus flitst het opstartscherm even licht. Een tussenkleur oogt in beide modi vreemd; daarom zo gelaten. Kan later met een donkere kleur als de eigenaar vooral donker gebruikt.
+
+## Besluiten uit "score zelf invullen" (na stap 7)
+
+- **One minute changes eindigt met invullen** (wens van de eigenaar): na de minuut gaat het verloop naar `invullen` met wat je tikte als voorstel; pas `{ soort: 'invullen', wissels }` maakt hem `klaar` en dan wordt hij bewaard. Tikken mag nog, maar hoeft niet. Sluiten tijdens het invullen bewaart niets.
+- **Score** is een heel getal van 0 t/m `MAX_WISSELS` (200, meer dan 3 per seconde lukt niemand). `leesWissels` leest het invulveld; een ongeldige waarde houdt "Bewaar" uit. 0 bewaart niets, zoals voorheen.
+- **Het invulveld** is tekst met `inputMode="numeric"` (geen `type="number"`: die laat op desktop "2,5" of "e" toe en heeft piepkleine pijltjes), met grote −/+ knoppen. Bij het openen is het getal geselecteerd, dus typen vervangt het voorstel meteen.
+- **Screenshot van het invullen:** `KIJK_EVAL` kan `performance.now` vooruitzetten nadat `kijk.sh` op Start tikte; zie de PR.

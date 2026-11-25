@@ -12,7 +12,7 @@ import { useVerborgen } from '../hooks/useVerborgen'
 import { useVoortgang } from '../hooks/useVoortgang'
 import { akkoordnamen, gekozenVariant } from '../lib/akkoorden'
 import { geldigPaar, paarSleutel, standaardAkkoorden } from '../lib/challenges'
-import { klokTekst, omcResterend, omcResultaat, omcVerloop, type OmcActie, type OmcStand } from '../lib/oneMinuteChanges'
+import { klokTekst, leesWissels, MAX_WISSELS, omcResterend, omcResultaat, omcVerloop, type OmcActie, type OmcStand } from '../lib/oneMinuteChanges'
 import type { RouteGegevens } from '../lib/route'
 import type { Voortgang } from '../lib/types'
 import './Challenge.css'
@@ -24,6 +24,62 @@ function Akkoord({ naam, voortgang }: { naam: string; voortgang: Voortgang }) {
       <span className="challenge-akkoordnaam">{naam}</span>
       {akkoord && <AkkoordDiagram akkoord={akkoord} grootte="klein" />}
     </div>
+  )
+}
+
+function ScoreInvullen({ voorstel, onBewaar }: { voorstel: number; onBewaar: (wissels: number) => void }) {
+  const [tekst, zetTekst] = useState(String(voorstel))
+  const invoer = useRef<HTMLInputElement>(null)
+  const wissels = leesWissels(tekst)
+
+  // Een frame later, zodat de focus niet blijft hangen op de tikknop die net verdween.
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => invoer.current?.select())
+    return () => cancelAnimationFrame(frame)
+  }, [])
+
+  const verschuif = (stap: number) => zetTekst(String(Math.min(MAX_WISSELS, Math.max(0, (wissels ?? voorstel) + stap))))
+
+  return (
+    <form
+      className="challenge-invullen"
+      onSubmit={(e) => {
+        e.preventDefault()
+        if (wissels !== null) onBewaar(wissels)
+      }}
+    >
+      <label htmlFor="omc-wissels" className="challenge-invullen-vraag">
+        Tijd! Hoeveel wissels had je?
+      </label>
+      <div className="challenge-invullen-rij">
+        <button type="button" className="knop knop-rustig" aria-label="Eén minder" onClick={() => verschuif(-1)}>
+          −
+        </button>
+        <input
+          ref={invoer}
+          id="omc-wissels"
+          className="challenge-invullen-getal"
+          type="text"
+          inputMode="numeric"
+          autoComplete="off"
+          value={tekst}
+          onChange={(e) => zetTekst(e.target.value)}
+          aria-invalid={wissels === null}
+          aria-describedby={wissels === null ? 'omc-wissels-fout' : undefined}
+        />
+        <button type="button" className="knop knop-rustig" aria-label="Eén meer" onClick={() => verschuif(1)}>
+          +
+        </button>
+      </div>
+      {wissels === null && (
+        <p id="omc-wissels-fout" className="challenge-fout">
+          Vul een getal van 0 t/m {MAX_WISSELS} in.
+        </p>
+      )}
+      <button type="submit" className="knop challenge-invullen-bewaar" disabled={wissels === null}>
+        Bewaar
+      </button>
+    </form>
   )
 }
 
@@ -76,7 +132,7 @@ export default function OneMinuteChangesPagina({ a: routeA, b: routeB }: RouteGe
       <div className="challenge">
         {stand.fase === 'wacht' && (
           <div className="challenge-instellen">
-            <p>Wissel een minuut lang zo vaak als je kunt tussen twee akkoorden. Tik bij elke wissel op de grote knop of druk op de spatiebalk.</p>
+            <p>Wissel een minuut lang zo vaak als je kunt tussen twee akkoorden. Tik bij elke wissel op de grote knop of de spatiebalk, of tel zelf: aan het eind vul je je score in.</p>
             <div className="challenge-kiezers">
               <AkkoordKiezer label="Van" waarde={a} voortgang={voortgang} onKies={(n) => zetPaar([n, b])} />
               <AkkoordKiezer label="Naar" waarde={b} voortgang={voortgang} onKies={(n) => zetPaar([a, n])} />
@@ -115,7 +171,7 @@ export default function OneMinuteChangesPagina({ a: routeA, b: routeB }: RouteGe
             {stand.fase === 'lopen' && (
               <>
                 <span className="challenge-teller">{stand.wissels}</span>
-                <span>Tik bij elke wissel</span>
+                <span>Tik bij elke wissel, of tel zelf</span>
               </>
             )}
           </button>
@@ -123,8 +179,10 @@ export default function OneMinuteChangesPagina({ a: routeA, b: routeB }: RouteGe
 
         {stand.fase === 'onderbroken' && <ChallengeOnderbroken onOpnieuw={() => stuur({ soort: 'opnieuw' })} />}
 
+        {stand.fase === 'invullen' && <ScoreInvullen voorstel={stand.wissels} onBewaar={(wissels) => stuur({ soort: 'invullen', wissels })} />}
+
         {stand.fase === 'klaar' && (
-          <ChallengeUitslag resultaat={resultaat} vorigRecord={vorigRecord} leeg="Geen wissels geteld, dus er is niets opgeslagen.">
+          <ChallengeUitslag resultaat={resultaat} vorigRecord={vorigRecord} leeg="0 wissels, dus er is niets opgeslagen.">
             <button type="button" className="knop" onClick={() => stuur({ soort: 'opnieuw' })}>
               Nog een keer
             </button>
