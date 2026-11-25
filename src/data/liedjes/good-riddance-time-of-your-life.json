@@ -1,0 +1,30 @@
+{
+  "id": "good-riddance-time-of-your-life",
+  "titel": "Good Riddance (Time of Your Life)",
+  "artiest": "Green Day",
+  "soort": "pop",
+  "toonsoort": "G",
+  "capo": 0,
+  "bpm": 95,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["G"], ["G"], ["C"], ["D"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["G"], ["G"], ["C"], ["D"], ["G"], ["G"], ["C"], ["D"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Em"], ["D"], ["C"], ["G"], ["Em"], ["D"], ["C"], ["G"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "intro", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["G", "Cadd9", "D", "Em"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "C in plaats van Cadd9. Ken je Cadd9, speel die dan: dan blijven je ringvinger en pink liggen."
+}
