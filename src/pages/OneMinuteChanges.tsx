@@ -84,9 +84,9 @@ export default function OneMinuteChangesPagina({ a: routeA, b: routeB }: RouteGe
         {stand.fase !== 'wacht' && (
           <div className="challenge-akkoorden" aria-label={`${a} en ${b}`}>
             <Akkoord naam={a} voortgang={voortgang} />
-            <span className="challenge-pijl" aria-hidden="true">
-              ⇄
-            </span>
+            <svg className="challenge-pijl" viewBox="0 0 32 24" aria-hidden="true">
+              <path d="M4 8h22m-5-5 5 5-5 5M28 16H6m5-5-5 5 5 5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
             <Akkoord naam={b} voortgang={voortgang} />
           </div>
         )}

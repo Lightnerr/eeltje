@@ -50,8 +50,9 @@
 }
 
 .challenge-pijl {
+  flex: none;
+  width: 36px;
   color: var(--tekst-zacht);
-  font-size: var(--letter-titel);
 }
 
 .challenge-klok {
