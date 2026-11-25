@@ -32,15 +32,13 @@ describe('src/data', () => {
   // De G-familie (ringvinger en pink blijven op de 3e fret) telt als één groep: grijpen is daar maar twee vingers verzetten.
   const GFAMILIE = ['G', 'Cadd9', 'Dsus4', 'Em7', 'A7sus4']
 
-  it('12 tot 15 liedjes van 3 of 4 akkoorden (of één G-familie), AI-versie en niet geverifieerd', () => {
+  // Geen bovengrens en geen eis aan bron of geverifieerd: /nieuw-nummer voegt liedjes toe en de eigenaar keurt ze goed.
+  it('minstens 12 liedjes, elk van 3 of 4 akkoorden (of één G-familie)', () => {
     expect(liedjes.length).toBeGreaterThanOrEqual(12)
-    expect(liedjes.length).toBeLessThanOrEqual(15)
     for (const l of liedjes) {
       const akkoordenInLiedje = akkoordenVan(l)
       if (akkoordenInLiedje.every((a) => GFAMILIE.includes(a))) expect(akkoordenInLiedje.length, l.id).toBeGreaterThanOrEqual(3)
       else expect([3, 4], l.id).toContain(akkoordenInLiedje.length)
-      expect(l.bron).toBe('ai-gegenereerd')
-      expect(l.geverifieerd).toBe(false)
     }
     expect(new Set(liedjes.map((l) => l.soort))).toEqual(new Set(['traditioneel', 'pop']))
     expect(zoekLiedje('wonderwall')?.titel).toBe('Wonderwall')

@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react'
+import { NieuweVersie } from './components/NieuweVersie'
 import { Tabbalk } from './components/Tabbalk'
+import { useNieuweVersie } from './hooks/useNieuweVersie'
 import { useRoute } from './hooks/useRoute'
 import { tabVan, type Route } from './lib/route'
 import AkkoordPagina from './pages/Akkoord'
@@ -55,6 +57,7 @@ function Pagina({ route }: { route: Route }) {
 
 export default function App() {
   const route = useRoute()
+  const versie = useNieuweVersie()
   const inhoud = useRef<HTMLElement>(null)
   const eerste = useRef(true)
 
@@ -76,6 +79,7 @@ export default function App() {
       </a>
       <Tabbalk actief={tabVan(route)} />
       <main id="inhoud" ref={inhoud} className="app-inhoud" tabIndex={-1}>
+        {versie.nieuw && <NieuweVersie herlaad={versie.herlaad} />}
         <Pagina route={route} />
       </main>
     </>

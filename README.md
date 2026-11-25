@@ -18,7 +18,11 @@ Elke PR krijgt een eigen versie op `https://lightnerr.github.io/eeltje/pr-<numme
 - **iPhone (Safari):** open de app, tik op Deel en dan op "Zet op beginscherm".
 - **Android (Chrome):** open de app, tik op ⋮ en dan op "App installeren" (of "Toevoegen aan startscherm").
 
-Daarna opent Eeltje als een gewone app, ook zonder internet. Je voortgang staat op het apparaat zelf: neem hem mee met Voortgang > Exporteren en Importeren.
+Gebruik de link mét slash aan het eind (`…/eeltje/`), of open Eeltje via het geïnstalleerde icoon: zonder slash opent hij niet offline.
+
+Daarna opent Eeltje als een gewone app, ook zonder internet (open hem één keer met internet, dan staat alles erop). Je voortgang staat op het apparaat zelf: neem hem mee met Voortgang > Exporteren en Importeren.
+
+Is er een nieuwe versie, dan zie je bovenaan "Er is een nieuwe versie van Eeltje" met een knop Herladen. Tik je niet, dan krijg je hem de volgende keer dat je de app opnieuw start.
 
 ## Lokaal ontwikkelen
 
@@ -26,11 +30,14 @@ Daarna opent Eeltje als een gewone app, ook zonder internet. Je voortgang staat 
 bun install
 bun run dev        # http://localhost:5173, met --host ook vanaf je telefoon op hetzelfde wifi
 bun run test
+bun run valideer  # alleen de inhoud tegen het schema
 bun run lint
 bun run build
 ```
 
-Nieuwe liedjes, akkoorden en oefeningen voeg je toe met Claude Code: `/nieuw-nummer Riptide van Vance Joy`, `/nieuw-akkoord`, `/nieuwe-oefening`. Plak eerst de tekst van de knop "Kopieer mijn akkoorden" in `mijn-akkoorden.txt`.
+De service worker (offline) zit alleen in de build, niet in `bun run dev`. Offline proberen: `bun run build`, dan `python3 -m http.server -d dist` en open http://localhost:8000.
+
+Nieuwe liedjes, akkoorden en oefeningen voeg je toe met Claude Code: `/nieuw-nummer Riptide van Vance Joy`, `/nieuw-akkoord`, `/nieuwe-oefening`. Plak eerst de tekst van de knop "Kopieer mijn akkoorden" in `mijn-akkoorden.txt` in de root (wordt niet ingecheckt). Claude maakt dan een beginnersversie die bij jouw akkoorden past, zonder songtekst en gemarkeerd als AI-versie.
 
 ## Keuzes
 
@@ -51,4 +58,9 @@ Nieuwe liedjes, akkoorden en oefeningen voeg je toe met Claude Code: `/nieuw-num
 - **De dagroutine ligt de hele dag vast**, ook als je overdag een akkoord op "kan ik" zet. Hij wordt apart bewaard, niet in je voortgang.
 - **De oefentimer loopt door** als je naar een challenge of liedje gaat, en na herladen. Een vergeten timer telt hooguit 3 uur.
 - **"Alles wissen" wist echt alles** van dit apparaat (ook de routine, de timer en een reservekopie van een kapotte voortgang), na bevestiging.
+- **De service worker is zelf gebouwd**, zonder extra pakket: een klein Vite-plugin zet de lijst met bestanden van de build erin. Elke versie heeft een eigen cache, dus je ziet nooit een half-oude app.
+- **Een update vraagt eerst** ("Herladen") in plaats van zomaar te verversen terwijl je speelt.
+- **Previews hebben geen service worker**, en die van de echte app laat `pr-<nummer>/` met rust. Zo zie je in een preview altijd de preview, ook als je de app al hebt geïnstalleerd.
+- **Het icoon is een plectrum**, zelf getekend als SVG; de PNG's maakt `tools/kijk/iconen.mjs`.
+- **Commands voor nieuwe inhoud** (`/nieuw-nummer` en de andere) werken zonder internet, uit wat Claude van het liedje weet: nooit tekst, nooit tabs van websites.
 - Meer besluiten staan in `docs/OVERDRACHT.md`.
