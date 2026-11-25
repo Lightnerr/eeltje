@@ -41,11 +41,11 @@ function Pagina({ route }: { route: Route }) {
     case 'oefening':
       return <OefeningPagina key={route.id} id={route.id} />
     case 'one-minute-changes':
-      return <OneMinuteChangesPagina a={route.a} b={route.b} />
+      return <OneMinuteChangesPagina key={`${route.a}|${route.b}`} a={route.a} b={route.b} />
     case 'spider-ladder':
-      return <SpiderLadderPagina bpm={route.bpm} />
+      return <SpiderLadderPagina key={route.bpm} bpm={route.bpm} />
     case 'wisselreeks':
-      return <WisselreeksPagina akkoorden={route.akkoorden} bpm={route.bpm} />
+      return <WisselreeksPagina key={`${route.akkoorden?.join(',')}|${route.bpm}`} akkoorden={route.akkoorden} bpm={route.bpm} />
     case 'voortgang':
       return <VoortgangPagina />
     case 'niet-gevonden':
