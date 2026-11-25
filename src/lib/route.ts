@@ -9,6 +9,7 @@ export type Route =
   | { pagina: 'metronoom' }
   | { pagina: 'slagpatroon' }
   | { pagina: 'oefening'; id: string }
+  | { pagina: 'riff'; id: string }
   | { pagina: 'one-minute-changes'; a?: string; b?: string }
   | { pagina: 'spider-ladder'; bpm?: number }
   | { pagina: 'wisselreeks'; akkoorden?: string[]; bpm?: number }
@@ -71,7 +72,11 @@ function leesRouteOnveilig(hash: string): Route {
   if (eerste === 'liedjes' && delen.length === 2) return { pagina: 'liedje', id: tweede }
   if (eerste === 'liedjes' && delen.length === 3 && derde === 'meespelen') return { pagina: 'meespelen', id: tweede }
   if (eerste !== 'oefenen') return NIET_GEVONDEN
-  if (delen.length === 3) return tweede === 'oefeningen' ? { pagina: 'oefening', id: derde } : NIET_GEVONDEN
+  if (delen.length === 3) {
+    if (tweede === 'oefeningen') return { pagina: 'oefening', id: derde }
+    if (tweede === 'riffs') return { pagina: 'riff', id: derde }
+    return NIET_GEVONDEN
+  }
   switch (tweede) {
     case 'metronoom':
     case 'slagpatroon':
@@ -111,6 +116,8 @@ export function naarHash(route: Route): string {
       return `#/oefenen/${route.pagina}`
     case 'oefening':
       return `#/oefenen/oefeningen/${e(route.id)}`
+    case 'riff':
+      return `#/oefenen/riffs/${e(route.id)}`
     case 'one-minute-changes':
       return `#/oefenen/one-minute-changes${query({ a: route.a, b: route.b })}`
     case 'spider-ladder':
@@ -143,6 +150,7 @@ export function tabVan(route: Route): Tab | null {
     case 'metronoom':
     case 'slagpatroon':
     case 'oefening':
+    case 'riff':
     case 'one-minute-changes':
     case 'spider-ladder':
     case 'wisselreeks':

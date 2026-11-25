@@ -1,4 +1,4 @@
-import { oefeningen } from '../data'
+import { oefeningen, riffs } from '../data'
 import { useVoortgang } from '../hooks/useVoortgang'
 import { recordTekst } from '../lib/challenges'
 import { naarHash, type Route } from '../lib/route'
@@ -52,6 +52,10 @@ export default function OefenenPagina() {
       <div className="oefenen-groep">
         <h2>Oefeningen</h2>
         <Lijst items={oefeningen.map((o) => ({ route: { pagina: 'oefening', id: o.id }, titel: o.titel }))} />
+      </div>
+      <div className="oefenen-groep">
+        <h2>Riffs</h2>
+        <Lijst items={riffs.map((r) => ({ route: { pagina: 'riff', id: r.id }, titel: r.titel, onder: r.artiest }))} />
       </div>
       <div className="oefenen-groep">
         <h2>In de maat</h2>

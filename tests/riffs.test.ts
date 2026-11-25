@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { notenInTel, riffLengte, riffPositie, stappenPerMaat, tabVan } from '../src/lib/riffs'
+import { beschrijfRiff, notenInTel, riffLengte, riffPositie, stappenPerMaat, tabVan } from '../src/lib/riffs'
 import type { Riff } from '../src/lib/types'
 
 const riff: Riff = {
@@ -80,5 +80,11 @@ describe('riffPositie', () => {
     expect(riffPositie(riff, 1, 0)).toEqual({ fase: 'spelen', stap: 0 })
     expect(riffPositie(riff, 2, 3)).toEqual({ fase: 'spelen', stap: 11 })
     expect(riffPositie(riff, 3, 3)).toEqual({ fase: 'spelen', stap: 3 })
+  })
+})
+
+describe('beschrijfRiff', () => {
+  it('noemt de noten op volgorde, snaar en fret, tegelijk met een plus', () => {
+    expect(beschrijfRiff(riff)).toBe('A-snaar 7, A-snaar 10 + D-snaar 9, E-snaar open, e-snaar 12')
   })
 })

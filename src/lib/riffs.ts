@@ -66,3 +66,14 @@ export function riffPositie(riff: Riff, maat: number, slag: number): RiffPositie
   if (maat < 1) return { fase: 'aftellen', nog: leesMaatsoort(riff.maatsoort).tellen - Math.floor(slag / riff.onderverdeling) }
   return { fase: 'spelen', stap: ((maat - 1) % riff.maten) * stappenPerMaat(riff) + slag }
 }
+
+/** De noten als tekst, voor wie de tab niet ziet: "A-snaar 7, A-snaar 10 + D-snaar 9, E-snaar open". */
+export function beschrijfRiff(riff: Riff): string {
+  const perStap = new Map<number, string[]>()
+  const opVolgorde = [...riff.noten].sort((a, b) => a.stap - b.stap || SNAREN.indexOf(a.snaar) - SNAREN.indexOf(b.snaar))
+  for (const n of opVolgorde) {
+    const tekst = `${n.snaar}-snaar ${n.fret === 0 ? 'open' : n.fret}`
+    perStap.set(n.stap, [...(perStap.get(n.stap) ?? []), tekst])
+  }
+  return [...perStap.values()].map((s) => s.join(' + ')).join(', ')
+}
