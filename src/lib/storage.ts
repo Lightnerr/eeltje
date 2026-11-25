@@ -1,4 +1,5 @@
 import { demoVoortgang } from './demo'
+import type { Oefentimer } from './oefentimer'
 import type { BewaardeRoutine } from './routine'
 import type { Voortgang } from './types'
 import { nieuweVoortgang, normaliseerVoortgang } from './voortgang'
@@ -17,11 +18,15 @@ export interface Opslag {
   laad(): Voortgang
   /** `false` als de browser niet wilde opslaan (privémodus, vol). */
   bewaar(v: Voortgang): boolean
-  /** Wist de voortgang en de routine van vandaag. */
+  /** Wist de voortgang, de routine van vandaag en de oefentimer. */
   wis(): void
   /** De bewaarde routine zoals hij in de opslag staat (nog niet gecontroleerd: zie `routineVoorVandaag`), of `null`. */
   laadRoutine(): unknown
   bewaarRoutine(bewaard: BewaardeRoutine): boolean
+  /** De lopende of gepauzeerde oefentimer, rauw (zie `leesTimer`), of `null`. */
+  laadTimer(): unknown
+  /** `null` haalt hem weg. */
+  bewaarTimer(timer: Oefentimer | null): boolean
   /** Hoort een `storage`-event (een ander tabblad schreef) bij deze voortgang? `sleutel` null = alles gewist. */
   isEigenWijziging(sleutel: string | null, gebied: Storage | null): boolean
 }
@@ -30,11 +35,22 @@ export function maakOpslag({ storage, preview, klok = () => new Date() }: { stor
   const sleutel = opslagSleutel('v1', preview)
   // Apart van de voortgang: die blijft op versie 1, en een export neemt de routine niet mee.
   const routineSleutel = opslagSleutel('routine', preview)
+  const timerSleutel = opslagSleutel('timer', preview)
   const begin = () => (preview ? demoVoortgang(klok()) : nieuweVoortgang())
 
   function lees(k: string): string | null {
     try {
       return storage?.getItem(k) ?? null
+    } catch {
+      return null
+    }
+  }
+
+  function leesJson(k: string): unknown {
+    const tekst = lees(k)
+    if (tekst === null) return null
+    try {
+      return JSON.parse(tekst) as unknown
     } catch {
       return null
     }
@@ -69,21 +85,28 @@ export function maakOpslag({ storage, preview, klok = () => new Date() }: { stor
       try {
         storage?.removeItem(sleutel)
         storage?.removeItem(routineSleutel)
+        storage?.removeItem(timerSleutel)
       } catch {
         // Niets te wissen als de browser geen opslag geeft.
       }
     },
     laadRoutine() {
-      const tekst = lees(routineSleutel)
-      if (tekst === null) return null
-      try {
-        return JSON.parse(tekst) as unknown
-      } catch {
-        return null
-      }
+      return leesJson(routineSleutel)
     },
     bewaarRoutine(bewaard) {
       return schrijf(routineSleutel, JSON.stringify(bewaard))
+    },
+    laadTimer() {
+      return leesJson(timerSleutel)
+    },
+    bewaarTimer(timer) {
+      if (timer) return schrijf(timerSleutel, JSON.stringify(timer))
+      try {
+        storage?.removeItem(timerSleutel)
+        return storage !== null
+      } catch {
+        return false
+      }
     },
     isEigenWijziging(gewijzigd, gebied) {
       return storage !== null && gebied === storage && (gewijzigd === null || gewijzigd === sleutel)

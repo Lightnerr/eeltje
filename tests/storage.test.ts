@@ -164,4 +164,34 @@ describe('maakOpslag', () => {
       expect(maakOpslag({ storage: null }).bewaarRoutine(bewaard)).toBe(false)
     })
   })
+
+  describe('oefentimer', () => {
+    const timer = { start: nu.toISOString(), opgeteld: 60_000, looptSinds: null }
+
+    it('bewaart hem onder een eigen sleutel met het previewachtervoegsel, en null haalt hem weg', () => {
+      const storage = new GeheugenOpslag()
+      const preview = maakOpslag({ storage, preview: 'pr-12', klok })
+      expect(preview.laadTimer()).toBeNull()
+      expect(preview.bewaarTimer(timer)).toBe(true)
+      expect(JSON.parse(storage.getItem('eeltje.voortgang.timer.pr-12')!)).toEqual(timer)
+      expect(preview.laadTimer()).toEqual(timer)
+      expect(maakOpslag({ storage }).laadTimer()).toBeNull()
+      preview.bewaarTimer(null)
+      expect(storage.getItem('eeltje.voortgang.timer.pr-12')).toBeNull()
+    })
+
+    it('wis haalt ook de timer weg', () => {
+      const storage = new GeheugenOpslag()
+      const opslag = maakOpslag({ storage })
+      opslag.bewaarTimer(timer)
+      opslag.wis()
+      expect(opslag.laadTimer()).toBeNull()
+    })
+
+    it('kapotte JSON geeft null', () => {
+      const storage = new GeheugenOpslag()
+      storage.setItem('eeltje.voortgang.timer', '{kapot')
+      expect(maakOpslag({ storage }).laadTimer()).toBeNull()
+    })
+  })
 })
