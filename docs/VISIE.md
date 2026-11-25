@@ -119,3 +119,6 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 | Tap tempo: het tempo uit je eigen tikken | `tapTempo(tikken)`, `voegTikToe(tikken, tijd)` |
 | Onderverdeling: slagen per tel (2 bij achtsten in 4/4) | `MetronoomOpties.onderverdeling`, `opSlag`, `planStappen` → `GeplandeStap` |
 | Slagpatroon-trainer: een patroon kiezen of zelf maken | `VASTE_SLAGPATRONEN`, `slagpatroonKeuzes(maatsoort, liedjes)`, `ontwerpStatus(aantal, maatsoort)` |
+| Nieuwe versie: een update van de app die klaarstaat; herladen of bij de volgende start | `useNieuweVersie` → `{ nieuw, herlaad }`, `NieuweVersie` |
+| Service worker en precache: de app offline, per versie een eigen cache; previews (`pr-<nummer>/`) blijven erbuiten | `src/sw.ts`, `aanpak(verzoek, scope, precache)` → `Aanpak` (`index`, `cache`, `netwerk`), `precacheLijst`, `cacheNaam`, `oudeCaches` (`src/lib/pwa.ts`); plugin `tools/serviceworker.ts` |
+| Mijn akkoorden (bestand): de tekst van "Kopieer mijn akkoorden" voor de commands | `mijn-akkoorden.txt` in de root (niet ingecheckt); `/nieuw-nummer`, `/nieuw-akkoord`, `/nieuwe-oefening` |

@@ -250,22 +250,33 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 
 ## Besluiten uit stap 7
 
-Nog niet af: de commands staan er, de PWA en de README volgen.
-
 ### Besluiten
 
 - **Commands** in `.claude/commands/`: `/nieuw-nummer <titel> van <artiest>`, `/nieuw-akkoord <naam> [variant]`, `/nieuwe-oefening <omschrijving>`. Elk met `description`, `argument-hint` en `allowed-tools` (lezen, schrijven, `bun run valideer`, `bun run test`; `/nieuw-nummer` mag ook zijn eigen liedjesbestand weghalen). Ze schrijven de regels uit het schema uit (`types.ts`, `validatie.ts`, `tests/inhoud.test.ts`) in plaats van naar die bestanden te verwijzen, zodat Claude niet eerst de code hoeft te lezen.
 - **`/nieuw-nummer`** leest `mijn-akkoorden.txt` (beide groepen tellen als bekend) of vraagt erom, meldt een bestaand id in plaats van te overschrijven, gebruikt het internet niet, en kiest de capo met de minste onbekende vormen (bij gelijkspel de laagste). Een **traditioneel** liedje mag in een andere toonsoort, zodat hij zonder capo past; een popliedje blijft klinken als de opname. De G-familie (Cadd9, Dsus4, Em7) alleen als de gebruiker die vormen kent of de gewone C, D en Em ook niet; anders de gewone. 3 of 4 akkoorden per liedje, zoals de test eist.
+- **Service worker zelf gebouwd, zonder dependency.** `src/sw.ts` gebruikt de pure logica uit `src/lib/pwa.ts` (`aanpak`, `precacheLijst`, `cacheNaam`, `oudeCaches`, getest). Het Vite-plugin `tools/serviceworker.ts` geeft hem als extra chunk `sw.js` mee en vult daarna `__PRECACHE__` (alle bestanden van de build plus `public/`, behalve `sw.js` en sourcemaps) en `__VERSIE__` (sha256 van al die bestanden) in. Het plugin breekt de build af als `sw.js` iets importeert, want een klassieke service worker kent geen `import`.
+- **Wat hij doet:** een navigatie binnen de scope krijgt `index.html` uit de cache, een bestand uit de precache komt uit de cache, de rest gaat naar het netwerk. Alles onder `pr-<nummer>/` laat hij met rust (geen `respondWith`), ook offline. Hij leest alleen uit zijn eigen versiecache, nooit uit `caches.match` over alle caches heen, dus index.html en de assets zijn altijd van dezelfde versie. Bij het installeren haalt hij alles op met `cache: 'reload'`, langs de HTTP-cache van Pages (max-age 10 min) heen.
+- **Previews registreren geen service worker** (`useNieuweVersie`: alleen bij `PROD` zonder `VITE_PREVIEW`), en het plugin maakt dan ook geen `sw.js`. De service worker van main bestrijkt `pr-*/` wel, maar laat die verzoeken door.
+- **Updates:** een nieuwe versie installeert op de achtergrond en wacht. De app zoekt naar een update bij elke start en als hij weer zichtbaar wordt. Staat er een klaar, dan toont `NieuweVersie` bovenaan "Er is een nieuwe versie van Eeltje." met "Herladen" (`postMessage('activeer')` → `skipWaiting`). Wisselt de service worker, dan herlaadt elk open tabblad, zodat er nooit oude code tegen een nieuwe cache praat. Zonder klik neemt de nieuwe versie het over zodra alle vensters dicht zijn geweest. Oude `eeltje-*`-caches gaan weg bij het activeren; caches van andere apps op github.io blijven staan.
+- **Manifest** `public/manifest.webmanifest`: relatieve `id`, `start_url` en `scope` (`./`), `standalone`, achtergrond- en themakleur `--achtergrond` (licht). `index.html` heeft de meta-tags voor iOS en Android, en `theme-color` licht en donker.
+- **Iconen:** een plectrum in roomwit op `--accent`, één bron in `tools/kijk/iconen.mjs`. Dat script schrijft `public/iconen/icoon.svg` (favicon) en rendert met headless Chrome de PNG's: 192 en 512 (`any`), 512 maskable (plectrum op 60%, binnen de veilige cirkel) en `apple-touch-icon.png` van 180. Het staat in `tools/kijk` omdat het dezelfde puppeteer-core gebruikt.
 - **Inhoudstest versoepeld** (`tests/inhoud.test.ts`): de bovengrens van 15 liedjes en de eis `ai-gegenereerd` / `geverifieerd: false` voor elk liedje zijn weg. Anders maakte het tweede liedje via `/nieuw-nummer` de tests rood, net als een liedje dat de eigenaar goedkeurt. De grens van 3 of 4 akkoorden (met de G-familie-uitzondering) blijft.
 
-### Proefrun
+### Bewijs
 
-- `/nieuw-nummer Twinkle Twinkle Little Star` letterlijk gevolgd met de demo-akkoorden (A, D, E, Em kan ik; Am, C, G oefenen): G zonder capo met G, C en D, in plaats van C met F. `bun run valideer` en `bun run test` groen. Liedje en `mijn-akkoorden.txt` daarna weggehaald.
+- **Proefrun commands:** `/nieuw-nummer Twinkle Twinkle Little Star` letterlijk gevolgd met de demo-akkoorden (A, D, E, Em kan ik; Am, C, G oefenen): G zonder capo met G, C en D, in plaats van C met F. `bun run valideer` en `bun run test` groen. Liedje en `mijn-akkoorden.txt` daarna weggehaald.
+- **PWA** (headless Chrome op een nep-gh-pages in `/tmp` met `python3 -m http.server`: main in `eeltje/`, een preview-build in `eeltje/pr-1/`): na het eerste bezoek is de service worker actief, en offline laadt de app weer, ook `#/akkoorden`. In `pr-1/` toont hij de eigen preview (eigen index en assets), terwijl de service worker van main de pagina controleert. Offline geeft `pr-1/` de foutpagina van de browser, niet de app van main. Een nieuwe versie van main: na herladen eerst nog de oude met de melding, na "Herladen" helemaal de nieuwe, en de oude cache is weg.
 
 ### Valkuilen
 
 - `node_modules` in de worktree was weer leeg; `bun install --frozen-lockfile` eerst.
+- **Een service worker werkt alleen op https of localhost.** De devserver op je telefoon (`http://192.168…`) heeft er dus geen, en in `bun run dev` registreert hij ook niet. Testen kan met `bun run build` en `python3 -m http.server -d dist` op localhost.
+- **Vite 8 laadt `vite.config.ts` straks native.** Imports van eigen `.ts`-bestanden in de config krijgen daarom een extensie (`./tools/serviceworker.ts`); `tsconfig.json` heeft `allowImportingTsExtensions`.
+- **Geen `type: 'module'` bij `register`:** Firefox kent module-service workers pas sinds kort. `sw.js` is daarom één bestand zonder imports.
+- **Een nieuwe `localStorage`-sleutel of een lazy geladen pagina** hoeft niets aan de service worker te veranderen: alles uit de build komt vanzelf in de precache.
+- **`mijn-akkoorden.txt`** staat in `.gitignore` (persoonlijk).
 
-### Open
+### Geparkeerde ideeën
 
-- `mijn-akkoorden.txt` staat niet in `.gitignore`. Persoonlijk en vaak anders; de eigenaar beslist of hij hem incheckt.
+- Een balkje "Preview PR 12" (stond al geparkeerd) zou ook laten zien dat er geen service worker draait.
+- Een eigen icoon voor previews, zodat een geïnstalleerde preview niet op Eeltje lijkt.

@@ -24,14 +24,17 @@ tools/kijk/kijk.sh . 5177 /vandaag,/liedjes/wonderwall   # screenshots, zie "De 
 
 ```
 docs/              VISIE.md, STAPPENPLAN.md, OVERDRACHT.md, PARALLEL-BOUWEN.md
-src/lib/           pure logica: types, muziek (transponeren, capo, speelbaarheid), voortgang, route, storage, validatie, demo, akkoorden (raster, kopieertekst), diagram, gitaar (toonhoogtes, Karplus-Strong), metronoom, slagpatroon, liedjes (lijst, AI-label), meespelen (toestandsmachine), challenges (record, geschiedenis) en het verloop per challenge (oneMinuteChanges, spiderLadder, wisselreeks), routine (dagroutine), statistiek (streak, minuten), oefentimer, bestand (export/import), grafiek (schaal en ticks)
+src/lib/           pure logica: types, muziek (transponeren, capo, speelbaarheid), voortgang, route, storage, validatie, demo, akkoorden (raster, kopieertekst), diagram, gitaar (toonhoogtes, Karplus-Strong), metronoom, slagpatroon, liedjes (lijst, AI-label), meespelen (toestandsmachine), challenges (record, geschiedenis) en het verloop per challenge (oneMinuteChanges, spiderLadder, wisselreeks), routine (dagroutine), statistiek (streak, minuten), oefentimer, bestand (export/import), grafiek (schaal en ticks), pwa (wat de service worker cachet)
+src/sw.ts          de service worker (bouwt via tools/serviceworker.ts; logica in src/lib/pwa.ts)
 src/data/          inhoud als JSON: akkoorden.json, oefeningen.json, liedjes/<id>.json; index.ts laadt ze
 src/audio/         Web Audio: context.ts (gedeelde AudioContext), metronoom en Karplus-Strong-gitaar
-src/components/    herbruikbare UI met eigen css: Tabbalk, Schermvullend, AkkoordDiagram (SVG), StatusLabel, TempoKiezer, TelWeergave, SlagpatroonWeergave, SpeelbaarheidLabel, Ster, AkkoordKiezer, ChallengeUitslag, StartTempo, Grafiek (SVG), Kerngetallen
-src/hooks/         React-hooks (useRoute, useVoortgang, useWakeLock, useMetronoom, useMetronoomInstelling, useSpatiebalk, useKlok, useVerborgen, useChallengeResultaat, useRoutine, useOefentimer, useNu)
+src/components/    herbruikbare UI met eigen css: Tabbalk, Schermvullend, AkkoordDiagram (SVG), StatusLabel, TempoKiezer, TelWeergave, SlagpatroonWeergave, SpeelbaarheidLabel, Ster, AkkoordKiezer, ChallengeUitslag, StartTempo, Grafiek (SVG), Kerngetallen, NieuweVersie
+src/hooks/         React-hooks (useRoute, useVoortgang, useWakeLock, useMetronoom, useMetronoomInstelling, useSpatiebalk, useKlok, useVerborgen, useChallengeResultaat, useRoutine, useOefentimer, useNu, useNieuweVersie)
 src/pages/         één component per route (default export), met een eigen css-bestand ernaast
 tests/             Vitest, één bestand per module in src/lib
-tools/kijk/        screenshots met headless Chrome, geen onderdeel van de app
+public/            manifest.webmanifest en iconen/ (gemaakt met tools/kijk/iconen.mjs)
+tools/kijk/        screenshots en iconen met headless Chrome, geen onderdeel van de app
+tools/serviceworker.ts  Vite-plugin: sw.js met de precache van de build, niet in een preview
 .claude/commands/  /nieuw-nummer, /nieuw-akkoord, /nieuwe-oefening (stap 7)
 .github/workflows/ ci.yml (lint, test, build, audit) en pages.yml (main en PR-previews)
 ```
@@ -84,7 +87,7 @@ tools/kijk/kijk.sh . 5177 /vandaag,/akkoorden,/akkoorden/A,/liedjes,/liedjes/won
 - `main` staat in de root van de branch `gh-pages`, elke open PR in `pr-<nummer>/`. Sluit je de PR, dan verdwijnt de map. Alles via `.github/workflows/pages.yml`.
 - **Alle paden relatief.** `base: './'` in `vite.config.ts`. Gebruik nooit een pad dat met `/` begint voor eigen bestanden (iconen, manifest, service worker), anders werkt het in een preview niet.
 - **Een preview raakt je echte voortgang niet.** Hij wordt gebouwd met `VITE_PREVIEW=pr-<nummer>`: eigen `localStorage`-sleutel, en hij begint met `demoVoortgang`. Elke nieuwe `localStorage`-sleutel krijgt hetzelfde achtervoegsel.
-- **De service worker van `main` blijft van de previews af.** Zijn scope omvat ook `pr-*/`: sluit die uit van de navigatie-fallback en de precache (`navigateFallbackDenylist: [/\/pr-\d+\//]`), anders krijg je in een preview de app van `main` te zien.
+- **De service worker van `main` blijft van de previews af.** Zijn scope omvat ook `pr-*/`: `aanpak` in `src/lib/pwa.ts` laat alles onder `pr-<nummer>/` aan het netwerk (geen navigatie-fallback, geen precache), en een preview-build registreert zelf geen service worker. Anders krijg je in een preview de app van `main` te zien.
 
 ## Inhoud toevoegen
 
