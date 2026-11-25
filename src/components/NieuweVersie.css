@@ -1,0 +1,13 @@
+.nieuwe-versie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ruimte-3);
+  margin-bottom: var(--ruimte-4);
+  border-color: var(--accent);
+}
+
+.nieuwe-versie p {
+  margin: 0;
+}
