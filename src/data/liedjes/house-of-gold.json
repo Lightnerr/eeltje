@@ -1,0 +1,26 @@
+{
+  "id": "house-of-gold",
+  "titel": "House of Gold",
+  "artiest": "Twenty One Pilots",
+  "soort": "pop",
+  "toonsoort": "C",
+  "capo": 0,
+  "bpm": 80,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["C"], ["Fmaj7"], ["C"], ["G"], ["C"], ["Fmaj7"], ["G"], ["C"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["C"], ["Fmaj7"], ["C"], ["G"], ["C"], ["Fmaj7"], ["G"], ["C"]]
+    }
+  ],
+  "volgorde": ["couplet", "refrein", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["C", "F", "G"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Fmaj7 in plaats van F, zodat je geen barré nodig hebt. Het origineel is op ukelele, in dezelfde akkoorden."
+}

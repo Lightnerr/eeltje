@@ -1,0 +1,26 @@
+{
+  "id": "otherside",
+  "titel": "Otherside",
+  "artiest": "Red Hot Chili Peppers",
+  "soort": "pop",
+  "toonsoort": "Am",
+  "capo": 0,
+  "bpm": 123,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["Am"], ["Fmaj7"], ["C"], ["G"], ["Am"], ["Fmaj7"], ["C"], ["G"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Am"], ["Fmaj7"], ["C"], ["G"], ["Am"], ["Fmaj7"], ["C"], ["G"]]
+    }
+  ],
+  "volgorde": ["couplet", "refrein", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["Am", "F", "C", "G"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Fmaj7 in plaats van F, zodat je geen barré nodig hebt. De brug is weggelaten."
+}

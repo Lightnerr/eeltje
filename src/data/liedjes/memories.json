@@ -1,0 +1,26 @@
+{
+  "id": "memories",
+  "titel": "Memories",
+  "artiest": "Maroon 5",
+  "soort": "pop",
+  "toonsoort": "B",
+  "capo": 4,
+  "bpm": 91,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["G", "D"], ["Em", "G"], ["C", "G"], ["C", "D"], ["G", "D"], ["Em", "G"], ["C", "G"], ["C", "D"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["G", "D"], ["Em", "G"], ["C", "G"], ["C", "D"], ["G", "D"], ["Em", "G"], ["C", "G"], ["C", "D"]]
+    }
+  ],
+  "volgorde": ["couplet", "refrein", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["G", "D", "Em", "Bm", "C"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "G in plaats van Bm, zodat je geen Bm nodig hebt. Het hele nummer is steeds hetzelfde rondje."
+}
