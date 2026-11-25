@@ -1,0 +1,73 @@
+.oefening {
+  display: grid;
+  gap: var(--ruimte-4);
+}
+
+.oefening-terug {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tikdoel);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.oefening-doel {
+  font-size: var(--letter-groot);
+}
+
+.oefening-hoofd {
+  display: grid;
+  gap: var(--ruimte-5);
+}
+
+@media (min-width: 768px) {
+  .oefening-hoofd {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: start;
+  }
+}
+
+.oefening-uitleg {
+  display: grid;
+  gap: var(--ruimte-4);
+  min-width: 0;
+}
+
+.oefening-stappen {
+  display: grid;
+  gap: var(--ruimte-3);
+  padding-left: var(--ruimte-5);
+}
+
+.oefening-stappen li::marker {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.oefening-tab {
+  margin: 0;
+  overflow-x: auto;
+  background: var(--vlak);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+}
+
+.oefening-tab pre {
+  margin: 0;
+  padding: var(--ruimte-3) var(--ruimte-4);
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  /* Een regel van het tabje past zo op 360px zonder te scrollen. */
+  font-size: clamp(0.75rem, 3.3vw, 0.9375rem);
+  line-height: 1.4;
+}
+
+.oefening-metronoom {
+  display: grid;
+  gap: var(--ruimte-4);
+}
+
+.oefening-start {
+  min-height: 64px;
+  font-size: var(--letter-groot);
+}

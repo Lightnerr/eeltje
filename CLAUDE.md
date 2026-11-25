@@ -24,11 +24,11 @@ tools/kijk/kijk.sh . 5177 /vandaag,/liedjes/wonderwall   # screenshots, zie "De 
 
 ```
 docs/              VISIE.md, STAPPENPLAN.md, OVERDRACHT.md, PARALLEL-BOUWEN.md
-src/lib/           pure logica: types, muziek (transponeren, capo, speelbaarheid), voortgang, route, storage, validatie, demo, akkoorden (raster, kopieertekst), diagram, gitaar (toonhoogtes, Karplus-Strong), metronoom, slagpatroon, liedjes (lijst, AI-label), meespelen (toestandsmachine), later routine en statistiek
+src/lib/           pure logica: types, muziek (transponeren, capo, speelbaarheid), voortgang, route, storage, validatie, demo, akkoorden (raster, kopieertekst), diagram, gitaar (toonhoogtes, Karplus-Strong), metronoom, slagpatroon, liedjes (lijst, AI-label), meespelen (toestandsmachine), challenges (record, geschiedenis) en het verloop per challenge (oneMinuteChanges, spiderLadder, wisselreeks), later routine en statistiek
 src/data/          inhoud als JSON: akkoorden.json, oefeningen.json, liedjes/<id>.json; index.ts laadt ze
 src/audio/         Web Audio: context.ts (gedeelde AudioContext), metronoom en Karplus-Strong-gitaar
-src/components/    herbruikbare UI met eigen css: Tabbalk, Schermvullend, Binnenkort, AkkoordDiagram (SVG), StatusLabel, TempoKiezer, TelWeergave, SlagpatroonWeergave, SpeelbaarheidLabel, Ster
-src/hooks/         React-hooks (useRoute, useVoortgang, useWakeLock, useMetronoom, useMetronoomInstelling)
+src/components/    herbruikbare UI met eigen css: Tabbalk, Schermvullend, Binnenkort, AkkoordDiagram (SVG), StatusLabel, TempoKiezer, TelWeergave, SlagpatroonWeergave, SpeelbaarheidLabel, Ster, AkkoordKiezer, ChallengeUitslag, StartTempo
+src/hooks/         React-hooks (useRoute, useVoortgang, useWakeLock, useMetronoom, useMetronoomInstelling, useSpatiebalk, useKlok, useVerborgen, useChallengeResultaat)
 src/pages/         één component per route (default export), met een eigen css-bestand ernaast
 tests/             Vitest, één bestand per module in src/lib
 tools/kijk/        screenshots met headless Chrome, geen onderdeel van de app

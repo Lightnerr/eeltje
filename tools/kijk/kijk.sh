@@ -18,7 +18,8 @@ for i in $(seq 1 40); do curl -s --noproxy '*' -o /dev/null http://127.0.0.1:$PO
 [ -d "$HIER/node_modules" ] || (cd "$HIER" && bun install --frozen-lockfile >/dev/null)
 rm -rf $K/shots
 for spec in "$@"; do
-  IFS=',' read -ra R <<< "$spec"
+  # Alleen splitsen op een komma vóór een nieuwe route, zodat ?akkoorden=G,C,D heel blijft.
+  mapfile -t R < <(sed 's|,/|\n/|g' <<< "$spec")
   KIJK_BASE=http://127.0.0.1:$POORT bun "$HIER/kijk.mjs" $K/shots "${R[@]}"
 done
 if [ -z "$KIJK_LATEN" ]; then kill "$(cat $K/server.pid)" 2>/dev/null || true; rm -f $K/server.pid; fi

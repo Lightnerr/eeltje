@@ -1,0 +1,15 @@
+.akkoord-kiezer {
+  display: grid;
+  gap: var(--ruimte-1);
+  font-weight: 600;
+}
+
+.akkoord-kiezer select {
+  min-height: var(--tikdoel);
+  padding: 0 var(--ruimte-3);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius-klein);
+  background: var(--vlak);
+  font-size: var(--letter-groot);
+  font-weight: 650;
+}

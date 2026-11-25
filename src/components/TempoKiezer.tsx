@@ -10,7 +10,8 @@ interface Props {
   bpm: number
   maatsoort: Maatsoort
   onBpm: (bpm: number) => void
-  onMaatsoort: (maatsoort: Maatsoort) => void
+  /** Zonder deze is de maatsoort vast en zie je geen keuze. */
+  onMaatsoort?: (maatsoort: Maatsoort) => void
 }
 
 /** Tempo (knoppen, schuif en tap tempo) en maatsoort. */
@@ -60,22 +61,24 @@ export function TempoKiezer({ bpm, maatsoort, onBpm, onMaatsoort }: Props) {
       <button type="button" className="knop knop-rustig tempo-kiezer-tap" onClick={tik}>
         {wachtOpTik ? 'En nog een keer' : 'Tik het tempo'}
       </button>
-      <fieldset className="tempo-kiezer-maatsoort">
-        <legend>Maatsoort</legend>
-        <div className="tempo-kiezer-knoppen">
-          {MAATSOORTEN.map((m) => (
-            <button
-              key={m}
-              type="button"
-              className={`knop ${m === maatsoort ? '' : 'knop-rustig'}`}
-              aria-pressed={m === maatsoort}
-              onClick={() => onMaatsoort(m)}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
-      </fieldset>
+      {onMaatsoort && (
+        <fieldset className="tempo-kiezer-maatsoort">
+          <legend>Maatsoort</legend>
+          <div className="tempo-kiezer-knoppen">
+            {MAATSOORTEN.map((m) => (
+              <button
+                key={m}
+                type="button"
+                className={`knop ${m === maatsoort ? '' : 'knop-rustig'}`}
+                aria-pressed={m === maatsoort}
+                onClick={() => onMaatsoort(m)}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      )}
     </div>
   )
 }

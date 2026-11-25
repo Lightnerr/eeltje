@@ -39,3 +39,10 @@
   font-size: 1.5rem;
   line-height: 1;
 }
+
+.oefenen-onder {
+  display: block;
+  color: var(--tekst-zacht);
+  font-size: var(--letter-klein);
+  font-weight: 500;
+}

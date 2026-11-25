@@ -1,0 +1,38 @@
+.challenge-uitslag {
+  display: grid;
+  justify-items: center;
+  gap: var(--ruimte-3);
+  text-align: center;
+}
+
+.challenge-uitslag h2 {
+  font-size: clamp(2.5rem, 12vw, 5rem);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.challenge-uitslag h2:focus {
+  outline: none;
+}
+
+.challenge-uitslag-record {
+  color: var(--accent);
+  font-size: var(--letter-titel);
+  font-weight: 750;
+}
+
+.challenge-uitslag-knoppen {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--ruimte-3);
+  margin-top: var(--ruimte-3);
+}
+
+.challenge-record {
+  font-size: var(--letter-groot);
+}
+
+.challenge-uitslag h2.challenge-onderbroken {
+  font-size: var(--letter-titel);
+}

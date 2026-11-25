@@ -90,10 +90,18 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 | Liedjeslijst: per liedje speelbaarheid, capo-suggestie, favoriet en AI-label | `liedjesOverzicht(liedjes, voortgang)` → `LiedjeRegel` (`src/lib/liedjes.ts`) |
 | Meespelen: aftellen, de huidige maat en tel, het volgende akkoord, een sectie herhalen | `meespeelStap(stand, actie, volgorde)` → `Meespeelstand` (`fase`: `stil`, `aftellen`, `spelen`, `einde`), `Meespeelactie`, `meespeelWeergave`, `akkoordOpTel` (`src/lib/meespelen.ts`) |
 | Meespeeltempo: 40% t/m 120% van het liedje | `begrensTempo`, `meespeelBpm`, `MIN_TEMPO`, `MAX_TEMPO`, `TEMPO_STAP` |
-| Oefening, met doel, stappen, tabje en standaardtempo | `Oefening` (`doel`, `stappen`, `tab`, `standaardtempo`); `src/data/oefeningen.json`, `zoekOefening` |
-| Challenge en zijn resultaat: wissels per minuut, hoogste bpm of volgehouden seconden | `ChallengeType`, `ChallengeResultaat` (`sleutel`, `waarde`, `bpm`) |
-| Akkoordpaar (A-D is hetzelfde als D-A) | `ChallengeResultaat.sleutel` (`A-D`); `paarSleutel` volgt in stap 5 |
-| Record |  |
+| Oefening, met doel, stappen, tabje en standaardtempo | `Oefening` (`doel`, `stappen`, `tab`, `standaardtempo`); `src/data/oefeningen.json`, `zoekOefening`; pagina `Oefening` met metronoom op het standaardtempo |
+| Challenge en zijn resultaat: wissels per minuut, hoogste bpm of volgehouden seconden | `ChallengeType`, `ChallengeResultaat` (`sleutel`, `waarde`, `bpm`); `voegResultaatToe`, `geschiedenis` (oud naar nieuw), `resultaatTekst`, `useChallengeResultaat` |
+| Akkoordpaar (A-D is hetzelfde als D-A) | `paarSleutel(a, b)` (alfabetisch, `A-D`), `geldigPaar` |
+| Reeks: de akkoorden van een wisselreeks, in volgorde (G-C-D is niet D-C-G) | `reeksSleutel`, `geldigeReeks` |
+| Record: je beste resultaat per paar, per reeks of voor de spider; "Nieuw record!" alleen als je het echt verbetert | `record(v, type, sleutel?)` → `ChallengeResultaat \| null`, `recordTekst`, `beoordeel` → `Beoordeling` (`eerste`, `nieuw-record`, `evenaard`, `onder-record`), `ChallengeUitslag`, `RecordRegel` |
+| Verloop van een challenge: wacht, aftellen, lopen, klaar, of onderbroken (scherm uit) | `OmcStand`/`omcVerloop` (`oneMinuteChanges.ts`), `SpiderStand`/`spiderVerloop` (`spiderLadder.ts`), `WisselreeksStand`/`wisselreeksVerloop` (`wisselreeks.ts`); `useKlok`, `useVerborgen`, `ChallengeOnderbroken` |
+| One minute changes: 3 s aftellen, 60 s wisselen | `AFTELLEN_MS`, `DUUR_MS`, `omcResterend`, `klokTekst` ("1:00"), `omcResultaat`; pagina `OneMinuteChanges` |
+| Spider-ladder: begin laag, na elke ronde die lukte 5 bpm sneller | `SPIDER_START_BPM`, `SPIDER_STAP`, `SPIDER_SLEUTEL`, `spiderBegin`, `spiderResultaat`; pagina `SpiderLadder` |
+| Wisselreeks: 3 of 4 akkoorden, elk een maat, zo lang mogelijk; de ronde is hoe vaak je de reeks rond bent | `TELLEN_PER_AKKOORD`, `wisselreeksPositie(stand, aantal)` → `WisselreeksPositie` (`akkoord`, `volgende`, `tel`, `ronde`), `wisselreeksVolgehouden`, `wisselreeksResultaat`; pagina `Wisselreeks` |
+| Grote tikknop en spatiebalk | `.challenge-tik`, `useSpatiebalk(actief, knop, opTik)` |
+| Starttempo van een challenge (stappen van 5 bpm) | `StartTempo` |
+| Akkoord kiezen voor een challenge, gegroepeerd op status | `AkkoordKiezer`, `standaardAkkoorden(v, namen, aantal)` |
 | Oefensessie, streak, geoefende minuten | `Sessie`, `voegSessieToe`; streak en minuten volgen in stap 6 |
 | Dagroutine |  |
 | Voortgang: alles wat persoonlijk is, met een versie | `Voortgang` (`versie: 1`), `nieuweVoortgang`, `normaliseerVoortgang`, `exporteerVoortgang`, `importeerVoortgang`; `opslag`, `useVoortgang` |
