@@ -51,3 +51,23 @@ export function ChallengeUitslag({ resultaat, vorigRecord, leeg, children }: Pro
 export function RecordRegel({ record, geen = 'Nog geen record' }: { record: ChallengeResultaat | null; geen?: string }) {
   return <p className="challenge-record">{record ? <>Record: <strong>{resultaatTekst(record)}</strong></> : geen}</p>
 }
+
+/** De challenge stopte omdat het scherm uit ging of je naar een ander tabblad ging; er is niets opgeslagen. */
+export function ChallengeOnderbroken({ onOpnieuw }: { onOpnieuw: () => void }) {
+  const kop = useRef<HTMLHeadingElement>(null)
+  useEffect(() => kop.current?.focus(), [])
+
+  return (
+    <div className="challenge-uitslag">
+      <h2 ref={kop} tabIndex={-1} className="challenge-onderbroken">
+        Gestopt omdat je scherm uit ging
+      </h2>
+      <p className="zacht">Wat je in die tijd speelde, kon ik niet tellen. Er is niets opgeslagen.</p>
+      <div className="challenge-uitslag-knoppen">
+        <button type="button" className="knop" onClick={onOpnieuw}>
+          Opnieuw starten
+        </button>
+      </div>
+    </div>
+  )
+}

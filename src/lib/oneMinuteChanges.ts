@@ -13,8 +13,16 @@ export type OmcStand =
   | { fase: 'aftellen'; begin: number }
   | { fase: 'lopen'; begin: number; wissels: number }
   | { fase: 'klaar'; wissels: number }
+  /** Het scherm ging uit of het tabblad naar de achtergrond: wat je in die tijd deed, kan de app niet tellen. */
+  | { fase: 'onderbroken' }
 
-export type OmcActie = { soort: 'start'; nu: number } | { soort: 'tik'; nu: number } | { soort: 'tijd'; nu: number } | { soort: 'opnieuw' }
+export type OmcActie =
+  | { soort: 'start'; nu: number }
+  | { soort: 'tik'; nu: number }
+  | { soort: 'tijd'; nu: number }
+  /** De pagina raakte verborgen: afbreken, zonder resultaat. */
+  | { soort: 'verborgen'; nu: number }
+  | { soort: 'opnieuw' }
 
 function bijTijd(stand: OmcStand, nu: number): OmcStand {
   if (stand.fase === 'aftellen' && nu >= stand.begin + AFTELLEN_MS) return bijTijd({ fase: 'lopen', begin: stand.begin, wissels: 0 }, nu)
@@ -30,6 +38,10 @@ export function omcVerloop(stand: OmcStand, actie: OmcActie): OmcStand {
       return { fase: 'wacht' }
     case 'tijd':
       return bijTijd(stand, actie.nu)
+    case 'verborgen': {
+      const nu = bijTijd(stand, actie.nu)
+      return nu.fase === 'aftellen' || nu.fase === 'lopen' ? { fase: 'onderbroken' } : nu
+    }
     case 'tik': {
       const nu = bijTijd(stand, actie.nu)
       return nu.fase === 'lopen' ? { ...nu, wissels: nu.wissels + 1 } : nu

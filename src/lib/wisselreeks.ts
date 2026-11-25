@@ -13,12 +13,16 @@ export type WisselreeksStand =
   | { fase: 'aftellen'; begin: number; bpm: number }
   | { fase: 'lopen'; begin: number; bpm: number }
   | { fase: 'klaar'; seconden: number; bpm: number }
+  /** Het scherm ging uit of het tabblad naar de achtergrond: hoe lang je volhield, weet de app dan niet. */
+  | { fase: 'onderbroken' }
 
 export type WisselreeksActie =
   | { soort: 'start'; nu: number; bpm: number }
   | { soort: 'tijd'; nu: number }
   /** Je bent eruit (of je stopt): tijdens het aftellen is dat afbreken. */
   | { soort: 'gestopt'; nu: number }
+  /** De pagina raakte verborgen: afbreken, zonder resultaat. */
+  | { soort: 'verborgen'; nu: number }
   | { soort: 'opnieuw' }
 
 /** Eén maat, in ms. */
@@ -42,6 +46,8 @@ export function wisselreeksVerloop(stand: WisselreeksStand, actie: WisselreeksAc
       return { fase: 'wacht' }
     case 'tijd':
       return bijTijd(stand, actie.nu)
+    case 'verborgen':
+      return stand.fase === 'aftellen' || stand.fase === 'lopen' ? { fase: 'onderbroken' } : stand
     case 'gestopt': {
       const nu = bijTijd(stand, actie.nu)
       if (nu.fase === 'aftellen') return { fase: 'wacht' }
@@ -54,7 +60,7 @@ export function wisselreeksVerloop(stand: WisselreeksStand, actie: WisselreeksAc
 /** Hele seconden sinds het aftellen voorbij is. */
 export function wisselreeksVolgehouden(stand: WisselreeksStand, nu: number): number {
   if (stand.fase === 'klaar') return stand.seconden
-  if (stand.fase === 'wacht') return 0
+  if (stand.fase === 'wacht' || stand.fase === 'onderbroken') return 0
   return Math.max(0, Math.floor((nu - looptVanaf(stand)) / 1000))
 }
 

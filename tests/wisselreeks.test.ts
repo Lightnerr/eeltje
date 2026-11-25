@@ -49,6 +49,17 @@ describe('wisselreeks', () => {
     expect(speel([start, gestopt(T0 + 1000)])).toEqual({ fase: 'wacht' })
   })
 
+  it('verborgen tijdens aftellen of lopen breekt af, zonder resultaat', () => {
+    const verborgen = (nu: number): WisselreeksActie => ({ soort: 'verborgen', nu })
+    expect(speel([start, verborgen(T0 + 100)])).toEqual({ fase: 'onderbroken' })
+    const onderbroken = speel([start, tijd(LOOPT_VANAF + 20_000), verborgen(LOOPT_VANAF + 20_000)])
+    expect(onderbroken).toEqual({ fase: 'onderbroken' })
+    expect(wisselreeksVerloop(onderbroken, gestopt(LOOPT_VANAF + 300_000))).toEqual({ fase: 'onderbroken' })
+    expect(wisselreeksResultaat(onderbroken, ['G', 'C', 'D'])).toBeNull()
+    expect(wisselreeksVerloop(onderbroken, { soort: 'opnieuw' })).toEqual({ fase: 'wacht' })
+    expect(speel([start, gestopt(LOOPT_VANAF + 5000), verborgen(LOOPT_VANAF + 6000)])).toEqual({ fase: 'klaar', seconden: 5, bpm: BPM })
+  })
+
   it('opnieuw gaat terug naar wachten', () => {
     expect(speel([start, gestopt(LOOPT_VANAF + 5000), { soort: 'opnieuw' }])).toEqual({ fase: 'wacht' })
   })

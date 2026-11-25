@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { AkkoordDiagram } from '../components/AkkoordDiagram'
 import { AkkoordKiezer } from '../components/AkkoordKiezer'
-import { ChallengeUitslag, RecordRegel } from '../components/ChallengeUitslag'
+import { ChallengeOnderbroken, ChallengeUitslag, RecordRegel } from '../components/ChallengeUitslag'
 import { Schermvullend } from '../components/Schermvullend'
 import { StartTempo } from '../components/StartTempo'
 import { TelWeergave } from '../components/TelWeergave'
@@ -11,6 +11,7 @@ import { useKlok } from '../hooks/useKlok'
 import { useMetronoom } from '../hooks/useMetronoom'
 import { navigeer } from '../hooks/useRoute'
 import { useSpatiebalk } from '../hooks/useSpatiebalk'
+import { useVerborgen } from '../hooks/useVerborgen'
 import { useVoortgang } from '../hooks/useVoortgang'
 import { akkoordnamen, gekozenVariant } from '../lib/akkoorden'
 import { duurTekst, geldigeReeks, reeksSleutel, standaardAkkoorden } from '../lib/challenges'
@@ -50,6 +51,11 @@ export default function WisselreeksPagina({ akkoorden: routeAkkoorden, bpm: rout
     stuur({ soort: 'tijd', nu: t })
   })
 
+  useVerborgen(bezig, (t) => {
+    metronoom.stop()
+    stuur({ soort: 'verborgen', nu: t })
+  })
+
   function opKnop() {
     const t = performance.now()
     if (stand.fase === 'wacht') {
@@ -64,7 +70,8 @@ export default function WisselreeksPagina({ akkoorden: routeAkkoorden, bpm: rout
     }
   }
 
-  useSpatiebalk(stand.fase !== 'klaar', knop, opKnop)
+  const knopZichtbaar = stand.fase === 'wacht' || bezig
+  useSpatiebalk(knopZichtbaar, knop, opKnop)
 
   useEffect(() => {
     if (stand.fase !== 'wacht') return
@@ -133,13 +140,15 @@ export default function WisselreeksPagina({ akkoorden: routeAkkoorden, bpm: rout
           </>
         )}
 
-        {stand.fase !== 'klaar' && (
+        {knopZichtbaar && (
           <button ref={knop} type="button" className={`knop challenge-tik ${stand.fase === 'wacht' ? 'challenge-tik-start' : ''}`} disabled={stand.fase === 'wacht' && !geldig} onClick={opKnop}>
             {stand.fase === 'wacht' && 'Start'}
             {stand.fase === 'aftellen' && 'Stoppen'}
             {stand.fase === 'lopen' && 'Ik ben eruit'}
           </button>
         )}
+
+        {stand.fase === 'onderbroken' && <ChallengeOnderbroken onOpnieuw={() => stuur({ soort: 'opnieuw' })} />}
 
         {stand.fase === 'klaar' && (
           <ChallengeUitslag resultaat={resultaat} vorigRecord={vorigRecord} leeg="Korter dan een seconde, dus er is niets opgeslagen.">

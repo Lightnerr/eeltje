@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { AkkoordDiagram } from '../components/AkkoordDiagram'
 import { AkkoordKiezer } from '../components/AkkoordKiezer'
-import { ChallengeUitslag, RecordRegel } from '../components/ChallengeUitslag'
+import { ChallengeOnderbroken, ChallengeUitslag, RecordRegel } from '../components/ChallengeUitslag'
 import { Schermvullend } from '../components/Schermvullend'
 import { akkoorden } from '../data'
 import { useChallengeResultaat } from '../hooks/useChallengeResultaat'
 import { useKlok } from '../hooks/useKlok'
 import { navigeer } from '../hooks/useRoute'
 import { useSpatiebalk } from '../hooks/useSpatiebalk'
+import { useVerborgen } from '../hooks/useVerborgen'
 import { useVoortgang } from '../hooks/useVoortgang'
 import { akkoordnamen, gekozenVariant } from '../lib/akkoorden'
 import { geldigPaar, paarSleutel, standaardAkkoorden } from '../lib/challenges'
@@ -45,6 +46,8 @@ export default function OneMinuteChangesPagina({ a: routeA, b: routeB }: RouteGe
     stuur({ soort: 'tijd', nu: t })
   })
 
+  useVerborgen(bezig, (t) => stuur({ soort: 'verborgen', nu: t }))
+
   function opKnop() {
     const t = performance.now()
     if (stand.fase === 'wacht') {
@@ -55,7 +58,8 @@ export default function OneMinuteChangesPagina({ a: routeA, b: routeB }: RouteGe
     } else stuur({ soort: 'tik', nu: t })
   }
 
-  useSpatiebalk(stand.fase !== 'klaar', knop, opKnop)
+  const knopZichtbaar = stand.fase === 'wacht' || bezig
+  useSpatiebalk(knopZichtbaar, knop, opKnop)
 
   // Na Schermvullend, dat de sluitknop focust: de spatie hoort bij de grote knop, niet bij "Sluiten".
   useEffect(() => {
@@ -81,7 +85,7 @@ export default function OneMinuteChangesPagina({ a: routeA, b: routeB }: RouteGe
           </div>
         )}
 
-        {stand.fase !== 'wacht' && (
+        {stand.fase !== 'wacht' && stand.fase !== 'onderbroken' && (
           <div className="challenge-akkoorden" aria-label={`${a} en ${b}`}>
             <Akkoord naam={a} voortgang={voortgang} />
             <svg className="challenge-pijl" viewBox="0 0 32 24" aria-hidden="true">
@@ -97,7 +101,7 @@ export default function OneMinuteChangesPagina({ a: routeA, b: routeB }: RouteGe
           </p>
         )}
 
-        {stand.fase !== 'klaar' && (
+        {knopZichtbaar && (
           <button
             ref={knop}
             type="button"
@@ -116,6 +120,8 @@ export default function OneMinuteChangesPagina({ a: routeA, b: routeB }: RouteGe
             )}
           </button>
         )}
+
+        {stand.fase === 'onderbroken' && <ChallengeOnderbroken onOpnieuw={() => stuur({ soort: 'opnieuw' })} />}
 
         {stand.fase === 'klaar' && (
           <ChallengeUitslag resultaat={resultaat} vorigRecord={vorigRecord} leeg="Geen wissels geteld, dus er is niets opgeslagen.">

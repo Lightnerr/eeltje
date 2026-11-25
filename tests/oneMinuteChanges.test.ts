@@ -11,6 +11,7 @@ function speel(acties: OmcActie[], stand: OmcStand = { fase: 'wacht' }): OmcStan
 
 const tik = (nu: number): OmcActie => ({ soort: 'tik', nu })
 const tijd = (nu: number): OmcActie => ({ soort: 'tijd', nu })
+const verborgen = (nu: number): OmcActie => ({ soort: 'verborgen', nu })
 const start: OmcActie = { soort: 'start', nu: T0 }
 
 describe('one minute changes', () => {
@@ -39,6 +40,25 @@ describe('one minute changes', () => {
     expect(speel([tik(T0)])).toEqual({ fase: 'wacht' })
     const klaar = speel([start, tik(LOOPT_VANAF + 1), tijd(EINDE)])
     expect(omcVerloop(klaar, tik(EINDE + 1))).toBe(klaar)
+  })
+
+  it('verborgen tijdens aftellen of lopen breekt af, zonder resultaat', () => {
+    expect(speel([start, verborgen(T0 + 1000)])).toEqual({ fase: 'onderbroken' })
+    const onderbroken = speel([start, tik(LOOPT_VANAF + 1), verborgen(LOOPT_VANAF + 20_000)])
+    expect(onderbroken).toEqual({ fase: 'onderbroken' })
+    expect(omcVerloop(onderbroken, tijd(EINDE + 300_000))).toEqual({ fase: 'onderbroken' })
+    expect(omcVerloop(onderbroken, tik(EINDE + 300_000))).toEqual({ fase: 'onderbroken' })
+    expect(omcResultaat(onderbroken, 'A', 'D')).toBeNull()
+    expect(omcVerloop(onderbroken, { soort: 'opnieuw' })).toEqual({ fase: 'wacht' })
+  })
+
+  it('verborgen in een andere fase verandert niets', () => {
+    expect(speel([verborgen(T0)])).toEqual({ fase: 'wacht' })
+    expect(speel([start, tik(LOOPT_VANAF + 1), tijd(EINDE), verborgen(EINDE + 1)])).toEqual({ fase: 'klaar', wissels: 1 })
+  })
+
+  it('een minuut die al om was toen je terugkwam, telt niet als onderbreking', () => {
+    expect(speel([start, tik(LOOPT_VANAF + 1), verborgen(EINDE + 10)])).toEqual({ fase: 'klaar', wissels: 1 })
   })
 
   it('opnieuw gaat terug naar wachten', () => {
