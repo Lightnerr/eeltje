@@ -43,7 +43,7 @@ De liedjespagina toont het schema per maat, kleine diagrammen van de gebruikte a
 - **Metronoom:** 30 tot 220 bpm, tap tempo, accent op de 1, maatsoort en een tel die je ziet.
 - **Slagpatroon-trainer:** kies of ontwerp een patroon; pijltjes omhoog en omlaag lopen mee met de metronoom.
 - **Oefeningen:** spider, chromatisch loopje, akkoordwissels en basisaanslag, met uitleg in stappen en eventueel een tabje.
-- **One minute changes:** kies twee akkoorden, 60 seconden, een grote tikknop (of de spatiebalk) per wissel. De score wordt opgeslagen, het record staat erbij.
+- **One minute changes:** kies twee akkoorden, 60 seconden. Tik per wissel op een grote knop (of de spatiebalk), of tel zelf; aan het eind vul je je score in. Die wordt opgeslagen, het record staat erbij.
 - **Spider-ladder:** begin laag; na elke ronde die lukte (dat zeg je zelf) gaat het tempo omhoog. Het hoogste tempo wordt opgeslagen.
 - **Wisselreeks:** drie of vier akkoorden in een vast tempo, zo lang mogelijk volhouden.
 
@@ -96,7 +96,7 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 | Reeks: de akkoorden van een wisselreeks, in volgorde (G-C-D is niet D-C-G) | `reeksSleutel`, `geldigeReeks` |
 | Record: je beste resultaat per paar, per reeks of voor de spider; "Nieuw record!" alleen als je het echt verbetert | `record(v, type, sleutel?)` → `ChallengeResultaat \| null`, `recordTekst`, `beoordeel` → `Beoordeling` (`eerste`, `nieuw-record`, `evenaard`, `onder-record`), `ChallengeUitslag`, `RecordRegel` |
 | Verloop van een challenge: wacht, aftellen, lopen, klaar, of onderbroken (scherm uit) | `OmcStand`/`omcVerloop` (`oneMinuteChanges.ts`), `SpiderStand`/`spiderVerloop` (`spiderLadder.ts`), `WisselreeksStand`/`wisselreeksVerloop` (`wisselreeks.ts`); `useKlok`, `useVerborgen`, `ChallengeOnderbroken` |
-| One minute changes: 3 s aftellen, 60 s wisselen | `AFTELLEN_MS`, `DUUR_MS`, `omcResterend`, `klokTekst` ("1:00"), `omcResultaat`; pagina `OneMinuteChanges` |
+| One minute changes: 3 s aftellen, 60 s wisselen, daarna vul je zelf je score in (je tikken staan er al in) | `AFTELLEN_MS`, `DUUR_MS`, `MAX_WISSELS`, fase `invullen`, `leesWissels`, `omcResterend`, `klokTekst` ("1:00"), `omcResultaat`; pagina `OneMinuteChanges` (`ScoreInvullen`) |
 | Spider-ladder: begin laag, na elke ronde die lukte 5 bpm sneller | `SPIDER_START_BPM`, `SPIDER_STAP`, `SPIDER_SLEUTEL`, `spiderBegin`, `spiderResultaat`; pagina `SpiderLadder` |
 | Wisselreeks: 3 of 4 akkoorden, elk een maat, zo lang mogelijk; de ronde is hoe vaak je de reeks rond bent | `TELLEN_PER_AKKOORD`, `wisselreeksPositie(stand, aantal)` → `WisselreeksPositie` (`akkoord`, `volgende`, `tel`, `ronde`), `wisselreeksVolgehouden`, `wisselreeksResultaat`; pagina `Wisselreeks` |
 | Grote tikknop en spatiebalk | `.challenge-tik`, `useSpatiebalk(actief, knop, opTik)` |

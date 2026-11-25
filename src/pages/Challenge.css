@@ -116,3 +116,53 @@
 .challenge-tik-start {
   min-height: clamp(96px, 20vh, 200px);
 }
+
+.challenge-invullen {
+  display: grid;
+  gap: var(--ruimte-4);
+  margin-top: auto;
+}
+
+.challenge-invullen-vraag {
+  font-size: var(--letter-titel);
+  font-weight: 700;
+  text-align: center;
+}
+
+.challenge-invullen-rij {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 72px;
+  gap: var(--ruimte-3);
+  align-items: stretch;
+}
+
+.challenge-invullen-rij .knop {
+  padding: 0;
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.challenge-invullen-getal {
+  width: 100%;
+  min-height: 96px;
+  padding: 0;
+  border: 2px solid var(--rand);
+  border-radius: var(--radius);
+  background: var(--vlak);
+  color: var(--tekst);
+  font: inherit;
+  font-size: var(--letter-reus);
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.challenge-invullen-getal[aria-invalid='true'] {
+  border-color: var(--gevaar);
+}
+
+.challenge-invullen-bewaar {
+  min-height: 72px;
+  font-size: var(--letter-groot);
+}
