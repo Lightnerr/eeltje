@@ -1,3 +1,4 @@
+import { paarSleutel } from './challenges'
 import { akkoordenVan, leeradvies, ontbrekendeAkkoorden, speelbaarheidsLabel, speelVolgorde, zelfdeAkkoord } from './muziek'
 import type { Route } from './route'
 import { dagSleutel } from './statistiek'
@@ -44,10 +45,10 @@ function kies<T>(lijst: readonly T[], datum: string, onderdeel: RoutineSoort): T
 }
 
 function paar(a: string, b: string): [string, string] {
-  return a.localeCompare(b) <= 0 ? [a, b] : [b, a]
+  return paarSleutel(a, b).split('-') as [string, string]
 }
 
-/** Elke wissel tussen twee verschillende akkoorden die in een liedje voorkomt, als `A-D` (alfabetisch). */
+/** Elke wissel tussen twee verschillende akkoorden die in een liedje voorkomt, als `paarSleutel`. */
 function wisselsInLiedjes(liedjes: readonly Liedje[]): Set<string> {
   const wissels = new Set<string>()
   for (const liedje of liedjes) {

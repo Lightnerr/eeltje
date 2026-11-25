@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import * as data from '../src/data'
+import { paarSleutel } from '../src/lib/challenges'
 import { demoVoortgang } from '../src/lib/demo'
 import { ontbrekendeAkkoorden } from '../src/lib/muziek'
 import { maakRoutine, routineVoorVandaag, type Inhoud, type Routine } from '../src/lib/routine'
@@ -140,7 +141,7 @@ describe('maakRoutine', () => {
     const route = onderdeel(r, 'akkoordwissel').route as { a: string; b: string }
     expect(['A', 'D', 'E']).toContain(route.a)
     expect(['A', 'D', 'E']).toContain(route.b)
-    expect(route.a.localeCompare(route.b)).toBeLessThan(0)
+    expect(paarSleutel(route.a, route.b)).toBe(`${route.a}-${route.b}`)
   })
 
   it('één bekend akkoord: wisselen met het akkoord dat je nu het best kunt leren', () => {
