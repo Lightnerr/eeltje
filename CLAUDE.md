@@ -27,7 +27,7 @@ docs/              VISIE.md, STAPPENPLAN.md, OVERDRACHT.md, PARALLEL-BOUWEN.md
 src/lib/           pure logica: types, muziek (transponeren, capo, speelbaarheid), voortgang, route, storage, validatie, demo, akkoorden (raster, kopieertekst), diagram, gitaar (toonhoogtes, Karplus-Strong), metronoom, slagpatroon, liedjes (lijst, AI-label), meespelen (toestandsmachine), challenges (record, geschiedenis) en het verloop per challenge (oneMinuteChanges, spiderLadder, wisselreeks), routine (dagroutine), statistiek (streak, minuten), oefentimer, bestand (export/import), grafiek (schaal en ticks)
 src/data/          inhoud als JSON: akkoorden.json, oefeningen.json, liedjes/<id>.json; index.ts laadt ze
 src/audio/         Web Audio: context.ts (gedeelde AudioContext), metronoom en Karplus-Strong-gitaar
-src/components/    herbruikbare UI met eigen css: Tabbalk, Schermvullend, Binnenkort, AkkoordDiagram (SVG), StatusLabel, TempoKiezer, TelWeergave, SlagpatroonWeergave, SpeelbaarheidLabel, Ster, AkkoordKiezer, ChallengeUitslag, StartTempo, Grafiek (SVG), Kerngetallen
+src/components/    herbruikbare UI met eigen css: Tabbalk, Schermvullend, AkkoordDiagram (SVG), StatusLabel, TempoKiezer, TelWeergave, SlagpatroonWeergave, SpeelbaarheidLabel, Ster, AkkoordKiezer, ChallengeUitslag, StartTempo, Grafiek (SVG), Kerngetallen
 src/hooks/         React-hooks (useRoute, useVoortgang, useWakeLock, useMetronoom, useMetronoomInstelling, useSpatiebalk, useKlok, useVerborgen, useChallengeResultaat, useRoutine, useOefentimer, useNu)
 src/pages/         één component per route (default export), met een eigen css-bestand ernaast
 tests/             Vitest, één bestand per module in src/lib
