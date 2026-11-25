@@ -25,8 +25,16 @@ function zet(t: Oefentimer | null) {
 
 function abonneer(luisteraar: () => void) {
   luisteraars.add(luisteraar)
+  // Een ander tabblad startte, stopte of wiste de timer: opnieuw inlezen, anders bewaart "Stop" hier dezelfde sessie nog eens.
+  const opStorage = (e: StorageEvent) => {
+    if (!opslag.isTimerWijziging(e.key, e.storageArea)) return
+    huidige = undefined
+    luisteraar()
+  }
+  window.addEventListener('storage', opStorage)
   return () => {
     luisteraars.delete(luisteraar)
+    window.removeEventListener('storage', opStorage)
   }
 }
 

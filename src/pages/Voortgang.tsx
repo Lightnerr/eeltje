@@ -1,4 +1,4 @@
-import { useRef, useState, type ChangeEvent } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { Grafiek } from '../components/Grafiek'
 import { Kerngetallen } from '../components/Kerngetallen'
 import { StatusLabel } from '../components/StatusLabel'
@@ -115,7 +115,8 @@ function download(naam: string, tekst: string) {
   document.body.append(a)
   a.click()
   a.remove()
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
+  // iOS Safari haalt de blob pas op nadat je de download bevestigt; te vroeg intrekken geeft een leeg bestand.
+  setTimeout(() => URL.revokeObjectURL(url), 60_000)
 }
 
 type Vraag = { soort: 'importeren'; voortgang: Voortgang; bestand: string } | { soort: 'wissen' }
@@ -123,8 +124,30 @@ type Vraag = { soort: 'importeren'; voortgang: Voortgang; bestand: string } | { 
 function Gegevens() {
   const { voortgang, vervang, wis } = useVoortgang()
   const invoer = useRef<HTMLInputElement>(null)
+  const importKnop = useRef<HTMLButtonElement>(null)
+  const wisKnop = useRef<HTMLButtonElement>(null)
+  const meldingVak = useRef<HTMLParagraphElement>(null)
   const [vraag, zetVraag] = useState<Vraag | null>(null)
   const [melding, zetMelding] = useState<{ tekst: string; fout?: boolean } | null>(null)
+
+  // Na een vraag: de focus terug naar de knop die hem opende, of naar de melding als die er is. Pas na de render,
+  // want die knop (of de melding) staat er dan pas weer.
+  const focusNa = useRef<'import' | 'wis' | 'melding' | null>(null)
+  useEffect(() => {
+    const doel = focusNa.current
+    focusNa.current = null
+    if (doel) ({ import: importKnop, wis: wisKnop, melding: meldingVak })[doel].current?.focus()
+  })
+
+  function sluitVraag(focus: 'import' | 'wis') {
+    focusNa.current = focus
+    zetVraag(null)
+  }
+
+  function meld(tekst: string, fout = false) {
+    zetMelding({ tekst, fout })
+    focusNa.current = 'melding'
+  }
 
   async function kiesBestand(e: ChangeEvent<HTMLInputElement>) {
     const bestand = e.target.files?.[0]
@@ -137,7 +160,7 @@ function Gegevens() {
       zetVraag({ soort: 'importeren', voortgang: leesBestand(await bestand.text()), bestand: bestand.name })
     } catch (fout) {
       zetVraag(null)
-      zetMelding({ tekst: `Niet geïmporteerd. ${(fout as Error).message} Je voortgang is niet veranderd.`, fout: true })
+      meld(`Niet geïmporteerd. ${(fout as Error).message} Je voortgang is niet veranderd.`, true)
     }
   }
 
@@ -148,7 +171,7 @@ function Gegevens() {
         <button type="button" className="knop" onClick={() => download(bestandsnaam(new Date()), exporteerVoortgang(voortgang))}>
           Exporteer als bestand
         </button>
-        <button type="button" className="knop knop-rustig" onClick={() => invoer.current?.click()}>
+        <button ref={importKnop} type="button" className="knop knop-rustig" onClick={() => invoer.current?.click()}>
           Importeer een bestand
         </button>
         <input ref={invoer} className="verborgen" type="file" accept=".json,application/json" tabIndex={-1} aria-hidden="true" onChange={kiesBestand} />
@@ -163,16 +186,16 @@ function Gegevens() {
             <button
               type="button"
               className="knop"
-              autoFocus
               onClick={() => {
-                vervang(vraag.voortgang)
+                const gelukt = vervang(vraag.voortgang)
                 zetVraag(null)
-                zetMelding({ tekst: `Geïmporteerd: ${samenvattingTekst(samenvatting(vraag.voortgang))}.` })
+                if (gelukt) meld(`Geïmporteerd: ${samenvattingTekst(samenvatting(vraag.voortgang))}.`)
+                else meld('Niet bewaard: de opslag van je browser is vol. Je voortgang is niet veranderd.', true)
               }}
             >
               Vervangen
             </button>
-            <button type="button" className="knop knop-rustig" onClick={() => zetVraag(null)}>
+            <button type="button" className="knop knop-rustig" autoFocus onClick={() => sluitVraag('import')}>
               Annuleren
             </button>
           </div>
@@ -189,23 +212,23 @@ function Gegevens() {
               <button
                 type="button"
                 className="knop knop-gevaar"
-                autoFocus
                 onClick={() => {
                   wis()
                   vergeetTimer()
                   zetVraag(null)
-                  zetMelding({ tekst: 'Alles is gewist. Je begint opnieuw, met D en A op oefenen.' })
+                  meld('Alles is gewist. Je begint opnieuw, met D en A op oefenen.')
                 }}
               >
                 Ja, alles wissen
               </button>
-              <button type="button" className="knop knop-rustig" onClick={() => zetVraag(null)}>
+              <button type="button" className="knop knop-rustig" autoFocus onClick={() => sluitVraag('wis')}>
                 Nee, laat staan
               </button>
             </div>
           </div>
         ) : (
           <button
+            ref={wisKnop}
             type="button"
             className="knop knop-rustig knop-gevaar-rustig"
             onClick={() => {
@@ -218,7 +241,7 @@ function Gegevens() {
         )}
       </div>
 
-      <p role="status" className={melding ? `voortgang-melding${melding.fout ? ' voortgang-melding-fout' : ''}` : 'verborgen'}>
+      <p ref={meldingVak} tabIndex={-1} role="status" className={melding ? `voortgang-melding${melding.fout ? ' voortgang-melding-fout' : ''}` : 'verborgen'}>
         {melding?.tekst}
       </p>
     </div>

@@ -15,7 +15,6 @@ function lees(): Voortgang {
 
 function zet(v: Voortgang) {
   huidige = v
-  opslag.bewaar(v)
   for (const l of luisteraars) l()
 }
 
@@ -34,16 +33,33 @@ function abonneer(luisteraar: () => void) {
   }
 }
 
-function wijzig(f: (v: Voortgang) => Voortgang) {
-  zet(f(lees()))
+/**
+ * Geeft `false` als de browser niet wilde opslaan (vol, privémodus). De wijziging geldt dan wel in het geheugen,
+ * anders werkt de app helemaal niet zonder opslag.
+ */
+function wijzig(f: (v: Voortgang) => Voortgang): boolean {
+  const v = f(lees())
+  const bewaard = opslag.bewaar(v)
+  zet(v)
+  return bewaard
+}
+
+/** Alles in één keer vervangen (importeren): lukt het opslaan niet, dan blijft de oude voortgang staan. Geeft of het lukte. */
+function vervang(v: Voortgang): boolean {
+  if (!opslag.bewaar(v)) return false
+  zet(v)
+  return true
 }
 
 function wis() {
   opslag.wis()
-  zet(nieuweVoortgang())
+  // Ook in een preview opslaan, anders begint hij na herladen weer met de demo.
+  const v = nieuweVoortgang()
+  opslag.bewaar(v)
+  zet(v)
 }
 
 export function useVoortgang() {
   const voortgang = useSyncExternalStore(abonneer, lees)
-  return { voortgang, wijzig, vervang: zet, wis }
+  return { voortgang, wijzig, vervang, wis }
 }

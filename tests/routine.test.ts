@@ -255,6 +255,13 @@ describe('routineVoorVandaag', () => {
     expect(routineVoorVandaag(structuredClone(bewaard), anders, echt, new Date('2026-11-24T22:00:00'))).toEqual(vandaag)
   })
 
+  it('over middernacht: om 23:59:59 de bewaarde, een tel later een nieuwe', () => {
+    expect(routineVoorVandaag(bewaard, v, echt, new Date('2026-11-24T23:59:59'))).toEqual(vandaag)
+    const nacht = new Date('2026-11-25T00:00:00')
+    expect(routineVoorVandaag(bewaard, v, echt, nacht)).toEqual(maakRoutine(v, echt, nacht))
+    expect(routineVoorVandaag(bewaard, v, echt, nacht).datum).toBe('2026-11-25')
+  })
+
   it('maakt een nieuwe op een nieuwe dag', () => {
     const morgen = new Date('2026-11-25T08:00:00')
     expect(routineVoorVandaag(bewaard, v, echt, morgen)).toEqual(maakRoutine(v, echt, morgen))

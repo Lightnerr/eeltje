@@ -18,7 +18,7 @@ export interface Opslag {
   laad(): Voortgang
   /** `false` als de browser niet wilde opslaan (privémodus, vol). */
   bewaar(v: Voortgang): boolean
-  /** Wist de voortgang, de routine van vandaag en de oefentimer. */
+  /** Wist de voortgang, de routine van vandaag, de oefentimer en een opzijgezette kapotte voortgang. */
   wis(): void
   /** De bewaarde routine zoals hij in de opslag staat (nog niet gecontroleerd: zie `routineVoorVandaag`), of `null`. */
   laadRoutine(): unknown
@@ -29,6 +29,8 @@ export interface Opslag {
   bewaarTimer(timer: Oefentimer | null): boolean
   /** Hoort een `storage`-event (een ander tabblad schreef) bij deze voortgang? `sleutel` null = alles gewist. */
   isEigenWijziging(sleutel: string | null, gebied: Storage | null): boolean
+  /** Hetzelfde voor de oefentimer: een ander tabblad startte, stopte of wiste hem. */
+  isTimerWijziging(sleutel: string | null, gebied: Storage | null): boolean
 }
 
 export function maakOpslag({ storage, preview, klok = () => new Date() }: { storage: Storage | null; preview?: string; klok?: () => Date }): Opslag {
@@ -36,6 +38,7 @@ export function maakOpslag({ storage, preview, klok = () => new Date() }: { stor
   // Apart van de voortgang: die blijft op versie 1, en een export neemt de routine niet mee.
   const routineSleutel = opslagSleutel('routine', preview)
   const timerSleutel = opslagSleutel('timer', preview)
+  const kapotSleutel = opslagSleutel('kapot', preview)
   const begin = () => (preview ? demoVoortgang(klok()) : nieuweVoortgang())
 
   function lees(k: string): string | null {
@@ -74,7 +77,7 @@ export function maakOpslag({ storage, preview, klok = () => new Date() }: { stor
         return normaliseerVoortgang(JSON.parse(tekst))
       } catch {
         // Nooit de voortgang van de eigenaar weggooien: wat we niet snappen, gaat apart opzij.
-        schrijf(opslagSleutel('kapot', preview), tekst)
+        schrijf(kapotSleutel, tekst)
         return nieuweVoortgang()
       }
     },
@@ -86,6 +89,7 @@ export function maakOpslag({ storage, preview, klok = () => new Date() }: { stor
         storage?.removeItem(sleutel)
         storage?.removeItem(routineSleutel)
         storage?.removeItem(timerSleutel)
+        storage?.removeItem(kapotSleutel)
       } catch {
         // Niets te wissen als de browser geen opslag geeft.
       }
@@ -110,6 +114,9 @@ export function maakOpslag({ storage, preview, klok = () => new Date() }: { stor
     },
     isEigenWijziging(gewijzigd, gebied) {
       return storage !== null && gebied === storage && (gewijzigd === null || gewijzigd === sleutel)
+    },
+    isTimerWijziging(gewijzigd, gebied) {
+      return storage !== null && gebied === storage && (gewijzigd === null || gewijzigd === timerSleutel)
     },
   }
 }

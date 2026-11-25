@@ -66,8 +66,8 @@ function Oefentimer() {
 
 export default function VandaagPagina() {
   const { voortgang } = useVoortgang()
-  const routine = useRoutine(voortgang)
   const nu = useNu()
+  const routine = useRoutine(voortgang, nu)
 
   return (
     <section className="vandaag">

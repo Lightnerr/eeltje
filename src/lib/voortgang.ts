@@ -63,6 +63,12 @@ function isSessie(x: unknown): x is Sessie {
   return isObject(x) && isTijdstip(x.start) && isGetal(x.seconden)
 }
 
+/** Twee tabbladen konden dezelfde sessie twee keer bewaren; een sessie is uniek door zijn start. De eerste blijft. */
+function zonderDubbeleSessies(sessies: Sessie[]): Sessie[] {
+  const gezien = new Set<string>()
+  return sessies.filter((s) => !gezien.has(s.start) && gezien.add(s.start))
+}
+
 function alsResultaat(r: ChallengeResultaat): ChallengeResultaat {
   const { type, sleutel, waarde, bpm, datum } = r
   return bpm === undefined ? { type, sleutel, waarde, datum } : { type, sleutel, waarde, bpm, datum }
@@ -84,7 +90,7 @@ export function normaliseerVoortgang(data: unknown): Voortgang {
     akkoordStatus: data.akkoordStatus === undefined ? nieuw.akkoordStatus : filterRecord(data.akkoordStatus, isStatus),
     voorkeurVariant: filterRecord(data.voorkeurVariant, isTekst),
     challenges: filterLijst(data.challenges, isResultaat).map(alsResultaat),
-    sessies: filterLijst(data.sessies, isSessie).map(({ start, seconden }) => ({ start, seconden })),
+    sessies: zonderDubbeleSessies(filterLijst(data.sessies, isSessie).map(({ start, seconden }) => ({ start, seconden }))),
     favorieten: [...new Set(filterLijst(data.favorieten, isTekst))],
     gecontroleerd: [...new Set(filterLijst(data.gecontroleerd, isTekst))],
   }
@@ -135,5 +141,6 @@ export function zetGecontroleerd(v: Voortgang, id: string, gecontroleerd = true)
 }
 
 export function voegSessieToe(v: Voortgang, sessie: Sessie): Voortgang {
+  if (v.sessies.some((s) => s.start === sessie.start)) return v
   return { ...v, sessies: [...v.sessies, sessie] }
 }

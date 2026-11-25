@@ -194,4 +194,28 @@ describe('maakOpslag', () => {
       expect(maakOpslag({ storage }).laadTimer()).toBeNull()
     })
   })
+
+  it('isTimerWijziging: alleen de eigen timersleutel, of alles gewist', () => {
+    const storage = new GeheugenOpslag()
+    const echt = maakOpslag({ storage })
+    const preview = maakOpslag({ storage, preview: 'pr-12', klok })
+    expect(echt.isTimerWijziging('eeltje.voortgang.timer', storage)).toBe(true)
+    expect(echt.isTimerWijziging(null, storage)).toBe(true)
+    expect(echt.isTimerWijziging('eeltje.voortgang.timer.pr-12', storage)).toBe(false)
+    expect(preview.isTimerWijziging('eeltje.voortgang.timer.pr-12', storage)).toBe(true)
+    expect(echt.isTimerWijziging('eeltje.voortgang.v1', storage)).toBe(false)
+    expect(echt.isTimerWijziging('eeltje.voortgang.timer', new GeheugenOpslag())).toBe(false)
+  })
+
+  it('wis haalt ook de opzijgezette kapotte voortgang weg, en alleen die van deze opslag', () => {
+    const storage = new GeheugenOpslag()
+    storage.setItem('eeltje.voortgang.v1', '{kapot')
+    storage.setItem('eeltje.voortgang.kapot.pr-12', '{ook kapot')
+    const opslag = maakOpslag({ storage })
+    opslag.laad()
+    expect(storage.getItem('eeltje.voortgang.kapot')).toBe('{kapot')
+    opslag.wis()
+    expect(storage.getItem('eeltje.voortgang.kapot')).toBeNull()
+    expect(storage.getItem('eeltje.voortgang.kapot.pr-12')).toBe('{ook kapot')
+  })
 })
