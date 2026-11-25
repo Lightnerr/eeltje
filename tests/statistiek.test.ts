@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, it } from 'vitest'
 import { demoVoortgang } from '../src/lib/demo'
-import { challengeSleutels, dagSleutel, minutenPerWeek, minutenVandaag, streak, totaalMinuten } from '../src/lib/statistiek'
+import { challengeSleutels, dagenTekst, dagSleutel, minutenTekst, streakZin, minutenPerWeek, minutenVandaag, streak, totaalMinuten } from '../src/lib/statistiek'
 import type { Sessie, Voortgang } from '../src/lib/types'
 import { nieuweVoortgang } from '../src/lib/voortgang'
 
@@ -167,5 +167,29 @@ describe('challengeSleutels', () => {
   it('met de demo: A-D het laatst', () => {
     expect(challengeSleutels(demoVoortgang(nu()), 'one-minute-changes')[0]).toMatch(/^(A-D|C-G)$/)
     expect(challengeSleutels(demoVoortgang(nu()), 'wisselreeks')).toEqual(['G-C-D', 'A-D-E'])
+  })
+})
+
+describe('teksten', () => {
+  it('minutenTekst', () => {
+    expect(minutenTekst(0)).toBe('0 min')
+    expect(minutenTekst(45)).toBe('45 min')
+    expect(minutenTekst(60)).toBe('1 u')
+    expect(minutenTekst(125)).toBe('2 u 5 min')
+  })
+
+  it('dagenTekst', () => {
+    expect(dagenTekst(0)).toBe('0 dagen')
+    expect(dagenTekst(1)).toBe('1 dag')
+    expect(dagenTekst(19)).toBe('19 dagen')
+  })
+
+  it('streakZin moedigt aan en straft niet', () => {
+    expect(streakZin(met(), nu())).toBe('Oefen vandaag en je streak begint.')
+    expect(streakZin(met(sessie('2026-11-24T08:00:00'), sessie('2026-11-23T08:00:00')), nu())).toBe('Goed bezig. Een dag overslaan mag, twee achter elkaar niet.')
+    expect(streakZin(met(sessie('2026-11-23T08:00:00')), nu())).toBe('Oefen vandaag of morgen en je streak loopt door.')
+    // Gisteren al overgeslagen: vandaag moet het.
+    expect(streakZin(met(sessie('2026-11-22T08:00:00')), nu())).toBe('Oefen vandaag en je streak loopt door.')
+    expect(streakZin(met(sessie('2026-11-21T08:00:00')), nu())).toBe('Oefen vandaag en je streak begint.')
   })
 })

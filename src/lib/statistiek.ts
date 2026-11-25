@@ -59,9 +59,15 @@ export function totaalMinuten(v: Voortgang, nu = new Date()): number {
   return naarMinuten(geldigeSessies(v, nu).reduce((som, s) => som + s.seconden, 0))
 }
 
-export function minutenVandaag(v: Voortgang, nu = new Date()): number {
+function secondenVandaag(v: Voortgang, nu: Date): number {
   const vandaag = dagSleutel(nu)
-  return naarMinuten(geldigeSessies(v, nu).filter((s) => dagSleutel(s.start) === vandaag).reduce((som, s) => som + s.seconden, 0))
+  return geldigeSessies(v, nu)
+    .filter((s) => dagSleutel(s.start) === vandaag)
+    .reduce((som, s) => som + s.seconden, 0)
+}
+
+export function minutenVandaag(v: Voortgang, nu = new Date()): number {
+  return naarMinuten(secondenVandaag(v, nu))
 }
 
 export interface WeekMinuten {
@@ -85,4 +91,25 @@ export function minutenPerWeek(v: Voortgang, nu = new Date(), aantalWeken = 8): 
 /** De paren, reeksen of `spider` waarvan je resultaten hebt, het laatst geoefende eerst. */
 export function challengeSleutels(v: Voortgang, type: ChallengeType): string[] {
   return [...new Set(geschiedenis(v, type).reverse().map((c) => c.sleutel))]
+}
+
+/** "45 min", "1 u", "2 u 5 min". */
+export function minutenTekst(minuten: number): string {
+  const uren = Math.floor(minuten / 60)
+  const rest = minuten % 60
+  if (uren === 0) return `${rest} min`
+  return rest === 0 ? `${uren} u` : `${uren} u ${rest} min`
+}
+
+export function dagenTekst(dagen: number): string {
+  return dagen === 1 ? '1 dag' : `${dagen} dagen`
+}
+
+/** Een zin onder de streak: moedigt aan, straft niet, en zegt wanneer je weer moet oefenen. */
+export function streakZin(v: Voortgang, nu = new Date()): string {
+  if (streak(v, nu) === 0) return 'Oefen vandaag en je streak begint.'
+  if (secondenVandaag(v, nu) > 0) return 'Goed bezig. Een dag overslaan mag, twee achter elkaar niet.'
+  const gisteren = dagSleutel(dagenErbij(nu, -1))
+  if (geldigeSessies(v, nu).some((s) => dagSleutel(s.start) === gisteren)) return 'Oefen vandaag of morgen en je streak loopt door.'
+  return 'Oefen vandaag en je streak loopt door.'
 }
