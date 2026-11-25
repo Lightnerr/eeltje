@@ -18,6 +18,8 @@ Elke PR krijgt een eigen versie op `https://lightnerr.github.io/eeltje/pr-<numme
 - **iPhone (Safari):** open de app, tik op Deel en dan op "Zet op beginscherm".
 - **Android (Chrome):** open de app, tik op ⋮ en dan op "App installeren" (of "Toevoegen aan startscherm").
 
+Gebruik de link mét slash aan het eind (`…/eeltje/`), of open Eeltje via het geïnstalleerde icoon: zonder slash opent hij niet offline.
+
 Daarna opent Eeltje als een gewone app, ook zonder internet (open hem één keer met internet, dan staat alles erop). Je voortgang staat op het apparaat zelf: neem hem mee met Voortgang > Exporteren en Importeren.
 
 Is er een nieuwe versie, dan zie je bovenaan "Er is een nieuwe versie van Eeltje" met een knop Herladen. Tik je niet, dan krijg je hem de volgende keer dat je de app opnieuw start.

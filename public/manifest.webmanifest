@@ -3,7 +3,6 @@
   "short_name": "Eeltje",
   "description": "Oefenen op je gitaar, elke dag een beetje: akkoorden, liedjes, oefeningen en je voortgang.",
   "lang": "nl",
-  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
