@@ -1,0 +1,26 @@
+{
+  "id": "love-you-more",
+  "titel": "Love You More",
+  "artiest": "Racoon",
+  "soort": "pop",
+  "toonsoort": "Db",
+  "capo": 1,
+  "bpm": 76,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["Am"], ["G"], ["Am"], ["G"], ["Am"], ["G"], ["Am"], ["G"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Dm"], ["C"], ["G"], ["G"], ["Dm"], ["C"], ["G"], ["G"]]
+    }
+  ],
+  "volgorde": ["couplet", "refrein", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["Am", "G", "Dm7", "C", "F"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Dm in plaats van Dm7 en F, zodat je met vier akkoorden toe kunt. Het tempo is geschat."
+}

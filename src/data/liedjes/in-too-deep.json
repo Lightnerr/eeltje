@@ -1,0 +1,30 @@
+{
+  "id": "in-too-deep",
+  "titel": "In Too Deep",
+  "artiest": "Sum 41",
+  "soort": "pop",
+  "toonsoort": "E",
+  "capo": 0,
+  "bpm": 116,
+  "maatsoort": "4/4",
+  "slagpatroon": "D D D D D D D D",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["E", "A"], ["E", "A"], ["E", "A"], ["E", "A"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["E"], ["A"], ["E"], ["A"], ["E"], ["A"], ["E"], ["A"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["E"], ["A"], ["E"], ["A"], ["E"], ["A"], ["D"], ["D"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["E5", "A5", "D5", "G#m", "B"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Gewone E, A en D in plaats van powerchords, en zonder de extra akkoorden uit het tweede couplet en de brug. Alles omlaag aanslaan, zoals in punk."
+}
