@@ -95,10 +95,10 @@ De domeintaal is Nederlands, overal: in gesprekken, in de UI en in de code. Een 
 | Akkoordpaar (A-D is hetzelfde als D-A) | `paarSleutel(a, b)` (alfabetisch, `A-D`), `geldigPaar` |
 | Reeks: de akkoorden van een wisselreeks, in volgorde (G-C-D is niet D-C-G) | `reeksSleutel`, `geldigeReeks` |
 | Record: je beste resultaat per paar, per reeks of voor de spider; "Nieuw record!" alleen als je het echt verbetert | `record(v, type, sleutel?)` → `ChallengeResultaat \| null`, `recordTekst`, `beoordeel` → `Beoordeling` (`eerste`, `nieuw-record`, `evenaard`, `onder-record`), `ChallengeUitslag`, `RecordRegel` |
-| Verloop van een challenge: wacht, aftellen, lopen, klaar | `OmcStand`/`omcVerloop` (`oneMinuteChanges.ts`), `SpiderStand`/`spiderVerloop` (`spiderLadder.ts`), `WisselreeksStand`/`wisselreeksVerloop` (`wisselreeks.ts`); `useKlok` |
-| One minute changes: 3 s aftellen, 60 s wisselen | `AFTELLEN_MS`, `DUUR_MS`, `omcResterend`, `omcResultaat`; pagina `OneMinuteChanges` |
+| Verloop van een challenge: wacht, aftellen, lopen, klaar, of onderbroken (scherm uit) | `OmcStand`/`omcVerloop` (`oneMinuteChanges.ts`), `SpiderStand`/`spiderVerloop` (`spiderLadder.ts`), `WisselreeksStand`/`wisselreeksVerloop` (`wisselreeks.ts`); `useKlok`, `useVerborgen`, `ChallengeOnderbroken` |
+| One minute changes: 3 s aftellen, 60 s wisselen | `AFTELLEN_MS`, `DUUR_MS`, `omcResterend`, `klokTekst` ("1:00"), `omcResultaat`; pagina `OneMinuteChanges` |
 | Spider-ladder: begin laag, na elke ronde die lukte 5 bpm sneller | `SPIDER_START_BPM`, `SPIDER_STAP`, `SPIDER_SLEUTEL`, `spiderBegin`, `spiderResultaat`; pagina `SpiderLadder` |
-| Wisselreeks: 3 of 4 akkoorden, elk een maat, zo lang mogelijk; de ronde is hoe vaak je de reeks rond bent | `TELLEN_PER_AKKOORD`, `aftelDuur`, `wisselreeksPositie` → `WisselreeksPositie` (`akkoord`, `volgende`, `tel`, `ronde`), `wisselreeksVolgehouden`, `wisselreeksResultaat`; pagina `Wisselreeks` |
+| Wisselreeks: 3 of 4 akkoorden, elk een maat, zo lang mogelijk; de ronde is hoe vaak je de reeks rond bent | `TELLEN_PER_AKKOORD`, `wisselreeksPositie(stand, aantal)` → `WisselreeksPositie` (`akkoord`, `volgende`, `tel`, `ronde`), `wisselreeksVolgehouden`, `wisselreeksResultaat`; pagina `Wisselreeks` |
 | Grote tikknop en spatiebalk | `.challenge-tik`, `useSpatiebalk(actief, knop, opTik)` |
 | Starttempo van een challenge (stappen van 5 bpm) | `StartTempo` |
 | Akkoord kiezen voor een challenge, gegroepeerd op status | `AkkoordKiezer`, `standaardAkkoorden(v, namen, aantal)` |

@@ -23,7 +23,6 @@ import {
   wisselreeksPositie,
   wisselreeksResultaat,
   wisselreeksVerloop,
-  wisselreeksVerstreken,
   wisselreeksVolgehouden,
   type WisselreeksActie,
   type WisselreeksStand,
@@ -38,18 +37,15 @@ export default function WisselreeksPagina({ akkoorden: routeAkkoorden, bpm: rout
   const [stand, zetStand] = useState<WisselreeksStand>({ fase: 'wacht' })
   const [nu, zetNu] = useState(0)
   const knop = useRef<HTMLButtonElement>(null)
-  const metronoom = useMetronoom({ bpm, maatsoort: '4/4' })
+  const stuur = (actie: WisselreeksActie) => zetStand((s) => wisselreeksVerloop(s, actie))
+  // Het akkoord en de volgehouden tijd lopen op de tellen zoals je ze hoort, niet op het moment van de klik op Start.
+  const metronoom = useMetronoom({ bpm, maatsoort: '4/4', opTel: (tel) => stuur({ soort: 'tel', tel, nu: performance.now() }) })
   const geldig = geldigeReeks(reeks, namen) !== null
   const resultaat = wisselreeksResultaat(stand, reeks)
   const { record, vorigRecord, onthoudRecord } = useChallengeResultaat('wisselreeks', reeksSleutel(reeks), stand, resultaat)
   const bezig = stand.fase === 'aftellen' || stand.fase === 'lopen'
 
-  const stuur = (actie: WisselreeksActie) => zetStand((s) => wisselreeksVerloop(s, actie))
-
-  useKlok(bezig, 50, (t) => {
-    zetNu(t)
-    stuur({ soort: 'tijd', nu: t })
-  })
+  useKlok(bezig, 250, zetNu)
 
   useVerborgen(bezig, (t) => {
     metronoom.stop()
@@ -57,16 +53,14 @@ export default function WisselreeksPagina({ akkoorden: routeAkkoorden, bpm: rout
   })
 
   function opKnop() {
-    const t = performance.now()
     if (stand.fase === 'wacht') {
       if (!geldig) return
       onthoudRecord()
       metronoom.start()
-      zetNu(t)
-      stuur({ soort: 'start', nu: t, bpm })
+      stuur({ soort: 'start', bpm })
     } else {
       metronoom.stop()
-      stuur({ soort: 'gestopt', nu: t })
+      stuur({ soort: 'gestopt', nu: performance.now() })
     }
   }
 
@@ -84,7 +78,7 @@ export default function WisselreeksPagina({ akkoorden: routeAkkoorden, bpm: rout
     zetReeks(aantal > reeks.length ? [...reeks, ...extra].slice(0, aantal) : reeks.slice(0, aantal))
   }
 
-  const positie = wisselreeksPositie(reeks.length, bpm, wisselreeksVerstreken(stand, nu))
+  const positie = wisselreeksPositie(stand, reeks.length)
   const huidig = gekozenVariant(alleAkkoorden, voortgang, reeks[positie.akkoord])
 
   return (

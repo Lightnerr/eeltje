@@ -1,7 +1,9 @@
 import { reeksSleutel } from './challenges'
 import type { ChallengeResultaat } from './types'
 
-// Tijden in ms van een monotone klok (performance.now()), net als bij one minute changes.
+// De wisselreeks volgt de tellen van de metronoom zoals je ze hoort, niet de klok van de pagina: zo staat het
+// nieuwe akkoord er precies op de 1, ook als de audio later begint of met vertraging klinkt (Bluetooth).
+// Tijden (`nu`) zijn ms van een monotone klok (performance.now()) op het moment dat die tel klinkt of je tikt.
 
 /** Elk akkoord een maat in 4/4. */
 export const TELLEN_PER_AKKOORD = 4
@@ -9,64 +11,51 @@ export const WISSELREEKS_START_BPM = 60
 
 export type WisselreeksStand =
   | { fase: 'wacht' }
-  /** `begin` is het moment van starten; na één maat aftellen begint het lopen. */
-  | { fase: 'aftellen'; begin: number; bpm: number }
-  | { fase: 'lopen'; begin: number; bpm: number }
+  /** De eerste maat van de metronoom is aftellen; `tel` is de laatst gehoorde tel, `null` voor de eerste klik. */
+  | { fase: 'aftellen'; bpm: number; tel: number | null }
+  /** `start`: wanneer de eerste 1 na het aftellen klonk. `maat` telt vanaf 0, `tel` binnen de maat. */
+  | { fase: 'lopen'; bpm: number; start: number; maat: number; tel: number }
   | { fase: 'klaar'; seconden: number; bpm: number }
   /** Het scherm ging uit of het tabblad naar de achtergrond: hoe lang je volhield, weet de app dan niet. */
   | { fase: 'onderbroken' }
 
 export type WisselreeksActie =
-  | { soort: 'start'; nu: number; bpm: number }
-  | { soort: 'tijd'; nu: number }
+  | { soort: 'start'; bpm: number }
+  /** Een tel van de metronoom klinkt; `tel` is 0 op de 1. */
+  | { soort: 'tel'; tel: number; nu: number }
   /** Je bent eruit (of je stopt): tijdens het aftellen is dat afbreken. */
   | { soort: 'gestopt'; nu: number }
   /** De pagina raakte verborgen: afbreken, zonder resultaat. */
   | { soort: 'verborgen'; nu: number }
   | { soort: 'opnieuw' }
 
-/** Eén maat, in ms. */
-export function aftelDuur(bpm: number): number {
-  return (TELLEN_PER_AKKOORD * 60_000) / bpm
-}
-
-function looptVanaf(stand: { begin: number; bpm: number }): number {
-  return stand.begin + aftelDuur(stand.bpm)
-}
-
-function bijTijd(stand: WisselreeksStand, nu: number): WisselreeksStand {
-  return stand.fase === 'aftellen' && nu >= looptVanaf(stand) ? { ...stand, fase: 'lopen' } : stand
-}
-
 export function wisselreeksVerloop(stand: WisselreeksStand, actie: WisselreeksActie): WisselreeksStand {
   switch (actie.soort) {
     case 'start':
-      return stand.fase === 'wacht' ? { fase: 'aftellen', begin: actie.nu, bpm: actie.bpm } : stand
+      return stand.fase === 'wacht' ? { fase: 'aftellen', bpm: actie.bpm, tel: null } : stand
     case 'opnieuw':
       return { fase: 'wacht' }
-    case 'tijd':
-      return bijTijd(stand, actie.nu)
     case 'verborgen':
       return stand.fase === 'aftellen' || stand.fase === 'lopen' ? { fase: 'onderbroken' } : stand
-    case 'gestopt': {
-      const nu = bijTijd(stand, actie.nu)
-      if (nu.fase === 'aftellen') return { fase: 'wacht' }
-      if (nu.fase !== 'lopen') return nu
-      return { fase: 'klaar', seconden: wisselreeksVolgehouden(nu, actie.nu), bpm: nu.bpm }
-    }
+    case 'tel':
+      if (stand.fase === 'aftellen') {
+        const volgendeMaat = actie.tel === 0 && stand.tel !== null
+        return volgendeMaat ? { fase: 'lopen', bpm: stand.bpm, start: actie.nu, maat: 0, tel: 0 } : { ...stand, tel: actie.tel }
+      }
+      if (stand.fase === 'lopen') return { ...stand, maat: actie.tel === 0 ? stand.maat + 1 : stand.maat, tel: actie.tel }
+      return stand
+    case 'gestopt':
+      if (stand.fase === 'aftellen') return { fase: 'wacht' }
+      if (stand.fase !== 'lopen') return stand
+      return { fase: 'klaar', seconden: wisselreeksVolgehouden(stand, actie.nu), bpm: stand.bpm }
   }
 }
 
-/** Hele seconden sinds het aftellen voorbij is. */
+/** Hele seconden sinds de eerste 1 na het aftellen. */
 export function wisselreeksVolgehouden(stand: WisselreeksStand, nu: number): number {
   if (stand.fase === 'klaar') return stand.seconden
-  if (stand.fase === 'wacht' || stand.fase === 'onderbroken') return 0
-  return Math.max(0, Math.floor((nu - looptVanaf(stand)) / 1000))
-}
-
-/** Ms sinds het lopen begon; negatief tijdens het aftellen. */
-export function wisselreeksVerstreken(stand: WisselreeksStand, nu: number): number {
-  return stand.fase === 'aftellen' || stand.fase === 'lopen' ? nu - looptVanaf(stand) : 0
+  if (stand.fase !== 'lopen') return 0
+  return Math.max(0, Math.floor((nu - stand.start) / 1000))
 }
 
 export interface WisselreeksPositie {
@@ -79,16 +68,11 @@ export interface WisselreeksPositie {
   ronde: number
 }
 
-/** Waar je bent na `verstreken` ms. Tijdens het aftellen (negatief) staat het eerste akkoord klaar. */
-export function wisselreeksPositie(aantal: number, bpm: number, verstreken: number): WisselreeksPositie {
-  const tellen = Math.max(0, Math.floor((verstreken * bpm) / 60_000))
-  const maat = Math.floor(tellen / TELLEN_PER_AKKOORD)
-  return {
-    akkoord: maat % aantal,
-    volgende: (maat + 1) % aantal,
-    tel: tellen % TELLEN_PER_AKKOORD,
-    ronde: Math.floor(maat / aantal),
-  }
+/** Waar je bent in de reeks van `aantal` akkoorden. Vóór en tijdens het aftellen staat het eerste akkoord klaar. */
+export function wisselreeksPositie(stand: WisselreeksStand, aantal: number): WisselreeksPositie {
+  const maat = stand.fase === 'lopen' ? stand.maat : 0
+  const tel = stand.fase === 'lopen' || stand.fase === 'aftellen' ? (stand.tel ?? 0) : 0
+  return { akkoord: maat % aantal, volgende: (maat + 1) % aantal, tel, ronde: Math.floor(maat / aantal) }
 }
 
 /** Pas als je zei dat je eruit was, en alleen als je minstens een seconde volhield. */
