@@ -60,7 +60,7 @@ describe('leesBestand: wat goed is', () => {
   })
 
   it('een BOM of witruimte rond de JSON (Kladblok) mag', () => {
-    expect(leesBestand('﻿  {"versie":1}\n')).toEqual(nieuweVoortgang())
+    expect(leesBestand('\uFEFF  {"versie":1}\n')).toEqual(nieuweVoortgang())
   })
 })
 
