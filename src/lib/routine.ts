@@ -63,7 +63,7 @@ function opwarmen(inhoud: Inhoud): RoutineOnderdeel | null {
   if (!oefening) return null
   return {
     soort: 'opwarmen',
-    titel: `Opwarmen: ${oefening.titel.toLowerCase()}`,
+    titel: oefening.titel,
     uitleg: oefening.doel,
     minuten: MINUTEN.opwarmen,
     route: { pagina: 'oefening', id: oefening.id },

@@ -1,4 +1,140 @@
 .voortgang {
   display: grid;
+  gap: var(--ruimte-5);
+}
+
+.voortgang-blok {
+  display: grid;
+  gap: var(--ruimte-3);
+}
+
+.voortgang-challenges {
+  display: grid;
+  gap: var(--ruimte-3);
+}
+
+@media (min-width: 900px) {
+  .voortgang-challenges {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.voortgang-challenge {
+  display: grid;
+  gap: var(--ruimte-3);
+  align-content: start;
+  min-width: 0;
+}
+
+.voortgang-challenge-kop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ruimte-1) var(--ruimte-3);
+}
+
+.voortgang-challenge-kop h3 {
+  margin: 0;
+  font-size: var(--letter-groot);
+}
+
+.voortgang-record {
+  color: var(--accent);
+  font-weight: 650;
+}
+
+.voortgang-kies {
+  display: grid;
+  gap: var(--ruimte-1);
+}
+
+.voortgang-kies label {
+  color: var(--tekst-zacht);
+  font-size: var(--letter-klein);
+}
+
+.voortgang-kies select {
+  min-height: var(--tikdoel);
+  padding: 0 var(--ruimte-3);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius-klein);
+  background: var(--vlak);
+}
+
+.voortgang-naar {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  min-height: var(--tikdoel);
+  font-weight: 650;
+}
+
+.voortgang-akkoorden {
+  display: grid;
+  gap: var(--ruimte-3);
+  margin: 0;
+  list-style: none;
+}
+
+.voortgang-akkoorden li {
+  display: grid;
+  gap: var(--ruimte-1);
+}
+
+.voortgang-akkoorden-kop {
+  display: flex;
+  align-items: center;
+  gap: var(--ruimte-2);
+}
+
+
+.voortgang-gegevens {
+  display: grid;
   gap: var(--ruimte-4);
+}
+
+.voortgang-knoppen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ruimte-2);
+}
+
+.voortgang-vraag {
+  display: grid;
+  gap: var(--ruimte-3);
+  padding: var(--ruimte-4);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent-zacht);
+}
+
+.voortgang-vraag-gevaar {
+  border-color: var(--gevaar);
+  background: var(--vlak-zacht);
+}
+
+.voortgang-wissen {
+  padding-top: var(--ruimte-4);
+  border-top: 1px solid var(--rand);
+}
+
+.knop-gevaar {
+  border-color: var(--gevaar);
+  background: var(--gevaar);
+  color: var(--op-accent);
+}
+
+.knop-gevaar-rustig {
+  border-color: var(--gevaar);
+  color: var(--gevaar);
+}
+
+.voortgang-melding {
+  color: var(--status-kan-ik);
+  font-weight: 600;
+}
+
+.voortgang-melding-fout {
+  color: var(--gevaar);
 }

@@ -1,0 +1,24 @@
+.kerngetallen {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ruimte-2);
+  margin: 0;
+}
+
+.kerngetal {
+  display: grid;
+  gap: var(--ruimte-1);
+  padding: var(--ruimte-3);
+}
+
+.kerngetal dt {
+  color: var(--tekst-zacht);
+  font-size: var(--letter-klein);
+}
+
+.kerngetal dd {
+  margin: 0;
+  font-size: clamp(1rem, 4.4vw, var(--letter-groot));
+  font-weight: 700;
+  line-height: 1.2;
+}

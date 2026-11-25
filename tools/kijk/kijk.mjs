@@ -22,7 +22,8 @@ const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome
 try {
   const page = await browser.newPage()
   page.on('dialog', (d) => d.dismiss())
-  await page.goto(base + '/')
+  // Niet op Vandaag beginnen: die bewaart de routine van vandaag, mogelijk pas nadat de opslag hieronder leeg is.
+  await page.goto(base + '/#/kijk-leeg')
   await page.evaluate((nieuw) => {
     for (const k of Object.keys(localStorage)) if (k.startsWith('eeltje.voortgang')) localStorage.removeItem(k)
     if (nieuw) for (const k of ['eeltje.voortgang.v1', 'eeltje.voortgang.v1.kijk']) localStorage.setItem(k, '{"versie":1}')
