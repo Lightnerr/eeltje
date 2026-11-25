@@ -46,7 +46,7 @@ export function vergeetTimer() {
 
 export function useOefentimer() {
   const timer = useSyncExternalStore(abonneer, lees)
-  const { wijzig } = useVoortgang()
+  const { voortgang, vervang } = useVoortgang()
   const loopt = timer?.looptSinds != null
   const [nu, zetNu] = useState(() => Date.now())
   useKlok(loopt, 1000, () => zetNu(Date.now()))
@@ -60,12 +60,24 @@ export function useOefentimer() {
       const t = lees()
       if (t) zet(pauzeerTimer(t, new Date()))
     },
-    /** Bewaart de sessie (als er geoefend is) en zet de timer op nul. */
-    stop: (): Sessie | null => {
-      const sessie = stopTimer(lees(), new Date())
-      if (sessie) wijzig((v) => voegSessieToe(v, sessie))
+    /**
+     * Bewaart de sessie en zet de timer op nul. Is er niets geoefend: `leeg`. Lukt het opslaan niet (vol): `vol`, en
+     * dan blijft de timer gepauzeerd staan, zodat je het opnieuw kunt proberen en er niets verloren gaat.
+     */
+    stop: (): { uitkomst: 'bewaard' | 'leeg' | 'vol'; sessie: Sessie | null } => {
+      const nu = new Date()
+      const t = lees()
+      const sessie = stopTimer(t, nu)
+      if (!t || !sessie) {
+        zet(null)
+        return { uitkomst: 'leeg', sessie: null }
+      }
+      if (!vervang(voegSessieToe(voortgang, sessie))) {
+        zet(pauzeerTimer(t, nu))
+        return { uitkomst: 'vol', sessie }
+      }
       zet(null)
-      return sessie
+      return { uitkomst: 'bewaard', sessie }
     },
   }
 }

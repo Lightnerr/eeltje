@@ -17,6 +17,7 @@ const datumLang = new Intl.DateTimeFormat('nl-NL', { weekday: 'long', day: 'nume
 function Oefentimer() {
   const { timer, loopt, verstreken, start, pauze, stop } = useOefentimer()
   const [melding, zetMelding] = useState('')
+  const [mislukt, zetMislukt] = useState(false)
 
   return (
     <section className="kaart oefentimer" aria-labelledby="oefentimer-kop">
@@ -48,8 +49,15 @@ function Oefentimer() {
             type="button"
             className="knop knop-rustig"
             onClick={() => {
-              const sessie = stop()
-              zetMelding(sessie ? `Bewaard: ${duurTekst(sessie.seconden)} geoefend.` : 'Nog niets geoefend, dus niets bewaard.')
+              const { uitkomst, sessie } = stop()
+              zetMislukt(uitkomst === 'vol')
+              zetMelding(
+                uitkomst === 'bewaard' && sessie
+                  ? `Bewaard: ${duurTekst(sessie.seconden)} geoefend.`
+                  : uitkomst === 'vol'
+                    ? 'Niet bewaard: de opslag van je browser is vol. De timer staat op pauze; probeer het straks opnieuw.'
+                    : 'Nog niets geoefend, dus niets bewaard.',
+              )
             }}
           >
             Stop en bewaar
@@ -57,7 +65,7 @@ function Oefentimer() {
         )}
       </div>
       <p className="zacht oefentimer-uitleg">{loopt ? 'Hij loopt door als je naar een onderdeel gaat.' : timer ? 'Gepauzeerd.' : 'Start hem en tik dan op een onderdeel van je routine.'}</p>
-      <p role="status" className={melding ? 'oefentimer-melding' : 'verborgen'}>
+      <p role="status" className={melding ? `oefentimer-melding${mislukt ? ' oefentimer-melding-fout' : ''}` : 'verborgen'}>
         {melding}
       </p>
     </section>
