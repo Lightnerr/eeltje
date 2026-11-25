@@ -1,6 +1,6 @@
 import akkoordenJson from './akkoorden.json'
 import oefeningenJson from './oefeningen.json'
-import type { Akkoord, Liedje, Oefening } from '../lib/types'
+import type { Akkoord, Liedje, Oefening, Riff } from '../lib/types'
 
 // De enige plek die de inhoud inleest. tests/data.test.ts bewaakt dat de JSON aan het schema voldoet.
 
@@ -11,6 +11,10 @@ const liedjeBestanden = import.meta.glob<Liedje>('./liedjes/*.json', { eager: tr
 export const liedjes: readonly Liedje[] = Object.values(liedjeBestanden).sort((a, b) => a.titel.localeCompare(b.titel, 'nl'))
 
 export const oefeningen = oefeningenJson as unknown as readonly Oefening[]
+
+const riffBestanden = import.meta.glob<Riff>('./riffs/*.json', { eager: true, import: 'default' })
+
+export const riffs: readonly Riff[] = Object.values(riffBestanden).sort((a, b) => a.titel.localeCompare(b.titel, 'nl'))
 
 /** De standaardvariant eerst, daarna de rest in de volgorde van akkoorden.json. */
 export function variantenVan(naam: string): Akkoord[] {
@@ -32,4 +36,8 @@ export function zoekLiedje(id: string): Liedje | undefined {
 
 export function zoekOefening(id: string): Oefening | undefined {
   return oefeningen.find((o) => o.id === id)
+}
+
+export function zoekRiff(id: string): Riff | undefined {
+  return riffs.find((r) => r.id === id)
 }

@@ -1,9 +1,10 @@
-import { aanslagen, karplusStrong, moetUitsterven, type Speelwijze } from '../lib/gitaar'
+import { aanslagen, frequentie, karplusStrong, moetUitsterven, toonhoogte, type Aanslag, type Speelwijze } from '../lib/gitaar'
 import type { Akkoord } from '../lib/types'
 import { geefAudioContext } from './context'
 
 const NAKLANK = 2.5
 const UITSTERVEN = 0.05
+const VOLUME: Record<Speelwijze, number> = { aanslaan: 0.3, tokkelen: 0.5 }
 const buffers = new Map<string, AudioBuffer>()
 interface Klank {
   begin: number
@@ -64,16 +65,15 @@ export interface SpeelOpties {
 }
 
 // Moet direct in een tik-handler worden aangeroepen: iOS start de AudioContext alleen binnen een gebruikersactie.
-function speel(akkoord: Akkoord, wijze: Speelwijze, opties: SpeelOpties = {}) {
+function speel(lijst: readonly Omit<Aanslag, 'snaar'>[], volume: number, opties: SpeelOpties = {}) {
   const context = geefAudioContext()
   const begin = opties.tijd === undefined ? context.currentTime + 0.05 : Math.max(opties.tijd, context.currentTime)
   laatUitsterven(opties.tijd === undefined ? context.currentTime : begin)
-  const volume = wijze === 'aanslaan' ? 0.3 : 0.5
   const uit = context.createGain()
   uit.gain.value = volume
   uit.connect(context.destination)
   let laatste: AudioBufferSourceNode | null = null
-  for (const a of aanslagen(akkoord, wijze)) {
+  for (const a of lijst) {
     const bron = context.createBufferSource()
     bron.buffer = snaarBuffer(context, a.frequentie)
     bron.connect(uit)
@@ -86,10 +86,19 @@ function speel(akkoord: Akkoord, wijze: Speelwijze, opties: SpeelOpties = {}) {
 
 /** Alle snaren snel achter elkaar, van laag naar hoog. */
 export function slaAan(akkoord: Akkoord, opties?: SpeelOpties) {
-  speel(akkoord, 'aanslaan', opties)
+  speel(aanslagen(akkoord, 'aanslaan'), VOLUME.aanslaan, opties)
 }
 
 /** Elke snaar apart, met een pauze ertussen. */
 export function tokkel(akkoord: Akkoord) {
-  speel(akkoord, 'tokkelen')
+  speel(aanslagen(akkoord, 'tokkelen'), VOLUME.tokkelen)
+}
+
+/** Losse noten tegelijk (`snaar` 0 = lage E), bv. van een riff; wat ervoor klonk, stopt dan. */
+export function speelNoten(noten: readonly { snaar: number; fret: number }[], opties?: SpeelOpties) {
+  speel(
+    noten.map((n) => ({ frequentie: frequentie(toonhoogte(n.snaar, n.fret)), start: 0 })),
+    VOLUME.tokkelen,
+    opties,
+  )
 }
