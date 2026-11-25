@@ -12,7 +12,7 @@ import { useVerborgen } from '../hooks/useVerborgen'
 import { useVoortgang } from '../hooks/useVoortgang'
 import { akkoordnamen, gekozenVariant } from '../lib/akkoorden'
 import { geldigPaar, paarSleutel, standaardAkkoorden } from '../lib/challenges'
-import { omcResterend, omcResultaat, omcVerloop, type OmcActie, type OmcStand } from '../lib/oneMinuteChanges'
+import { klokTekst, omcResterend, omcResultaat, omcVerloop, type OmcActie, type OmcStand } from '../lib/oneMinuteChanges'
 import type { RouteGegevens } from '../lib/route'
 import type { Voortgang } from '../lib/types'
 import './Challenge.css'
@@ -68,7 +68,7 @@ export default function OneMinuteChangesPagina({ a: routeA, b: routeB }: RouteGe
     return () => cancelAnimationFrame(frame)
   }, [stand.fase])
 
-  const seconden = Math.ceil(omcResterend(stand, nu) / 1000)
+  const resterend = omcResterend(stand, nu)
   const zelfde = a === b
 
   return (
@@ -97,7 +97,7 @@ export default function OneMinuteChangesPagina({ a: routeA, b: routeB }: RouteGe
 
         {bezig && (
           <p className="challenge-klok" aria-live={stand.fase === 'aftellen' ? 'assertive' : 'off'}>
-            {stand.fase === 'aftellen' ? `Klaar? ${seconden}` : `0:${String(seconden).padStart(2, '0')}`}
+            {stand.fase === 'aftellen' ? `Klaar? ${Math.ceil(resterend / 1000)}` : klokTekst(resterend)}
           </p>
         )}
 

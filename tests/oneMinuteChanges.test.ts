@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { AFTELLEN_MS, DUUR_MS, omcResterend, omcResultaat, omcVerloop, type OmcActie, type OmcStand } from '../src/lib/oneMinuteChanges'
+import { AFTELLEN_MS, DUUR_MS, klokTekst, omcResterend, omcResultaat, omcVerloop, type OmcActie, type OmcStand } from '../src/lib/oneMinuteChanges'
 
 const T0 = 10_000
 const LOOPT_VANAF = T0 + AFTELLEN_MS
@@ -77,5 +77,16 @@ describe('one minute changes', () => {
     expect(omcResultaat(lopend, 'D', 'A')).toBeNull()
     expect(omcResultaat(speel([start, tijd(EINDE)]), 'D', 'A')).toBeNull()
     expect(omcResultaat(speel([start, tik(LOOPT_VANAF + 1), tijd(EINDE)]), 'D', 'A')).toEqual({ type: 'one-minute-changes', sleutel: 'A-D', waarde: 1 })
+  })
+})
+
+describe('klokTekst', () => {
+  it('minuten en seconden, naar boven afgerond zodat de klok op 1:00 begint en op 0:00 eindigt', () => {
+    expect(klokTekst(60_000)).toBe('1:00')
+    expect(klokTekst(59_001)).toBe('1:00')
+    expect(klokTekst(59_000)).toBe('0:59')
+    expect(klokTekst(9_500)).toBe('0:10')
+    expect(klokTekst(1)).toBe('0:01')
+    expect(klokTekst(0)).toBe('0:00')
   })
 })

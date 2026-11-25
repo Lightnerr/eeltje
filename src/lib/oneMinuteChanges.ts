@@ -61,3 +61,9 @@ export function omcResultaat(stand: OmcStand, a: string, b: string): Omit<Challe
   if (stand.fase !== 'klaar' || stand.wissels === 0) return null
   return { type: 'one-minute-changes', sleutel: paarSleutel(a, b), waarde: stand.wissels }
 }
+
+/** "1:00", "0:39": resterende ms als klok, naar boven afgerond op hele seconden. */
+export function klokTekst(ms: number): string {
+  const seconden = Math.ceil(Math.max(0, ms) / 1000)
+  return `${Math.floor(seconden / 60)}:${String(seconden % 60).padStart(2, '0')}`
+}
