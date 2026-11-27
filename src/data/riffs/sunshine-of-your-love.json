@@ -1,0 +1,27 @@
+{
+  "id": "sunshine-of-your-love",
+  "titel": "Sunshine of Your Love",
+  "artiest": "Cream",
+  "bpm": 116,
+  "maatsoort": "4/4",
+  "onderverdeling": 2,
+  "maten": 2,
+  "noten": [
+    { "stap": 0, "snaar": "D", "fret": 0 },
+    { "stap": 1, "snaar": "D", "fret": 0 },
+    { "stap": 2, "snaar": "A", "fret": 3 },
+    { "stap": 3, "snaar": "D", "fret": 0 },
+    { "stap": 6, "snaar": "A", "fret": 0 },
+    { "stap": 7, "snaar": "E", "fret": 4 },
+    { "stap": 8, "snaar": "E", "fret": 3 },
+    { "stap": 11, "snaar": "D", "fret": 0 }
+  ],
+  "uitleg": [
+    "Een lage versie in de eerste frets: open D-snaar, 3e fret op de A-snaar, open A, en dan 4e en 3e fret op de lage E.",
+    "Middelvinger op de 3e fret, ringvinger op de 4e. Je hand blijft staan, je wisselt alleen van snaar.",
+    "Na de eerste vier noten loopt hij in drie stapjes naar beneden: open A, 4e en 3e fret op de E-snaar.",
+    "Laat de lange noten doorklinken en tel in je hoofd mee, dan valt het loopje vanzelf goed."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

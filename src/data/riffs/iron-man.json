@@ -1,0 +1,35 @@
+{
+  "id": "iron-man",
+  "titel": "Iron Man",
+  "artiest": "Black Sabbath",
+  "bpm": 76,
+  "maatsoort": "4/4",
+  "onderverdeling": 2,
+  "maten": 4,
+  "noten": [
+    { "stap": 0, "snaar": "E", "fret": 7 },
+    { "stap": 4, "snaar": "E", "fret": 10 },
+    { "stap": 8, "snaar": "E", "fret": 10 },
+    { "stap": 10, "snaar": "E", "fret": 12 },
+    { "stap": 12, "snaar": "E", "fret": 12 },
+    { "stap": 16, "snaar": "E", "fret": 15 },
+    { "stap": 17, "snaar": "E", "fret": 14 },
+    { "stap": 18, "snaar": "E", "fret": 15 },
+    { "stap": 19, "snaar": "E", "fret": 14 },
+    { "stap": 20, "snaar": "E", "fret": 15 },
+    { "stap": 21, "snaar": "E", "fret": 14 },
+    { "stap": 22, "snaar": "E", "fret": 15 },
+    { "stap": 24, "snaar": "E", "fret": 10 },
+    { "stap": 26, "snaar": "E", "fret": 10 },
+    { "stap": 28, "snaar": "E", "fret": 12 },
+    { "stap": 30, "snaar": "E", "fret": 12 }
+  ],
+  "uitleg": [
+    "Alles op de lage E-snaar: 7e, 10e en 12e fret, en dan 15 en 14 om en om.",
+    "Schuif met je wijsvinger van fret naar fret. Bij 14 en 15: wijsvinger op de 14e, middelvinger op de 15e.",
+    "Zwaar en langzaam. De eerste noot klinkt lang, het snelle stukje in de derde maat speel je strak.",
+    "Gaat het goed? Leg je ringvinger er twee frets hoger op de A-snaar bij en sla beide snaren aan: dan speel je hem met power chords, zoals het origineel."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}
