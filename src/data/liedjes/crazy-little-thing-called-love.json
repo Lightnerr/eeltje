@@ -1,0 +1,30 @@
+{
+  "id": "crazy-little-thing-called-love",
+  "titel": "Crazy Little Thing Called Love",
+  "artiest": "Queen",
+  "soort": "pop",
+  "toonsoort": "D",
+  "capo": 0,
+  "bpm": 154,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U D - D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["D"], ["D"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["D"], ["D"], ["D"], ["D"], ["G"], ["C"], ["G"], ["D"], ["C"], ["C"], ["D"], ["D"]]
+    },
+    {
+      "naam": "brug",
+      "maten": [["G"], ["C"], ["G"], ["G"], ["C"], ["C"], ["D"], ["D"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "couplet", "brug", "couplet", "brug", "couplet"],
+  "origineleAkkoorden": ["D", "G", "C", "Bb"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "C in plaats van Bb, zodat je geen barré nodig hebt. Het middenstuk en de solo zijn weggelaten."
+}
