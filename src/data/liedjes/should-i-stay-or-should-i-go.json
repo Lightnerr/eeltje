@@ -1,0 +1,30 @@
+{
+  "id": "should-i-stay-or-should-i-go",
+  "titel": "Should I Stay or Should I Go",
+  "artiest": "The Clash",
+  "soort": "pop",
+  "toonsoort": "D",
+  "capo": 0,
+  "bpm": 113,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["D", "G"], ["D"], ["D", "G"], ["D"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["D", "G"], ["D"], ["D", "G"], ["D"], ["D", "G"], ["D"], ["A"], ["A"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["D", "G"], ["D"], ["D", "G"], ["D"], ["D", "G"], ["D"], ["A"], ["D"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["D", "G", "A", "F"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Het stukje met F is weggelaten; je speelt alleen D, G en A."
+}

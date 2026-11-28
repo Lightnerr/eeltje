@@ -324,3 +324,11 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - **Gekozen uit een Spotify-export** van de eigenaar (niet in de repo): nummers die vaak terugkomen en met 3 of 4 makkelijke akkoorden te spelen zijn. Rap, EDM en metal vallen af.
 - **Toonsoort en tempo uit de export**, de akkoorden uit het hoofd. Spotify geeft bij langzame nummers soms het dubbele tempo (Three Little Birds 148, Free Fallin' live 174): gehalveerd.
 - Free Fallin' staat als Tom Petty (het origineel); de eigenaar luistert de live-versie van John Mayer, die hetzelfde schema heeft.
+
+## Rock, pop-punk en metal (na stap 7)
+
+- **Vijf liedjes** uit de playlists, akkoorden uit het hoofd, toonsoort en tempo uit de Spotify-export: You Shook Me All Night Long, Should I Stay or Should I Go, There She Goes (The La's), Semi-Charmed Life en Basket Case. Mr. Jones, Teenage Dirtbag en Year 3000 kende Claude niet goed genoeg.
+- **Basket Case** staat met capo 3 en open vormen (het origineel is power chords, een halve toon lager gestemd). Spotify gaf 85 bpm; het nummer telt dubbel zo snel, maar met acht slagen per maat op 86 voelt het hetzelfde.
+- **Metal-riffs zijn eigen riffs op opgezochte akkoorden** (met toestemming van de eigenaar online gezocht: toonsoort, tempo, akkoordvolgorde; geen tabs). I Hate Everything About You (F#m D E A, 89 bpm), Last Resort (Em D C Bm, 91 bpm) en Wait and Bleed (refrein Bm F#m C G; bronnen zeggen 155 tot 184 bpm, 184 gekozen). De titel zegt "(akkoorden)" waar de bekende riff zelf anders klinkt.
+- **Power chords** zijn twee noten op dezelfde stap; `Riff.tsx` speelt alles met hetzelfde `deel` samen. Alles in gewone stemming, ook als het origineel drop D of drop B is.
+- Duality viel af: de bronnen spraken elkaar tegen over toonsoort en akkoorden.

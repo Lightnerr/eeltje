@@ -1,0 +1,28 @@
+{
+  "id": "you-shook-me-all-night-long",
+  "titel": "You Shook Me All Night Long",
+  "artiest": "AC/DC",
+  "soort": "pop",
+  "toonsoort": "G",
+  "capo": 0,
+  "bpm": 127,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["G"], ["C"], ["G"], ["D"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["G"], ["C"], ["G"], ["D"], ["G"], ["C"], ["G"], ["D"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["G"], ["C", "D"], ["G"], ["C", "D"], ["G"], ["C", "D"], ["G"], ["G"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "couplet", "refrein", "refrein"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}
