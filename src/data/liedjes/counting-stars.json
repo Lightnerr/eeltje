@@ -1,0 +1,30 @@
+{
+  "id": "counting-stars",
+  "titel": "Counting Stars",
+  "artiest": "OneRepublic",
+  "soort": "pop",
+  "toonsoort": "C#m",
+  "capo": 4,
+  "bpm": 122,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["Am"], ["C"], ["G"], ["Fmaj7"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["Am"], ["C"], ["G"], ["Fmaj7"], ["Am"], ["C"], ["G"], ["Fmaj7"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Am"], ["C"], ["G"], ["Fmaj7"], ["Am"], ["C"], ["G"], ["Fmaj7"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["Am", "C", "G", "F"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Fmaj7 in plaats van F, zodat je geen barré nodig hebt."
+}

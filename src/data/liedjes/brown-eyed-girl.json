@@ -1,0 +1,28 @@
+{
+  "id": "brown-eyed-girl",
+  "titel": "Brown Eyed Girl",
+  "artiest": "Van Morrison",
+  "soort": "pop",
+  "toonsoort": "G",
+  "capo": 0,
+  "bpm": 150,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["G"], ["C"], ["G"], ["D"], ["G"], ["C"], ["G"], ["D"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["G"], ["C"], ["G"], ["D"], ["G"], ["C"], ["G"], ["D"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["C"], ["D"], ["G"], ["Em"], ["C"], ["D"], ["G"], ["D"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "couplet", "refrein", "couplet", "refrein"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

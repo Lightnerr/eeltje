@@ -1,0 +1,30 @@
+{
+  "id": "summer-of-69",
+  "titel": "Summer of '69",
+  "artiest": "Bryan Adams",
+  "soort": "pop",
+  "toonsoort": "D",
+  "capo": 0,
+  "bpm": 139,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["D"], ["D"], ["A"], ["A"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["D"], ["D"], ["A"], ["A"], ["D"], ["D"], ["A"], ["A"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Bm"], ["A"], ["D"], ["G"], ["Bm"], ["A"], ["D"], ["G"], ["D"], ["A"], ["D"], ["A"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "couplet", "refrein", "couplet", "refrein", "couplet"],
+  "origineleAkkoorden": ["D", "A", "Bm", "G", "F", "Bb", "C"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Het middenstuk met F, Bb en C is weggelaten."
+}
