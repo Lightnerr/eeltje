@@ -1,0 +1,30 @@
+{
+  "id": "10k-hours",
+  "titel": "10K Hours",
+  "artiest": "James TW",
+  "soort": "pop",
+  "toonsoort": "C#m",
+  "capo": 4,
+  "bpm": 79,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["Am"], ["G"], ["Em"], ["Fmaj7"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["Am"], ["G"], ["Em"], ["Fmaj7"], ["Am"], ["G"], ["Em"], ["Fmaj7"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Am"], ["G"], ["Em"], ["Fmaj7"], ["Am"], ["G"], ["Em"], ["Fmaj7"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["Am", "G", "Em", "F"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Met capo 4 in plaats van capo 2 met Bm en F#m, zodat je geen barré nodig hebt. Fmaj7 in plaats van F."
+}

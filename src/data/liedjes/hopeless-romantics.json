@@ -1,0 +1,30 @@
+{
+  "id": "hopeless-romantics",
+  "titel": "Hopeless Romantics",
+  "artiest": "James TW",
+  "soort": "pop",
+  "toonsoort": "Am",
+  "capo": 0,
+  "bpm": 114,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["Fmaj7"], ["G"], ["Am"], ["C", "G"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["Fmaj7"], ["G"], ["Am"], ["C"], ["Fmaj7"], ["G"], ["Am"], ["C"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Fmaj7"], ["G"], ["Am"], ["C"], ["Fmaj7"], ["G"], ["Am"], ["C", "G"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["F", "G", "Am", "C", "Dm", "Em"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Fmaj7 in plaats van F; de stukjes met Dm en Em zijn weggelaten."
+}

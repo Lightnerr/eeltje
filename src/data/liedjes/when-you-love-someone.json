@@ -1,0 +1,30 @@
+{
+  "id": "when-you-love-someone",
+  "titel": "When You Love Someone",
+  "artiest": "James TW",
+  "soort": "pop",
+  "toonsoort": "G",
+  "capo": 0,
+  "bpm": 63,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["Em"], ["D"], ["G"], ["C"], ["Em"], ["D"], ["G"], ["C"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["Em"], ["D"], ["G"], ["C"], ["Em"], ["D"], ["G"], ["C"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Em"], ["D"], ["G"], ["C"], ["Em"], ["D"], ["G"], ["C"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["Em", "D", "G", "C", "Am"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Het korte stukje met Am is weggelaten; het hele nummer draait om Em, D, G en C."
+}

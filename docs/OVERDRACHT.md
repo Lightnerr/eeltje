@@ -334,3 +334,14 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - Duality viel af: de bronnen spraken elkaar tegen over toonsoort en akkoorden.
 - **Animal I Have Become (intro)**: de eigenaar wilde de echte openingsriff en maakte daarvoor **een uitzondering op de regel "geen tabs van websites"**. Alleen guitaretab.com was bereikbaar (één tab); Songsterr weigert geautomatiseerde toegang uitdrukkelijk, Ultimate Guitar en e-chords blokkeren met een 403, en daar is niet omheen gewerkt. De noten komen uit die tab (C5, dan G, Ab, D, Ab, G op de lage snaren, 3e t/m 5e fret), het ritme staat er niet in en is zelf gekozen (syncopen). 122 bpm uit Musicnotes. Vervangt de eerdere riff op de refreinakkoorden.
 - **Boulevard of Broken Dreams** met de G-familie (Em7, G, Dsus4, A7sus4, Cadd9): het origineel heeft vijf akkoorden en de inhoudstest staat er maar 4 toe, behalve voor een liedje helemaal uit de G-familie. Dat wijkt af van `/nieuw-nummer` (gewone vormen als je C, D en Em kent), maar het is de gangbare makkelijke versie. Capo 1, klinkt in Fm; Spotify gaf Ab en 167 bpm, gehalveerd tot 84.
+
+## James TW (na stap 7)
+
+- **Met toestemming van de eigenaar online opgezocht**: alleen toonsoort, capo en akkoordvolgorde, geen tekst en geen tabs; het schema is zelf geschreven. Van guitaretab zijn alleen de akkoordnamen per sectie uitgelezen, de tekstregels zijn weggegooid.
+- **Suitcase, When You Love Someone, 10K Hours en Hopeless Romantics.** Different en Naked vielen af (te weinig of tegenstrijdige bronnen), U Remind Me vond alleen de versie van Usher.
+- **10K Hours** met capo 4 (Am, G, Em, Fmaj7) in plaats van capo 2 met Bm en F#m. Spotify zei C#m, dat klopt met beide.
+- **Tempo gehalveerd** bij When You Love Someone (Spotify 126 → 63) en 10K Hours (157 → 79): op gevoel, niet gecontroleerd.
+
+### Geparkeerd
+
+- **Schema op 360px:** een maat met twee akkoorden waarvan er één lang is ("G Fmaj7") loopt tegen de volgende maat aan.
