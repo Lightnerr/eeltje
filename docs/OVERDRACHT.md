@@ -311,3 +311,10 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 
 - **Bloody Valentine, Love You More en In Too Deep** kende Claude niet goed genoeg uit het hoofd. Met toestemming van de eigenaar zijn alleen de toonsoort, het tempo en de akkoordenvolgorde online opgezocht; het schema is zelf geschreven en vereenvoudigd, zonder tabs en zonder tekst. `/nieuw-nummer` blijft zonder internet werken.
 - Het tempo van Love You More stond nergens; 76 bpm is geschat.
+
+## Meer riffs en Crazy Little Thing Called Love (na stap 7)
+
+- **Vier riffs erbij**, uit het hoofd en zonder internet: Iron Man, Sunshine of Your Love, Für Elise (begin) en In de hal van de bergkoning. De toonhoogtes zijn vrij zeker, het ritme van Iron Man en Sunshine is op gevoel: de eigenaar checkt op gehoor voor hij `geverifieerd` zet.
+- **Klassiek mag in een andere toonsoort**, net als traditionele liedjes: de bergkoning staat een toon lager (A-mineur), zodat alles in de eerste drie frets ligt. Sunshine is een lage versie in de eerste frets.
+- **Für Elise is 3/8**, maar `Maatsoort` kent geen 3/8. Het staat als 3/4 waarin een tel een achtste van het origineel is; dat klinkt hetzelfde. Komt er vaker 3/8 voor, voeg het dan toe aan `Maatsoort`.
+- **Crazy Little Thing Called Love** met D, G en C: C in plaats van Bb (geen barré), middenstuk en solo weggelaten. Zonder `mijn-akkoorden.txt` uitgegaan van de demo-akkoorden.

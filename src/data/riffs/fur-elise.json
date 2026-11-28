@@ -1,0 +1,38 @@
+{
+  "id": "fur-elise",
+  "titel": "Für Elise (begin)",
+  "artiest": "Ludwig van Beethoven",
+  "bpm": 130,
+  "maatsoort": "3/4",
+  "onderverdeling": 2,
+  "maten": 4,
+  "noten": [
+    { "stap": 0, "snaar": "e", "fret": 0 },
+    { "stap": 1, "snaar": "B", "fret": 4 },
+    { "stap": 2, "snaar": "e", "fret": 0 },
+    { "stap": 3, "snaar": "B", "fret": 0 },
+    { "stap": 4, "snaar": "B", "fret": 3 },
+    { "stap": 5, "snaar": "B", "fret": 1 },
+    { "stap": 6, "snaar": "G", "fret": 2 },
+    { "stap": 9, "snaar": "A", "fret": 3 },
+    { "stap": 10, "snaar": "D", "fret": 2 },
+    { "stap": 11, "snaar": "G", "fret": 2 },
+    { "stap": 12, "snaar": "B", "fret": 0 },
+    { "stap": 15, "snaar": "D", "fret": 2 },
+    { "stap": 16, "snaar": "G", "fret": 1 },
+    { "stap": 17, "snaar": "B", "fret": 0 },
+    { "stap": 18, "snaar": "B", "fret": 1 },
+    { "stap": 21, "snaar": "D", "fret": 2 },
+    { "stap": 22, "snaar": "e", "fret": 0 },
+    { "stap": 23, "snaar": "B", "fret": 4 }
+  ],
+  "uitleg": [
+    "Het begin van Für Elise, helemaal in de eerste vier frets.",
+    "Eerst om en om de open hoge e en de 4e fret op de B-snaar: neem je pink voor die 4e fret.",
+    "Na elke lange noot volgt een loopje van drie noten omhoog, steeds over andere snaren: kijk even mee op de tab.",
+    "De laatste twee noten zijn het begin van de volgende ronde, dus speel gewoon door.",
+    "In het origineel is het 3/8; hier telt elke tel als een achtste, het klinkt hetzelfde."
+  ],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}
