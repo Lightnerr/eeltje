@@ -1,0 +1,42 @@
+{
+  "id": "suitcase",
+  "titel": "Suitcase",
+  "artiest": "James TW",
+  "soort": "pop",
+  "toonsoort": "C",
+  "capo": 0,
+  "bpm": 87,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["C"], ["Am"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["C"], ["C"], ["Am"], ["Am"], ["G"], ["G"], ["Fmaj7"], ["Fmaj7"]]
+    },
+    {
+      "naam": "pre-refrein",
+      "maten": [["C"], ["Am"], ["G", "Fmaj7"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["C"], ["Am"], ["G"], ["G"], ["Fmaj7"], ["C"]]
+    },
+    {
+      "naam": "brug",
+      "maten": [["C"], ["Am"], ["G", "Fmaj7"], ["Fmaj7"]]
+    },
+    {
+      "naam": "outro",
+      "maten": [["Am"], ["G"], ["G"], ["Fmaj7"], ["Fmaj7", "C"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "pre-refrein", "refrein", "couplet", "refrein", "brug", "refrein", "outro"],
+  "origineleAkkoorden": ["C", "Am", "G", "F", "Em"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Fmaj7 in plaats van F, en G in plaats van de Em in de pre-refrein en de brug."
+}
