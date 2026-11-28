@@ -1,0 +1,28 @@
+{
+  "id": "there-she-goes",
+  "titel": "There She Goes",
+  "artiest": "The La's",
+  "soort": "pop",
+  "toonsoort": "G",
+  "capo": 0,
+  "bpm": 123,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["G", "D"], ["C"], ["G", "D"], ["C"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["G", "D"], ["C"], ["G", "D"], ["C"], ["G", "D"], ["C"], ["G", "D"], ["C"]]
+    },
+    {
+      "naam": "brug",
+      "maten": [["C"], ["D"], ["C"], ["D"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "couplet", "brug", "couplet", "brug", "couplet"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

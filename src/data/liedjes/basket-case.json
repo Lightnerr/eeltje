@@ -1,0 +1,26 @@
+{
+  "id": "basket-case",
+  "titel": "Basket Case",
+  "artiest": "Green Day",
+  "soort": "pop",
+  "toonsoort": "Eb",
+  "capo": 3,
+  "bpm": 86,
+  "maatsoort": "4/4",
+  "slagpatroon": "D D D D D D D D",
+  "secties": [
+    {
+      "naam": "couplet",
+      "maten": [["C"], ["G"], ["Am"], ["G"], ["Fmaj7"], ["C"], ["G"], ["G"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Fmaj7"], ["G"], ["C"], ["C"], ["Fmaj7"], ["G"], ["C"], ["C"], ["Fmaj7"], ["G"], ["G"], ["G"]]
+    }
+  ],
+  "volgorde": ["couplet", "couplet", "refrein", "couplet", "refrein", "refrein"],
+  "origineleAkkoorden": ["C", "G", "Am", "Em", "F"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Met capo 3 in plaats van power chords. G in plaats van Em en Fmaj7 in plaats van F, zodat je met vier open akkoorden toe kunt."
+}

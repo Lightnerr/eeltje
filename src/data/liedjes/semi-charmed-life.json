@@ -1,0 +1,34 @@
+{
+  "id": "semi-charmed-life",
+  "titel": "Semi-Charmed Life",
+  "artiest": "Third Eye Blind",
+  "soort": "pop",
+  "toonsoort": "G",
+  "capo": 0,
+  "bpm": 102,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["G"], ["D"], ["C"], ["C"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["G"], ["D"], ["C"], ["C"], ["G"], ["D"], ["C"], ["C"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["G"], ["D"], ["C"], ["C"], ["G"], ["D"], ["C"], ["C"]]
+    },
+    {
+      "naam": "brug",
+      "maten": [["Em"], ["C"], ["G"], ["D"], ["Em"], ["C"], ["G"], ["D"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "couplet", "refrein", "brug", "refrein"],
+  "origineleAkkoorden": ["G", "D", "Cadd9", "Em"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "C in plaats van Cadd9; met de G-familie kan het ook."
+}
