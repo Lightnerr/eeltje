@@ -1,0 +1,30 @@
+{
+  "id": "boulevard-of-broken-dreams",
+  "titel": "Boulevard of Broken Dreams",
+  "artiest": "Green Day",
+  "soort": "pop",
+  "toonsoort": "Fm",
+  "capo": 1,
+  "bpm": 84,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["Em7"], ["G"], ["Dsus4"], ["A7sus4"], ["Em7"], ["G"], ["Dsus4"], ["A7sus4"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["Em7"], ["G"], ["Dsus4"], ["A7sus4"], ["Em7"], ["G"], ["Dsus4"], ["A7sus4"], ["Em7"], ["G"], ["Dsus4"], ["A7sus4"], ["Em7"], ["G"], ["Dsus4"], ["A7sus4"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["Cadd9"], ["G"], ["Dsus4"], ["Em7"], ["Cadd9"], ["G"], ["Dsus4"], ["Em7"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "refrein", "intro", "couplet", "refrein", "intro", "refrein"],
+  "origineleAkkoorden": ["Em", "G", "D", "A", "C"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false,
+  "opmerking": "Met de G-familie: ringvinger en pink blijven op de 3e fret, zodat je met één groep vormen het hele nummer speelt."
+}
