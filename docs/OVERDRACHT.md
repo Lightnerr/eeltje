@@ -318,3 +318,9 @@ Stand van zaken voor de agent die verdergaat. Lees eerst `CLAUDE.md`, `docs/VISI
 - **Klassiek mag in een andere toonsoort**, net als traditionele liedjes: de bergkoning staat een toon lager (A-mineur), zodat alles in de eerste drie frets ligt. Sunshine is een lage versie in de eerste frets.
 - **Für Elise is 3/8**, maar `Maatsoort` kent geen 3/8. Het staat als 3/4 waarin een tel een achtste van het origineel is; dat klinkt hetzelfde. Komt er vaker 3/8 voor, voeg het dan toe aan `Maatsoort`.
 - **Crazy Little Thing Called Love** met D, G en C: C in plaats van Bb (geen barré), middenstuk en solo weggelaten. Zonder `mijn-akkoorden.txt` uitgegaan van de demo-akkoorden.
+
+## Nummers uit de playlists van de eigenaar (na stap 7)
+
+- **Gekozen uit een Spotify-export** van de eigenaar (niet in de repo): nummers die vaak terugkomen en met 3 of 4 makkelijke akkoorden te spelen zijn. Rap, EDM en metal vallen af.
+- **Toonsoort en tempo uit de export**, de akkoorden uit het hoofd. Spotify geeft bij langzame nummers soms het dubbele tempo (Three Little Birds 148, Free Fallin' live 174): gehalveerd.
+- Free Fallin' staat als Tom Petty (het origineel); de eigenaar luistert de live-versie van John Mayer, die hetzelfde schema heeft.

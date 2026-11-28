@@ -1,0 +1,28 @@
+{
+  "id": "i-gotta-feeling",
+  "titel": "I Gotta Feeling",
+  "artiest": "Black Eyed Peas",
+  "soort": "pop",
+  "toonsoort": "G",
+  "capo": 0,
+  "bpm": 128,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["G"], ["G"], ["C"], ["C"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["G"], ["G"], ["C"], ["C"], ["Em"], ["Em"], ["C"], ["C"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["G"], ["G"], ["C"], ["C"], ["Em"], ["Em"], ["C"], ["C"]]
+    }
+  ],
+  "volgorde": ["intro", "refrein", "couplet", "refrein", "couplet", "refrein", "refrein"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

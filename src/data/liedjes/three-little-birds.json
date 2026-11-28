@@ -1,0 +1,28 @@
+{
+  "id": "three-little-birds",
+  "titel": "Three Little Birds",
+  "artiest": "Bob Marley & The Wailers",
+  "soort": "pop",
+  "toonsoort": "A",
+  "capo": 0,
+  "bpm": 74,
+  "maatsoort": "4/4",
+  "slagpatroon": "- D - D - D - D",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["A"], ["A"], ["D"], ["A"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["A"], ["A"], ["D"], ["A"], ["A"], ["A"], ["D"], ["A"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["A"], ["E"], ["A"], ["D"], ["A"], ["E"], ["D"], ["A"]]
+    }
+  ],
+  "volgorde": ["intro", "refrein", "couplet", "refrein", "couplet", "refrein"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}

@@ -1,0 +1,28 @@
+{
+  "id": "free-fallin",
+  "titel": "Free Fallin'",
+  "artiest": "Tom Petty",
+  "soort": "pop",
+  "toonsoort": "F",
+  "capo": 3,
+  "bpm": 84,
+  "maatsoort": "4/4",
+  "slagpatroon": "D - D U - U D U",
+  "secties": [
+    {
+      "naam": "intro",
+      "maten": [["D", "G"], ["D", "A"]]
+    },
+    {
+      "naam": "couplet",
+      "maten": [["D", "G"], ["D", "A"], ["D", "G"], ["D", "A"]]
+    },
+    {
+      "naam": "refrein",
+      "maten": [["D", "G"], ["D", "A"], ["D", "G"], ["D", "A"]]
+    }
+  ],
+  "volgorde": ["intro", "couplet", "couplet", "refrein", "couplet", "refrein", "refrein"],
+  "bron": "ai-gegenereerd",
+  "geverifieerd": false
+}
